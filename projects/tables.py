@@ -13,18 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-import django_filters
-from django_filters import FilterSet
 
-from samples.models import Sampletbl, Projecttbl
+import django_tables2 as tables
+
+from projects.models import Projecttbl
 
 
-class SampleFilter(FilterSet):
+class ProjectTable(tables.Table):
     class Meta:
-        model = Sampletbl
-        fields = {'name': ['icontains', ],
-                  'materialid__name': ['icontains', ],
-                  'projectid__name': ['icontains', ]}
+        model = Projecttbl
+        template_name = "django_tables2/bootstrap.html"
+        fields = ['id', 'name']
 
 
 # ============= EOF =============================================

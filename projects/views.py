@@ -6,64 +6,53 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 
-from samples.filters import SampleFilter
-from samples.forms import SampleForm
-from samples.models import Sampletbl, Materialtbl, Projecttbl, Principalinvestigatortbl
-from samples.tables import SampleTable
-
+from projects.filters import ProjectFilter
+from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
+
+from projects.models import Projecttbl, Principalinvestigatortbl
+from projects.tables import ProjectTable
 
 
 @login_required
 def index(request):
-    samples = Sampletbl.objects.all()
-    sample_filter = SampleFilter(request.GET, queryset=samples)
-    table = SampleTable(sample_filter.qs)
+    projects = Projecttbl.objects.all()
+    project_filter = ProjectFilter(request.GET, queryset=projects)
+    table = ProjectTable(project_filter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=10)
     context = {'table': table,
-               'filter': sample_filter}
+               'filter': project_filter}
 
-    template = loader.get_template('samples/index.html')
+    template = loader.get_template('projects/index.html')
     return HttpResponse(template.render(context, request))
 
 
 @login_required
 def entry(request):
-    form = SampleForm()
+    form = ProjectForm()
 
-    samples = Sampletbl.objects.all()
-    sample_filter = SampleFilter(request.GET, queryset=samples)
-    table = SampleTable(sample_filter.qs)
+    projects = Projecttbl.objects.all()
+    project_filter = ProjectFilter(request.GET, queryset=projects)
+    table = ProjectTable(project_filter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=10)
-    context = {'sample_form': form,
+    context = {'form': form,
                'table': table,
-               'filter': sample_filter}
+               'filter': project_filter}
 
-    template = loader.get_template('samples/entry.html')
+    template = loader.get_template('projects/entry.html')
     return HttpResponse(template.render(context, request))
 
 
 @login_required
-def submit_sample(request):
+def submit_project(request):
     # template = loader.get_template('samples/add_sample.html')
     # context = {'samples': Sampletbl.objects.order_by('-id')[:10]}
     if request.method == 'POST':
-        form = SampleForm(request.POST)
+        form = ProjectForm(request.POST)
         if form.is_valid():
-            s = Sampletbl()
+            s = Projecttbl()
             s.name = form.cleaned_data['name']
 
-            material = form.cleaned_data['material']
-            gs = form.cleaned_data['grainsize']
-            dbmat = Materialtbl.objects.filter(name__exact=material,
-                                               grainsize__exact=gs).first()
-            if not dbmat:
-                dbmat = Materialtbl(grainsize=gs, name=material)
-                dbmat.save()
-
-            s.materialid = dbmat
-
-            project = form.cleaned_data['project']
             pi = form.cleaned_data['principal_investigator']
             pi = pi.strip()
             if ',' in pi:
@@ -78,15 +67,15 @@ def submit_sample(request):
                 if not dbpi:
                     dbpi = Principalinvestigatortbl(last_name=pi)
 
-            dbprj = Projecttbl.objects.filter(name__exact=project,
+            dbprj = Projecttbl.objects.filter(name__exact=s.name,
                                               principal_investigatorid=dbpi).first()
             if not dbprj:
-                dbprj = Projecttbl(name=project, principal_investigatorid=dbpi)
+                dbprj = Projecttbl(name=s.name, principal_investigatorid=dbpi)
                 dbprj.save()
 
             s.projectid = dbprj
 
             s.save()
-            return HttpResponseRedirect('/samples/entry')
+            return HttpResponseRedirect('/projects/entry')
 
     return HttpResponse('Failed ')

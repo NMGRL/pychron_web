@@ -13,18 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-import django_filters
-from django_filters import FilterSet
 
-from samples.models import Sampletbl, Projecttbl
+from django.urls import path
 
-
-class SampleFilter(FilterSet):
-    class Meta:
-        model = Sampletbl
-        fields = {'name': ['icontains', ],
-                  'materialid__name': ['icontains', ],
-                  'projectid__name': ['icontains', ]}
-
-
+from . import views
+app_name = 'projects'
+urlpatterns = [
+    path('', views.index, name='index'),
+    # path('submit_project', views.submit_project, name='submit_project'),
+    # path('entry', views.entry, name='entry'),
+]
 # ============= EOF =============================================

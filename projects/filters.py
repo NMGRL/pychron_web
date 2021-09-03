@@ -19,12 +19,9 @@ from django_filters import FilterSet
 from samples.models import Sampletbl, Projecttbl
 
 
-class SampleFilter(FilterSet):
+
+class ProjectFilter(FilterSet):
     class Meta:
-        model = Sampletbl
-        fields = {'name': ['icontains', ],
-                  'materialid__name': ['icontains', ],
-                  'projectid__name': ['icontains', ]}
-
-
+        model = Projecttbl
+        fields = {'name': ['icontains', ], }
 # ============= EOF =============================================
