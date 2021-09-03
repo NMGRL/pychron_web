@@ -19,4 +19,8 @@ Django-based Web interface to a pychron db
    ```shell
     docker-compose up -d
     ```
-7. Open a browser at `http://localhost:8000/samples/`
+7. create a superuser
+   ```shell
+      docker-compose
+   ```
+9. Open a browser at `http://localhost:8000/samples/`
