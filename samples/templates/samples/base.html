@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  {% block title %}<title>Local Library</title>{% endblock %}
+</head>
+
+<body>
+    foobar
+  {% block sidebar %}
+      <ul class="sidebar-nav">
+       {% if user.is_authenticated %}
+       <li>User: {{ user.get_username }}</li>
+
+       <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+       {% else %}
+       <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+       {% endif %}
+     </ul>
+
+  {% endblock %}
+  {% block content %}<!-- default content text (typically empty) -->{% endblock %}
+</body>
+</html>
