@@ -17,10 +17,14 @@ Django-based Web interface to a pychron db
    ```
 6. startup the server
    ```shell
-    docker-compose up -d
-    ```
-7. create a superuser
+   docker-compose up -d
+   ```
+7. migrate the database
    ```shell
-      docker-compose
+   docker-compose exec web python manage.py migrate
+   ```
+8. create a superuser
+   ```shell
+   docker-compose exec web python manage.py createsuperuser
    ```
 9. Open a browser at `http://localhost:8000/samples/`
