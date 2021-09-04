@@ -13,14 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-import django_filters
-from django_filters import FilterSet
 
-from samples.models import Projecttbl
+from django.urls import path
 
+from . import views
+app_name = 'materials'
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('submit_material', views.submit_material, name='submit_project'),
+    path('entry', views.entry, name='entry'),
+    path('<int:pk>/', views.MaterialDetailView.as_view(), name='detail')
 
-class ProjectFilter(FilterSet):
-    class Meta:
-        model = Projecttbl
-        fields = {'name': ['icontains', ], }
+]
 # ============= EOF =============================================

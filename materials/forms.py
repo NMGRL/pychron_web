@@ -13,14 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-import django_filters
-from django_filters import FilterSet
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+from django import forms
 
-from samples.models import Projecttbl
 
+class MaterialForm(forms.Form):
+    name = forms.CharField(label='Material')
+    grainsize = forms.CharField(label='Grainsize')
 
-class ProjectFilter(FilterSet):
-    class Meta:
-        model = Projecttbl
-        fields = {'name': ['icontains', ], }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-exampleForm'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'submit_sample'
+
+        self.helper.add_input(Submit('submit', 'Submit'))
+
 # ============= EOF =============================================

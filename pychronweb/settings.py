@@ -35,6 +35,7 @@ DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
 INSTALLED_APPS = [
     'samples.apps.SamplesConfig',
     'projects.apps.ProjectsConfig',
+    'materials.apps.MaterialsConfig',
     'users',
 
     'crispy_forms',

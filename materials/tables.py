@@ -16,27 +16,17 @@
 
 import django_tables2 as tables
 
-from samples.models import Sampletbl
+from samples.models import Projecttbl, Materialtbl
 
 
-class SampleTable(tables.Table):
-    material = tables.Column(accessor='materialid__name',
-                             verbose_name='Material',
-                             linkify=lambda record: f'/materials/{record.materialid_id}/')
-    grainsize = tables.Column(accessor='materialid__grainsize')
-    project = tables.Column(accessor='projectid__name',
-                            verbose_name='Project',
-                            linkify=lambda record: f'/projects/{record.projectid_id}')
-    principal_investigator = tables.Column(accessor='projectid__principal_investigatorid__full_name',
-                                           verbose_name='Principal Investigator')
-
+class MaterialTable(tables.Table):
     id = tables.Column(linkify=True, accessor='id')
     name = tables.Column(linkify=True, accessor='name')
 
     class Meta:
-        model = Sampletbl
+        model = Materialtbl
         template_name = "django_tables2/bootstrap.html"
-        fields = ['id', 'name', 'latitude', 'longitude',
-                  'unit']
+        fields = ['id', 'name', 'grainsize']
+
 
 # ============= EOF =============================================

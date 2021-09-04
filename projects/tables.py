@@ -16,7 +16,7 @@
 
 import django_tables2 as tables
 
-from projects.models import Projecttbl
+from samples.models import Projecttbl
 
 
 class ProjectTable(tables.Table):

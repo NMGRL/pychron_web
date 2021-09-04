@@ -10,6 +10,9 @@ class Principalinvestigatortbl(models.Model):
     last_name = models.CharField(max_length=140, blank=True, null=True)
     first_initial = models.CharField(max_length=10, blank=True, null=True)
 
+    def full_name(self):
+        return f'{self.last_name}, {self.first_initial}' if self.first_initial else self.last_name
+
     class Meta:
         managed = False
         db_table = 'PrincipalInvestigatorTbl'
@@ -24,6 +27,9 @@ class Projecttbl(models.Model):
     institution = models.CharField(max_length=80, blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
 
+    def get_absolute_url(self):
+        return '/projects/{}/'.format(self.id)
+
     class Meta:
         managed = False
         db_table = 'ProjectTbl'
@@ -32,6 +38,9 @@ class Projecttbl(models.Model):
 class Materialtbl(models.Model):
     name = models.CharField(max_length=80, blank=True, null=True)
     grainsize = models.CharField(max_length=80, blank=True, null=True)
+
+    def get_absolute_url(self):
+        return f'/materials/{self.id}/'
 
     class Meta:
         managed = False

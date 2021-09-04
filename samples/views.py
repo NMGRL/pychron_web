@@ -9,8 +9,9 @@ from django.views.generic import DetailView
 
 from samples.filters import SampleFilter
 from samples.forms import SampleForm
-from samples.models import Sampletbl, Materialtbl, Projecttbl, Principalinvestigatortbl
+from samples.models import Sampletbl, Materialtbl
 from samples.tables import SampleTable
+from samples.models import Projecttbl, Principalinvestigatortbl
 
 from django.contrib.auth.decorators import login_required
 
@@ -19,7 +20,7 @@ def index(request):
     samples = Sampletbl.objects.all()
     sample_filter = SampleFilter(request.GET, queryset=samples)
     table = SampleTable(sample_filter.qs)
-    table.paginate(page=request.GET.get("page", 1), per_page=10)
+    table.paginate(page=request.GET.get("page", 1), per_page=20)
     context = {'table': table,
                'filter': sample_filter}
 
@@ -34,7 +35,7 @@ def entry(request):
     samples = Sampletbl.objects.all()
     sample_filter = SampleFilter(request.GET, queryset=samples)
     table = SampleTable(sample_filter.qs)
-    table.paginate(page=request.GET.get("page", 1), per_page=10)
+    table.paginate(page=request.GET.get("page", 1), per_page=20)
     context = {'sample_form': form,
                'table': table,
                'filter': sample_filter}

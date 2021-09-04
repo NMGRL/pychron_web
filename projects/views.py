@@ -1,8 +1,3 @@
-from crispy_forms.layout import Submit
-from django import forms
-from django.shortcuts import render
-
-# Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.views.generic import DetailView
@@ -11,7 +6,7 @@ from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
 
-from projects.models import Projecttbl, Principalinvestigatortbl
+from samples.models import Projecttbl, Principalinvestigatortbl
 from projects.tables import ProjectTable
 from samples.models import Sampletbl
 from samples.tables import SampleTable
@@ -21,7 +16,7 @@ def index(request):
     projects = Projecttbl.objects.all()
     project_filter = ProjectFilter(request.GET, queryset=projects)
     table = ProjectTable(project_filter.qs)
-    table.paginate(page=request.GET.get("page", 1), per_page=10)
+    table.paginate(page=request.GET.get("page", 1), per_page=20)
     context = {'table': table,
                'filter': project_filter}
 
@@ -36,7 +31,7 @@ def entry(request):
     projects = Projecttbl.objects.all()
     project_filter = ProjectFilter(request.GET, queryset=projects)
     table = ProjectTable(project_filter.qs)
-    table.paginate(page=request.GET.get("page", 1), per_page=10)
+    table.paginate(page=request.GET.get("page", 1), per_page=20)
     context = {'form': form,
                'table': table,
                'filter': project_filter}
@@ -85,12 +80,13 @@ def submit_project(request):
 
 class ProjectDetailView(DetailView):
     model = Projecttbl
+    template_name = 'projects/projecttbl_detail.html'
 
     def get_context_data(self, **kw):
         context = super(ProjectDetailView, self).get_context_data(**kw)
 
         data = Sampletbl.objects.filter(projectid_id=self.object.id).all()
-        table=SampleTable(data)
-        table.paginate(page=self.request.GET.get("page", 1), per_page=10)
-        context['table'] =table
+        table = SampleTable(data)
+        table.paginate(page=self.request.GET.get("page", 1), per_page=20)
+        context['table'] = table
         return context

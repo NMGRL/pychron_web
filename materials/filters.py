@@ -16,11 +16,11 @@
 import django_filters
 from django_filters import FilterSet
 
-from samples.models import Projecttbl
+from samples.models import Projecttbl, Materialtbl
 
 
-class ProjectFilter(FilterSet):
+class MaterialFilter(FilterSet):
     class Meta:
-        model = Projecttbl
+        model = Materialtbl
         fields = {'name': ['icontains', ], }
 # ============= EOF =============================================
