@@ -5,6 +5,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+from django.views.generic import DetailView
 
 from samples.filters import SampleFilter
 from samples.forms import SampleForm
@@ -14,7 +15,6 @@ from samples.tables import SampleTable
 from django.contrib.auth.decorators import login_required
 
 
-@login_required
 def index(request):
     samples = Sampletbl.objects.all()
     sample_filter = SampleFilter(request.GET, queryset=samples)
@@ -90,3 +90,9 @@ def submit_sample(request):
             return HttpResponseRedirect('/samples/entry')
 
     return HttpResponse('Failed ')
+
+
+# def sample_detail(request, slug):
+#     return HttpResponse('adfasdf')
+class SampleDetailView(DetailView):
+    model = Sampletbl

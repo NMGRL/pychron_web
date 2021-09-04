@@ -51,7 +51,7 @@
 {#      </form>#}
       <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
-              <li><a href="/accounts/{{ user.id }}">{{ user.get_username }}</a></li>
+              <li><a href="/dashboard">{{ user.get_username }}</a></li>
           {% endif %}
           <li>
               {% if user.is_authenticated %}

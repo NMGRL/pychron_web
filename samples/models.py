@@ -60,6 +60,9 @@ class Sampletbl(models.Model):
     lithology_type = models.CharField(max_length=140, blank=True, null=True)
     unit = models.CharField(max_length=80, blank=True, null=True)
 
+    def get_absolute_url(self):
+        return f"/samples/{self.id}/"
+
     class Meta:
         managed = False
         db_table = 'SampleTbl'

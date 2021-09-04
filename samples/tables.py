@@ -23,7 +23,10 @@ class SampleTable(tables.Table):
     material = tables.Column(accessor='materialid__name',
                              verbose_name='Material')
     project = tables.Column(accessor='projectid__name',
-                            verbose_name='Project')
+                            verbose_name='Project',
+                            linkify=lambda record: '/projects/{}'.format(record.projectid_id))
+    id = tables.Column(linkify=True, accessor='id')
+    name = tables.Column(linkify=True, accessor='name')
 
     class Meta:
         model = Sampletbl

@@ -20,6 +20,9 @@ from projects.models import Projecttbl
 
 
 class ProjectTable(tables.Table):
+    id = tables.Column(linkify=True, accessor='id')
+    name = tables.Column(linkify=True, accessor='name')
+
     class Meta:
         model = Projecttbl
         template_name = "django_tables2/bootstrap.html"

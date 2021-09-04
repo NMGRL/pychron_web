@@ -45,6 +45,4 @@ class SampleForm(forms.Form):
 
         self.helper.add_input(Submit('submit', 'Submit'))
 
-
-
 # ============= EOF =============================================

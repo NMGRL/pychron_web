@@ -2,6 +2,9 @@ from django.db import models
 
 
 # Create your models here.
+from samples.models import Sampletbl
+
+
 class Principalinvestigatortbl(models.Model):
     name = models.CharField(max_length=140, blank=True, null=True)
     email = models.CharField(max_length=140, blank=True, null=True)
@@ -24,7 +27,9 @@ class Projecttbl(models.Model):
     institution = models.CharField(max_length=80, blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
 
+    def get_absolute_url(self):
+        return '/projects/{}/'.format(self.id)
+
     class Meta:
         managed = False
         db_table = 'ProjectTbl'
-

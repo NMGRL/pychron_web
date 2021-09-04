@@ -14,15 +14,8 @@
 # limitations under the License.
 # ===============================================================================
 
-from django.urls import path
+from django.shortcuts import render
 
-from . import views
-app_name = 'projects'
-urlpatterns = [
-    path('', views.index, name='index'),
-    path('submit_project', views.submit_project, name='submit_project'),
-    path('entry', views.entry, name='entry'),
-    path('<int:pk>/', views.ProjectDetailView.as_view(), name='detail')
-
-]
+def dashboard(request):
+    return render(request, "users/dashboard.html")
 # ============= EOF =============================================

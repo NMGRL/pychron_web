@@ -19,7 +19,6 @@ from django_filters import FilterSet
 from samples.models import Sampletbl, Projecttbl
 
 
-
 class ProjectFilter(FilterSet):
     class Meta:
         model = Projecttbl

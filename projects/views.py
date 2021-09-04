@@ -5,6 +5,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+from django.views.generic import DetailView
 
 from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
@@ -12,9 +13,10 @@ from django.contrib.auth.decorators import login_required
 
 from projects.models import Projecttbl, Principalinvestigatortbl
 from projects.tables import ProjectTable
+from samples.models import Sampletbl
+from samples.tables import SampleTable
 
 
-@login_required
 def index(request):
     projects = Projecttbl.objects.all()
     project_filter = ProjectFilter(request.GET, queryset=projects)
@@ -79,3 +81,16 @@ def submit_project(request):
             return HttpResponseRedirect('/projects/entry')
 
     return HttpResponse('Failed ')
+
+
+class ProjectDetailView(DetailView):
+    model = Projecttbl
+
+    def get_context_data(self, **kw):
+        context = super(ProjectDetailView, self).get_context_data(**kw)
+
+        data = Sampletbl.objects.filter(projectid_id=self.object.id).all()
+        table=SampleTable(data)
+        table.paginate(page=self.request.GET.get("page", 1), per_page=10)
+        context['table'] =table
+        return context
