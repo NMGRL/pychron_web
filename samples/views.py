@@ -113,7 +113,6 @@ def edit_sample(request, sample_id):
             s.projectid = project
 
             for attr in ('unit', 'lat', 'lon'):
-                print(attr, form.cleaned_data[attr])
                 setattr(s, attr, form.cleaned_data[attr])
 
             s.save()
@@ -132,6 +131,8 @@ class SampleDetailView(DetailView):
                                    'project': project,
                                    'material': self.object.materialid,
                                    'name': self.object.name,
+                                   'lat': self.object.lat,
+                                   'lon': self.object.lon,
                                    'unit': self.object.unit})
 
         context['form'] = form

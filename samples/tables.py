@@ -31,13 +31,15 @@ class SampleTable(tables.Table):
                                            verbose_name='Principal Investigator',
             linkify=lambda record: f'/principal_investigators/{record.projectid.principal_investigatorid.id}')
 
+    lat = tables.Column(verbose_name='Latitude', accessor='lat')
+    lon = tables.Column(verbose_name='Latitude', accessor='lon')
     id = tables.Column(linkify=True, accessor='id')
     name = tables.Column(linkify=True, accessor='name')
 
     class Meta:
         model = Sampletbl
         template_name = "django_tables2/bootstrap.html"
-        fields = ['id', 'name', 'latitude', 'longitude',
+        fields = ['id', 'name', 'lat', 'lon',
                   'unit']
 
 # ============= EOF =============================================

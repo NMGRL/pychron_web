@@ -20,7 +20,7 @@ from samples.models import Projecttbl
 
 
 class ProjectTable(tables.Table):
-    id = tables.Column(linkify=True, accessor='id')
+    id = tables.Column(linkify=True, accessor='id', verbose_name='IR#')
     name = tables.Column(linkify=True, accessor='name')
 
     class Meta:

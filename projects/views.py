@@ -85,7 +85,7 @@ class ProjectDetailView(DetailView):
     def get_context_data(self, **kw):
         context = super(ProjectDetailView, self).get_context_data(**kw)
 
-        data = Sampletbl.objects.filter(projectid_id=self.object.id).all()
+        data = Sampletbl.objects.filter(projectid_id=self.object.id).order_by('-id').all()
         table = SampleTable(data)
         table.paginate(page=self.request.GET.get("page", 1), per_page=20)
         context['table'] = table
