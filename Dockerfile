@@ -25,7 +25,7 @@ COPY . .
 # install dependencies
 COPY ./requirements.txt .
 
-RUN add-apt-repository ppa:ubuntugis/ppa &&  apt-get update
+RUN add-apt-repository ppa:ubuntugis/ppa && apt-get update
 RUN apt-get update
 RUN apt-get install gdal-bin
 RUN apt-get install libgdal-dev
