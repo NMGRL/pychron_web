@@ -2,22 +2,18 @@
 {% block content %}
     <h2>Welcome to the Pychron Web App</h2>
 
-    <h2>Materials</h2>
-    <p>Go to the <a href="/materials">Materials</a> tab to view materials in the database
-    </p>
-
-    <h2>Projects</h2>
-    <p>Go to the <a href="/projects">Projects</a> tab to view projects in the database
-    </p>
-
-    <h3>Add Projects</h3>
-        <p>Go to the <a href="/projects/entry">Projects Entry</a> tab to add projects in the database
-
-    <h2>Samples</h2>
-    <p>Go to the <a href="/samples">Samples</a> tab to view samples in the database
-    </p>
-
-    <h3>Add Samples</h3>
-        <p>Go to the <a href="/samples/entry">Samples Entry</a> tab to add samples in the database
-
+    <h1>View</h1>
+        <ul>
+            <li><a href="/principal_investigators">Principal Investigators</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/materials">Materials</a></li>
+            <li><a href="/samples">Samples</a></li>
+        </ul>
+    <h1>Entry</h1>
+        <ul>
+            <li><a href="/principal_investigators/entry">Principal Investigators</a></li>
+            <li><a href="/projects/entry">Projects</a></li>
+            <li><a href="/materials/entry">Materials</a></li>
+            <li><a href="/samples/entry">Samples</a></li>
+        </ul>
 {% endblock %}

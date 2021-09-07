@@ -21,6 +21,7 @@ Django-based Web interface to a pychron db
    ```
 7. migrate the database
    ```shell
+   docker-compose exec web python manage.py migrate samples 0001 --fake
    docker-compose exec web python manage.py migrate
    ```
 8. create a superuser

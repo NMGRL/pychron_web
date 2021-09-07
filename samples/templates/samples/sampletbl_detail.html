@@ -1,4 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>{{ object.name }}</h1>
+    <div>
+        <div class="table-container">
+            <table class="table">
+                <thead><tr><th>Attribute</th><th>Current Value</th></tr></thead>
+                <tr><td>Sample</td> <td>{{ object.name }}</td></tr>
+                <tr><td>Material</td> <td>{{ object.materialid.full_name }}</td></tr>
+                <tr><td>Project</td> <td>{{ object.projectid.name }}</td></tr>
+                <tr><td>Principal Investigator</td> <td>
+                    {{ object.projectid.principal_investigatorid.full_name }}</td></tr>
+                <tr><td>Unit</td> <td>{{ object.unit }}</td></tr>
+                <tr><td>Latitude</td> <td>{{ object.lat }}</td></tr>
+                <tr><td>Longitude</td> <td>{{ object.lon }}</td></tr>
+            </table>
+        </div>
+        <div style="background: aqua; margin: 10px">
+            <div>
+                <form action="/samples/edit_sample/{{ object.id }}/" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <table style="display: none">
+                        {{ view.formset.empty_form }}
+                    </table>
+
+                    <table>
+                        {{ view.formset }}
+                    </table>
+
+{#                    <span id="add-form" class="button">Add form</span>#}
+                    <input type="submit" value="Save"/>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}

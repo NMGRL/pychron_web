@@ -97,8 +97,45 @@ def submit_sample(request):
     return HttpResponse('Failed {}'.format(form.errors))
 
 
+@login_required
+def edit_sample(request, sample_id):
+    if request.method == 'POST':
+        form = SampleForm(request.POST)
+        if form.is_valid():
+            s = Sampletbl()
+            s.id = sample_id
+            s.name = form.cleaned_data['name']
+
+            material = form.cleaned_data['material']
+            s.materialid = material
+
+            project = form.cleaned_data['project']
+            s.projectid = project
+
+            for attr in ('unit', 'lat', 'lon'):
+                print(attr, form.cleaned_data[attr])
+                setattr(s, attr, form.cleaned_data[attr])
+
+            s.save()
+
+            return HttpResponseRedirect(f'/samples/{s.id}/')
+
+
 class SampleDetailView(DetailView):
     model = Sampletbl
+
+    def get_context_data(self, **kw):
+        context = super(SampleDetailView, self).get_context_data(**kw)
+        project = self.object.projectid
+
+        form = SampleForm(initial={'principal_investigator': project.principal_investigatorid.id,
+                                   'project': project,
+                                   'material': self.object.materialid,
+                                   'name': self.object.name,
+                                   'unit': self.object.unit})
+
+        context['form'] = form
+        return context
 
 
 class PrincipalInvestigatorAutocomplete(autocomplete.Select2QuerySetView):

@@ -27,8 +27,8 @@ def matchoices():
 
 class SampleForm(forms.ModelForm):
     name = forms.CharField(label='Sample')
-    # latitude = forms.FloatField(label='Latitude', required=False, initial=35)
-    # longitude = forms.FloatField(label='Longitude', required=False, initial=-105)
+    lat = forms.FloatField(label='Latitude', required=False, initial=35)
+    lon = forms.FloatField(label='Longitude', required=False, initial=-105)
     # principal_investigator = forms.CharField(label='Principal Investigator', initial='NMGRL')
     principal_investigator = forms.ModelChoiceField(label='Principal Investigator',
                                                     queryset=Principalinvestigatortbl.objects,
@@ -51,7 +51,7 @@ class SampleForm(forms.ModelForm):
 
     class Meta:
         model = Sampletbl
-        fields = ('principal_investigator', 'project', 'name', 'material')
+        fields = ('principal_investigator', 'project', 'name', 'material', 'unit', 'lat', 'lon')
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
     #

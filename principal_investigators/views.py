@@ -5,6 +5,7 @@ from django.views.generic import DetailView
 from materials.filters import MaterialFilter
 from materials.tables import MaterialTable
 from principal_investigators.filters import PrincipalInvestigatorsFilter
+from principal_investigators.forms import PrincipalInvestigatorForm
 from principal_investigators.tables import PrincipalInvestigatorsTable
 from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
@@ -15,7 +16,7 @@ from projects.tables import ProjectTable
 from samples.models import Sampletbl
 from samples.tables import SampleTable
 
-
+@login_required
 def index(request):
     pis = Principalinvestigatortbl.objects.all()
     tfilter = PrincipalInvestigatorsFilter(request.GET, queryset=pis)
@@ -30,19 +31,19 @@ def index(request):
 
 @login_required
 def entry(request):
-    pass
-    # form = ProjectForm()
-    #
-    # projects = Projecttbl.objects.all()
-    # project_filter = ProjectFilter(request.GET, queryset=projects)
-    # table = ProjectTable(project_filter.qs)
-    # table.paginate(page=request.GET.get("page", 1), per_page=10)
-    # context = {'form': form,
-    #            'table': table,
-    #            'filter': project_filter}
-    #
-    # template = loader.get_template('projects/entry.html')
-    # return HttpResponse(template.render(context, request))
+
+    form = PrincipalInvestigatorForm()
+
+    projects = Principalinvestigatortbl.objects.all()
+    tfilter = PrincipalInvestigatorsFilter(request.GET, queryset=projects)
+    table = PrincipalInvestigatorsTable(tfilter.qs)
+    table.paginate(page=request.GET.get("page", 1), per_page=10)
+    context = {'form': form,
+               'table': table,
+               'filter': tfilter}
+
+    template = loader.get_template('principal_investigators/entry.html')
+    return HttpResponse(template.render(context, request))
 
 
 @login_required
