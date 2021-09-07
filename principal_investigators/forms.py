@@ -13,13 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+from django import forms
 
-from django.conf.urls import url
-from users.views import dashboard, signup
 
-urlpatterns = [
-    url(r"^dashboard/", dashboard, name="dashboard"),
-    url(r'^signup/$', signup, name='signup'),
-]
+class PrincipalInvestigatorForm(forms.Form):
+    name = forms.CharField(label='Principal Investigator')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-exampleForm'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'submit_sample'
+
+        self.helper.add_input(Submit('submit', 'Submit'))
 
 # ============= EOF =============================================

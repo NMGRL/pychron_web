@@ -28,7 +28,8 @@ class SampleTable(tables.Table):
                             verbose_name='Project',
                             linkify=lambda record: f'/projects/{record.projectid_id}')
     principal_investigator = tables.Column(accessor='projectid__principal_investigatorid__full_name',
-                                           verbose_name='Principal Investigator')
+                                           verbose_name='Principal Investigator',
+            linkify=lambda record: f'/principal_investigators/{record.projectid.principal_investigatorid.id}')
 
     id = tables.Column(linkify=True, accessor='id')
     name = tables.Column(linkify=True, accessor='name')

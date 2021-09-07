@@ -1,10 +1,11 @@
-from dal import autocomplete
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.views.generic import DetailView
 
 from materials.filters import MaterialFilter
 from materials.tables import MaterialTable
+from principal_investigators.filters import PrincipalInvestigatorsFilter
+from principal_investigators.tables import PrincipalInvestigatorsTable
 from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
@@ -16,14 +17,14 @@ from samples.tables import SampleTable
 
 
 def index(request):
-    materials = Materialtbl.objects.all()
-    material_filter = MaterialFilter(request.GET, queryset=materials)
-    table = MaterialTable(material_filter.qs)
+    pis = Principalinvestigatortbl.objects.all()
+    tfilter = PrincipalInvestigatorsFilter(request.GET, queryset=pis)
+    table = PrincipalInvestigatorsTable(tfilter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=20)
     context = {'table': table,
-               'filter': material_filter}
+               'filter': tfilter}
 
-    template = loader.get_template('materials/index.html')
+    template = loader.get_template('principal_investigators/index.html')
     return HttpResponse(template.render(context, request))
 
 
@@ -45,7 +46,7 @@ def entry(request):
 
 
 @login_required
-def submit_material(request):
+def submit_principal_investigator(request):
     pass
     # # template = loader.get_template('samples/add_sample.html')
     # # context = {'samples': Sampletbl.objects.order_by('-id')[:10]}
@@ -83,17 +84,15 @@ def submit_material(request):
     # return HttpResponse('Failed ')
 
 
-class MaterialDetailView(DetailView):
-    model = Materialtbl
-    template_name = 'materials/materialtbl_detail.html'
+class PrincipalInvestigatorDetailView(DetailView):
+    model = Principalinvestigatortbl
+    template_name = 'principal_investigators/principalinvestigatortbl_detail.html'
 
     def get_context_data(self, **kw):
-        context = super(MaterialDetailView, self).get_context_data(**kw)
+        context = super(PrincipalInvestigatorDetailView, self).get_context_data(**kw)
 
-        data = Sampletbl.objects.filter(materialid_id=self.object.id).all()
-        table = SampleTable(data)
+        data = Projecttbl.objects.filter(principal_investigatorid_id=self.object.id).all()
+        table = ProjectTable(data)
         table.paginate(page=self.request.GET.get("page", 1), per_page=20)
         context['table'] = table
         return context
-
-

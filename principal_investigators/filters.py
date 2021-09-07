@@ -13,13 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
+import django_filters
+from django_filters import FilterSet
 
-from django.conf.urls import url
-from users.views import dashboard, signup
+from samples.models import Principalinvestigatortbl
 
-urlpatterns = [
-    url(r"^dashboard/", dashboard, name="dashboard"),
-    url(r'^signup/$', signup, name='signup'),
-]
 
+class PrincipalInvestigatorsFilter(FilterSet):
+    class Meta:
+        model = Principalinvestigatortbl
+        fields = {'name': ['icontains', ], }
 # ============= EOF =============================================

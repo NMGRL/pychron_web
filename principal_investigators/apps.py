@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SamplesConfig(AppConfig):
+class PrincipalInvestigatorsConfig(AppConfig):
     default_auto_field = 'django.db.models.AutoField'
-    name = 'samples'
+    name = 'principal_investigators'

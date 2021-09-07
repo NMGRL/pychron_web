@@ -1,4 +1,7 @@
+import re
+
 from crispy_forms.layout import Submit
+from dal import autocomplete
 from django import forms
 from django.shortcuts import render
 
@@ -9,15 +12,16 @@ from django.views.generic import DetailView
 
 from samples.filters import SampleFilter
 from samples.forms import SampleForm
-from samples.models import Sampletbl, Materialtbl
+from samples.models import Sampletbl, Materialtbl, Samplesubmittbl
 from samples.tables import SampleTable
 from samples.models import Projecttbl, Principalinvestigatortbl
 
 from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def index(request):
-    samples = Sampletbl.objects.all()
+    samples = get_sample_queryset(request)
     sample_filter = SampleFilter(request.GET, queryset=samples)
     table = SampleTable(sample_filter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=20)
@@ -28,15 +32,27 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+def get_sample_queryset(request):
+    is_manager = any(g.name == 'manager' for g in request.user.groups.all())
+
+    if is_manager:
+        samples = Sampletbl.objects.all()
+    else:
+        samples = Sampletbl.objects.filter(samplesubmittbl__user_id=request.user.id)
+
+    samples = samples.order_by('-id')
+    return samples
+
+
 @login_required
 def entry(request):
     form = SampleForm()
 
-    samples = Sampletbl.objects.all()
+    samples = get_sample_queryset(request)
     sample_filter = SampleFilter(request.GET, queryset=samples)
     table = SampleTable(sample_filter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=20)
-    context = {'sample_form': form,
+    context = {'form': form,
                'table': table,
                'filter': sample_filter}
 
@@ -55,45 +71,85 @@ def submit_sample(request):
             s.name = form.cleaned_data['name']
 
             material = form.cleaned_data['material']
-            gs = form.cleaned_data['grainsize']
-            dbmat = Materialtbl.objects.filter(name__exact=material,
-                                               grainsize__exact=gs).first()
-            if not dbmat:
-                dbmat = Materialtbl(grainsize=gs, name=material)
-                dbmat.save()
+            # print('masdf', material)
+            # gs = form.cleaned_data['grainsize']
+            # dbmat = Materialtbl.objects.filter(name__exact=material,
+            #                                    grainsize__exact=gs).first()
+            # if not dbmat:
+            #     dbmat = Materialtbl(grainsize=gs, name=material)
+            #     dbmat.save()
 
-            s.materialid = dbmat
+            s.materialid = material
 
             project = form.cleaned_data['project']
-            pi = form.cleaned_data['principal_investigator']
-            pi = pi.strip()
-            if ',' in pi:
-                lastname, firstinitial = pi.split(',')
-                dbpi = Principalinvestigatortbl.objects.filter(last_name__exact=lastname.strip(),
-                                                               first_initial__exact=firstinitial.strip()).first()
-                if not dbpi:
-                    dbpi = Principalinvestigatortbl(last_name=lastname, first_initial=firstinitial)
-                    dbpi.save()
-            else:
-                dbpi = Principalinvestigatortbl.objects.filter(last_name__exact=pi).first()
-                if not dbpi:
-                    dbpi = Principalinvestigatortbl(last_name=pi)
 
-            dbprj = Projecttbl.objects.filter(name__exact=project,
-                                              principal_investigatorid=dbpi).first()
-            if not dbprj:
-                dbprj = Projecttbl(name=project, principal_investigatorid=dbpi)
-                dbprj.save()
-
-            s.projectid = dbprj
+            s.projectid = project
 
             s.save()
+
+            ss = Samplesubmittbl()
+            ss.user = request.user
+            ss.sample = s
+            ss.save()
+
             return HttpResponseRedirect('/samples/entry')
 
-    return HttpResponse('Failed ')
+    return HttpResponse('Failed {}'.format(form.errors))
 
 
-# def sample_detail(request, slug):
-#     return HttpResponse('adfasdf')
 class SampleDetailView(DetailView):
     model = Sampletbl
+
+
+class PrincipalInvestigatorAutocomplete(autocomplete.Select2QuerySetView):
+    def get_result_label(self, item):
+        return item.full_name
+
+    def get_selected_result_label(self, item):
+        return self.get_result_label(item)
+
+    def get_queryset(self):
+        qs = Principalinvestigatortbl.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+        return qs
+
+
+class MaterialAutocomplete(autocomplete.Select2QuerySetView):
+
+    def get_result_label(self, item):
+        return item.full_name
+
+    def get_selected_result_label(self, item):
+        return self.get_result_label(item)
+
+    def get_queryset(self):
+        qs = Materialtbl.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+        return qs
+
+
+class ProjectAutocomplete(autocomplete.Select2QuerySetView):
+
+    def get_result_label(self, item):
+        return item.piname
+
+    def get_selected_result_label(self, item):
+        return item.piname
+
+    def get_queryset(self):
+        # if self.request.user.groups.first().name in ('manager',)
+        # else:
+        qs = Projecttbl.objects.all()
+
+        p = self.forwarded.get('principal_investigator')
+        if p:
+            qs = qs.filter(principal_investigatorid__id=p)
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+
+        return qs

@@ -14,12 +14,19 @@
 # limitations under the License.
 # ===============================================================================
 
-from django.conf.urls import url
-from users.views import dashboard, signup
+import django_tables2 as tables
 
-urlpatterns = [
-    url(r"^dashboard/", dashboard, name="dashboard"),
-    url(r'^signup/$', signup, name='signup'),
-]
+from samples.models import Principalinvestigatortbl
+
+
+class PrincipalInvestigatorsTable(tables.Table):
+    id = tables.Column(linkify=True, accessor='id')
+    name = tables.Column(linkify=True, accessor='full_name')
+
+    class Meta:
+        model = Principalinvestigatortbl
+        template_name = "django_tables2/bootstrap.html"
+        fields = ['id', 'name']
+
 
 # ============= EOF =============================================

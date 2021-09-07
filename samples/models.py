@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -10,8 +11,12 @@ class Principalinvestigatortbl(models.Model):
     last_name = models.CharField(max_length=140, blank=True, null=True)
     first_initial = models.CharField(max_length=10, blank=True, null=True)
 
+    @property
     def full_name(self):
         return f'{self.last_name}, {self.first_initial}' if self.first_initial else self.last_name
+
+    def get_absolute_url(self):
+        return '/principal_investigators/{}/'.format(self.id)
 
     class Meta:
         managed = False
@@ -27,6 +32,11 @@ class Projecttbl(models.Model):
     institution = models.CharField(max_length=80, blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
 
+    # userid = models.ForeignKey(User, models.DO_NOTHING, db_column='userID')
+    @property
+    def piname(self):
+        return f'{self.name}({self.principal_investigatorid.name})'
+
     def get_absolute_url(self):
         return '/projects/{}/'.format(self.id)
 
@@ -41,6 +51,11 @@ class Materialtbl(models.Model):
 
     def get_absolute_url(self):
         return f'/materials/{self.id}/'
+
+    @property
+    def full_name(self):
+        grainsize = f'({self.grainsize})' if self.grainsize else ''
+        return f'{self.name}{grainsize}'
 
     class Meta:
         managed = False
@@ -73,5 +88,14 @@ class Sampletbl(models.Model):
         return f"/samples/{self.id}/"
 
     class Meta:
-        managed = False
         db_table = 'SampleTbl'
+
+
+class Samplesubmittbl(models.Model):
+    sample = models.ForeignKey(Sampletbl, models.DO_NOTHING, db_column='sampleID', blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, db_column='userID', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'SampleSubmitTbl'
+

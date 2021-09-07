@@ -15,34 +15,52 @@
 # ===============================================================================
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
+from dal import autocomplete
 from django import forms
 
-from samples.models import Materialtbl
+from samples.models import Materialtbl, Projecttbl, Sampletbl, Principalinvestigatortbl
 
 
 def matchoices():
     return [(m['id'], m['name']) for m in Materialtbl.objects.values('name', 'id').distinct()]
 
 
-class SampleForm(forms.Form):
+class SampleForm(forms.ModelForm):
     name = forms.CharField(label='Sample')
     # latitude = forms.FloatField(label='Latitude', required=False, initial=35)
     # longitude = forms.FloatField(label='Longitude', required=False, initial=-105)
-    principal_investigator = forms.CharField(label='Principal Investigator', initial='NMGRL')
-    project = forms.CharField(label='Project', initial='REFERENCES')
+    # principal_investigator = forms.CharField(label='Principal Investigator', initial='NMGRL')
+    principal_investigator = forms.ModelChoiceField(label='Principal Investigator',
+                                                    queryset=Principalinvestigatortbl.objects,
+                                                    widget=autocomplete.ModelSelect2(
+                                                        url='principalinvestigator-autocomplete'))
+    project = forms.ModelChoiceField(label='Project',
+                                     queryset=Projecttbl.objects,
+                                     widget=autocomplete.ModelSelect2(url='project-autocomplete',
+                                                                      forward=['principal_investigator']),
+                                     )
+    material = forms.ModelChoiceField(label='Material',
+                                      queryset=Materialtbl.objects,
+                                      widget=autocomplete.ModelSelect2(url='material-autocomplete'),
+                                      # to_field_name='name'
+                                      )
+    # material = forms.ChoiceField(label='Material', choices=matchoices)
     unit = forms.CharField(label='Unit', required=False)
-    material = forms.ChoiceField(label='Material', choices=matchoices)
-    grainsize = forms.CharField(label='Grainsize', required=False)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    # grainsize = forms.CharField(label='Grainsize', required=False)
 
-        self.helper = FormHelper()
-        self.helper.form_id = 'id-exampleForm'
-        self.helper.form_class = 'blueForms'
-        self.helper.form_method = 'post'
-        self.helper.form_action = 'submit_sample'
-
-        self.helper.add_input(Submit('submit', 'Submit'))
+    class Meta:
+        model = Sampletbl
+        fields = ('principal_investigator', 'project', 'name', 'material')
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #
+    #     self.helper = FormHelper()
+    #     self.helper.form_id = 'id-exampleForm'
+    #     self.helper.form_class = 'blueForms'
+    #     self.helper.form_method = 'post'
+    #     self.helper.form_action = 'submit_sample'
+    #
+    #     self.helper.add_input(Submit('submit', 'Submit'))
 
 # ============= EOF =============================================

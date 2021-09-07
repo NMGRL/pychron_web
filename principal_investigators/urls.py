@@ -14,12 +14,15 @@
 # limitations under the License.
 # ===============================================================================
 
-from django.conf.urls import url
-from users.views import dashboard, signup
+from django.urls import path
 
+from . import views
+app_name = 'principal_investigators'
 urlpatterns = [
-    url(r"^dashboard/", dashboard, name="dashboard"),
-    url(r'^signup/$', signup, name='signup'),
-]
+    path('', views.index, name='index'),
+    path('submit_principal_investigator', views.submit_principal_investigator, name='submit_principal_investigator'),
+    path('entry', views.entry, name='entry'),
+    path('<int:pk>/', views.PrincipalInvestigatorDetailView.as_view(), name='detail')
 
+]
 # ============= EOF =============================================

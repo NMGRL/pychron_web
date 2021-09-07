@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from pychronweb import views
+from samples.views import ProjectAutocomplete, MaterialAutocomplete, PrincipalInvestigatorAutocomplete
 
 urlpatterns = [
     path('', views.index),
@@ -25,7 +26,14 @@ urlpatterns = [
     path('samples/', include('samples.urls')),
     path('projects/', include('projects.urls')),
     path('materials/', include('materials.urls')),
+    path('principal_investigators/', include('principal_investigators.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+
     url(r"^", include("users.urls")),
+
+    path('project-autocomplete/', ProjectAutocomplete.as_view(), name='project-autocomplete'),
+    path('material-autocomplete/', MaterialAutocomplete.as_view(), name='material-autocomplete'),
+    path('principalinvestigator-autocomplete/', PrincipalInvestigatorAutocomplete.as_view(),
+         name='principalinvestigator-autocomplete')
 
 ]

@@ -13,13 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-
-from django.conf.urls import url
-from users.views import dashboard, signup
-
-urlpatterns = [
-    url(r"^dashboard/", dashboard, name="dashboard"),
-    url(r'^signup/$', signup, name='signup'),
-]
+# import six
+# from django.contrib.auth.tokens import PasswordResetTokenGenerator
+#
+#
+# class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
+#     def _make_hash_value(self, user, timestamp):
+#         return (
+#             six.text_type(user.pk) + six.text_type(timestamp) +
+#             six.text_type(user.profile.email_confirmed)
+#         )
+#
+# account_activation_token = AccountActivationTokenGenerator()
 
 # ============= EOF =============================================
