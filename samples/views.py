@@ -120,6 +120,7 @@ def edit_sample(request, sample_id):
             return HttpResponseRedirect(f'/samples/{s.id}/')
 
 
+
 class SampleDetailView(DetailView):
     model = Sampletbl
 

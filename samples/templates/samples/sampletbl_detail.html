@@ -1,19 +1,45 @@
 {% extends "base.html" %}
+{% load leaflet_tags %}
+{% load static %}
+
+{% block head %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+{% endblock %}
+
 {% block content %}
-    <div>
-        <div class="table-container">
-            <table class="table">
-                <thead><tr><th>Attribute</th><th>Current Value</th></tr></thead>
-                <tr><td>Sample</td> <td>{{ object.name }}</td></tr>
-                <tr><td>Material</td> <td>{{ object.materialid.full_name }}</td></tr>
-                <tr><td>Project</td> <td>{{ object.projectid.name }}</td></tr>
-                <tr><td>Principal Investigator</td> <td>
-                    {{ object.projectid.principal_investigatorid.full_name }}</td></tr>
-                <tr><td>Unit</td> <td>{{ object.unit }}</td></tr>
-                <tr><td>Latitude</td> <td>{{ object.lat }}</td></tr>
-                <tr><td>Longitude</td> <td>{{ object.lon }}</td></tr>
-            </table>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="table-container">
+                    <table class="table">
+                        <thead><tr><th>Attribute</th><th>Current Value</th></tr></thead>
+                        <tr><td>Sample</td> <td>{{ object.name }}</td></tr>
+                        <tr><td>Material</td> <td>{{ object.materialid.full_name }}</td></tr>
+                        <tr><td>Project</td> <td>{{ object.projectid.name }}</td></tr>
+                        <tr><td>Principal Investigator</td> <td>
+                            {{ object.projectid.principal_investigatorid.full_name }}</td></tr>
+                        <tr><td>Unit</td> <td>{{ object.unit }}</td></tr>
+                        <tr><td>Latitude</td> <td>{{ object.lat }}</td></tr>
+                        <tr><td>Longitude</td> <td>{{ object.lon }}</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                {% leaflet_map "map" callback='map_init' %}
+                <script type="text/javascript">
+                    function map_init(map, options) {
+                        // get point lat and lon
+                        var lon = "{{ object.lon }}";
+                        var lat = "{{ object.lat }}";
+                        // zoom to point & add it to map
+                        map.setView([lat, lon], 6);
+                        L.marker([lat, lon]).addTo(map);}</script>
+            </div>
         </div>
+
+
         <div style="background: aqua; margin: 10px">
             <div>
                 <form action="/samples/edit_sample/{{ object.id }}/" method="post">

@@ -26,6 +26,13 @@ COPY . .
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
+RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update
+RUN apt-get update
+RUN apt-get install gdal-bin
+RUN apt-get install libgdal-dev
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
+RUN pip install GDAL
 
 ########
 # FINAL #
