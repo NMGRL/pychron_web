@@ -19,7 +19,6 @@ class Principalinvestigatortbl(models.Model):
         return '/principal_investigators/{}/'.format(self.id)
 
     class Meta:
-        managed = False
         db_table = 'PrincipalInvestigatorTbl'
 
 
@@ -99,3 +98,21 @@ class Samplesubmittbl(models.Model):
     class Meta:
         db_table = 'SampleSubmitTbl'
 
+
+# class IntForeignKey(models.ForeignKey):
+#     def db_type(self, connection):
+#         """ Adds support for foreign keys to big integers as primary keys.
+#         """
+#         rel_field = self.rel.get_related_field()
+#         if (isinstance(rel_field, models.AutoField) or
+#                 (not connection.features.related_fields_match_type and
+#                  isinstance(rel_field, (models.IntegerField,)))):
+#             return models.IntegerField().db_type(connection=connection)
+#         return super(IntForeignKey, self).db_type(connection)
+#
+
+
+class Userpiassociationtbl(models.Model):
+    user = models.ForeignKey(User, models.DO_NOTHING, db_column='userID', blank=True, null=True)
+    principal_investigatorid = models.ForeignKey(Principalinvestigatortbl, models.DO_NOTHING,
+                                                 db_column='principal_investigatorID')

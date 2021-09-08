@@ -99,10 +99,15 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': os.environ.get('DATABASE_NAME'),
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': os.environ.get('DATABASE_HOST'),
+        # 'NAME': os.environ.get('DATABASE_NAME'),
+        # 'USER': os.environ.get('DATABASE_USER'),
+        # 'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        # 'HOST': os.environ.get('DATABASE_HOST'),
+
+        'NAME': 'pychrondvc_import',
+        'USER':'root',
+        'PASSWORD': 'geochr0n!!',
+        'HOST': 'localhost'
     }
 }
 
@@ -146,7 +151,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 LOGIN_REDIRECT_URL = '/signup'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

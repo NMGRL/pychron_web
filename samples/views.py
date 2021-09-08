@@ -12,7 +12,7 @@ from django.views.generic import DetailView
 
 from samples.filters import SampleFilter
 from samples.forms import SampleForm
-from samples.models import Sampletbl, Materialtbl, Samplesubmittbl
+from samples.models import Sampletbl, Materialtbl, Samplesubmittbl, Userpiassociationtbl
 from samples.tables import SampleTable
 from samples.models import Projecttbl, Principalinvestigatortbl
 
@@ -39,7 +39,8 @@ def get_sample_queryset(request):
         samples = Sampletbl.objects.all()
     else:
         samples = Sampletbl.objects.filter(samplesubmittbl__user_id=request.user.id)
-
+        pis = Userpiassociationtbl.objects.filter(user=request.user.id).values('principal_investigatorid')
+        samples = samples or Sampletbl.objects.filter(projectid__principal_investigatorid__in=pis)
     samples = samples.order_by('-id')
     return samples
 
@@ -125,18 +126,23 @@ class SampleDetailView(DetailView):
 
     def get_context_data(self, **kw):
         context = super(SampleDetailView, self).get_context_data(**kw)
-        project = self.object.projectid
 
-        form = SampleForm(initial={
-            # 'principal_investigator': project.principal_investigatorid.id,
-            # 'project': project,
-            # 'material': self.object.materialid,
-            'name': self.object.name,
-            'lat': self.object.lat,
-            'lon': self.object.lon,
-            'unit': self.object.unit})
+        pis = Userpiassociationtbl.objects.filter(user=self.request.user.id).values('principal_investigatorid')
+        samples = Sampletbl.objects.filter(samplesubmittbl__user_id=self.request.user.id)
+        samples = samples or Sampletbl.objects.filter(projectid__principal_investigatorid__in=pis)
+        samples = samples.filter(id=self.object.id).first()
 
-        context['form'] = form
+        if samples:
+            form = SampleForm(initial={
+                # 'principal_investigator': project.principal_investigatorid.id,
+                # 'project': project,
+                # 'material': self.object.materialid,
+                'name': self.object.name,
+                'lat': self.object.lat,
+                'lon': self.object.lon,
+                'unit': self.object.unit})
+
+            context['form'] = form
         return context
 
 

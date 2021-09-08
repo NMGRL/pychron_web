@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Principalinvestigatortbl',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(blank=True, max_length=140, null=True)),
                 ('email', models.CharField(blank=True, max_length=140, null=True)),
                 ('affiliation', models.CharField(blank=True, max_length=140, null=True)),

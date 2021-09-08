@@ -43,6 +43,7 @@
 
         <div style="background: aqua; margin: 10px">
             <div>
+                {% if form  %}
                 <form action="/samples/edit_sample/{{ object.id }}/" method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
@@ -58,6 +59,9 @@
 {#                    <span id="add-form" class="button">Add form</span>#}
                     <input type="submit" value="Save"/>
                 </form>
+                    {% else %}
+                    <h2>You do not have permissions to edit this sample</h2>
+                {% endif %}
             </div>
         </div>
     </div>
