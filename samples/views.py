@@ -19,6 +19,10 @@ from samples.models import Projecttbl, Principalinvestigatortbl
 from django.contrib.auth.decorators import login_required
 
 
+def is_manager(user):
+    return any(g.name == 'manager' for g in user.groups.all())
+
+
 @login_required
 def index(request):
     samples = get_sample_queryset(request)
@@ -33,9 +37,7 @@ def index(request):
 
 
 def get_sample_queryset(request):
-    is_manager = any(g.name == 'manager' for g in request.user.groups.all())
-
-    if is_manager:
+    if is_manager(request.user):
         samples = Sampletbl.objects.all()
     else:
         samples = Sampletbl.objects.filter(samplesubmittbl__user_id=request.user.id)
@@ -126,11 +128,13 @@ class SampleDetailView(DetailView):
 
     def get_context_data(self, **kw):
         context = super(SampleDetailView, self).get_context_data(**kw)
-
-        pis = Userpiassociationtbl.objects.filter(user=self.request.user.id).values('principal_investigatorid')
-        samples = Sampletbl.objects.filter(samplesubmittbl__user_id=self.request.user.id)
-        samples = samples or Sampletbl.objects.filter(projectid__principal_investigatorid__in=pis)
-        samples = samples.filter(id=self.object.id).first()
+        if is_manager(self.request.user):
+            samples = True
+        else:
+            pis = Userpiassociationtbl.objects.filter(user=self.request.user.id).values('principal_investigatorid')
+            samples = Sampletbl.objects.filter(samplesubmittbl__user_id=self.request.user.id)
+            samples = samples or Sampletbl.objects.filter(projectid__principal_investigatorid__in=pis)
+            samples = samples.filter(id=self.object.id).first()
 
         if samples:
             form = SampleForm(initial={
