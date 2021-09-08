@@ -158,3 +158,8 @@ LEAFLET_CONFIG = {
     'MAX_ZOOM': 18,
     'DEFAULT_PRECISION': 6,
 }
+
+# from glob import glob
+
+# GDAL_LIBRARY_PATH=glob('/usr/lib/libgdal.so.*')[0]
+# GEOS_LIBRARY_PATH=glob('/usr/lib/libgeos_c.so.*')[0]

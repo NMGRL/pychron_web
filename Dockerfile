@@ -18,17 +18,22 @@ ENV PYTHONUNBUFFERED 1
 
 # lint
 RUN pip install --upgrade pip
-RUN pip install flake8==3.9.2
+RUN pip install flake8==3.7
 COPY . .
 #RUN flake8 --ignore=E501,F401 .
 
 # install dependencies
 COPY ./requirements.txt .
 
-RUN add-apt-repository ppa:ubuntugis/ppa && apt-get update
-RUN apt-get update
-RUN apt-get install gdal-bin
-RUN apt-get install libgdal-dev
+#RUN apk add ppa:ubuntugis/ppa && apk update
+#RUN apk update
+#RUN apt install gdal-bin libgdal-dev
+RUN apk update
+RUN apk add build-base
+RUN apk add --no-cache --virtual .build-deps python3-dev proj-dev
+RUN apk update && apk add gdal-dev geos-dev && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache geos gdal
+
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 
@@ -58,6 +63,15 @@ RUN apk update && apk add libpq
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --no-cache /wheels/*
+
+RUN apk update
+RUN apk add build-base
+RUN apk add --no-cache --virtual .build-deps python3-dev proj-dev
+RUN apk update && apk add gdal-dev geos-dev && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache geos gdal
+
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
 
 # copy entrypoint.prod.sh
 COPY ./entrypoint.prod.sh .
