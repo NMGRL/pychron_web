@@ -22,11 +22,14 @@ from samples.models import Projecttbl
 class ProjectTable(tables.Table):
     id = tables.Column(linkify=True, accessor='id', verbose_name='IR#')
     name = tables.Column(linkify=True, accessor='name')
+    piname = tables.Column(linkify=True,
+                           verbose_name='Principal Investigator',
+                           accessor='principal_investigatorid__full_name')
 
     class Meta:
         model = Projecttbl
         template_name = "django_tables2/bootstrap.html"
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'piname']
 
 
 # ============= EOF =============================================

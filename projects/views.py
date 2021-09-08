@@ -12,8 +12,23 @@ from samples.models import Sampletbl
 from samples.tables import SampleTable
 
 
+def get_project_queryset(request):
+    is_manager = any(g.name == 'manager' for g in request.user.groups.all())
+
+    if is_manager:
+        projects = Projecttbl.objects.all()
+    else:
+        projects = Projecttbl.objects.filter(sampletbl__samplesubmittbl__user_id=request.user.id)
+
+    projects = projects.order_by('-id')
+    return projects
+
+
+@login_required
 def index(request):
-    projects = Projecttbl.objects.all()
+    # projects = Projecttbl.objects.all()
+    projects = get_project_queryset(request)
+
     project_filter = ProjectFilter(request.GET, queryset=projects)
     table = ProjectTable(project_filter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=20)

@@ -32,7 +32,7 @@ class SampleTable(tables.Table):
             linkify=lambda record: f'/principal_investigators/{record.projectid.principal_investigatorid.id}')
 
     lat = tables.Column(verbose_name='Latitude', accessor='lat')
-    lon = tables.Column(verbose_name='Latitude', accessor='lon')
+    lon = tables.Column(verbose_name='Longitude', accessor='lon')
     id = tables.Column(linkify=True, accessor='id')
     name = tables.Column(linkify=True, accessor='name')
 

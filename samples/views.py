@@ -120,7 +120,6 @@ def edit_sample(request, sample_id):
             return HttpResponseRedirect(f'/samples/{s.id}/')
 
 
-
 class SampleDetailView(DetailView):
     model = Sampletbl
 
@@ -128,13 +127,14 @@ class SampleDetailView(DetailView):
         context = super(SampleDetailView, self).get_context_data(**kw)
         project = self.object.projectid
 
-        form = SampleForm(initial={'principal_investigator': project.principal_investigatorid.id,
-                                   'project': project,
-                                   'material': self.object.materialid,
-                                   'name': self.object.name,
-                                   'lat': self.object.lat,
-                                   'lon': self.object.lon,
-                                   'unit': self.object.unit})
+        form = SampleForm(initial={
+            # 'principal_investigator': project.principal_investigatorid.id,
+            # 'project': project,
+            # 'material': self.object.materialid,
+            'name': self.object.name,
+            'lat': self.object.lat,
+            'lon': self.object.lon,
+            'unit': self.object.unit})
 
         context['form'] = form
         return context

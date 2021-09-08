@@ -15,11 +15,17 @@
 # ===============================================================================
 
 from django.conf.urls import url
-from users.views import dashboard, signup
+from users.views import dashboard, signup, add_user, manage, activate, set_password
 
 urlpatterns = [
     url(r"^dashboard/", dashboard, name="dashboard"),
     url(r'^signup/$', signup, name='signup'),
+    url(r'^add_user/$', add_user, name='add_user'),
+    # url(r'^set_password/(?P<user_id>\d+)/$', set_password, name='set_password'),
+    url(r'^set_password/$', set_password, name='set_password'),
+    url(r'^manage/$', manage, name='manage'),
+    url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$',
+        activate, name='activate'),
 ]
 
 # ============= EOF =============================================

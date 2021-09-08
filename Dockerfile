@@ -18,7 +18,7 @@ ENV PYTHONUNBUFFERED 1
 
 # lint
 RUN pip install --upgrade pip
-RUN pip install flake8==3.7
+RUN pip install flake8==3.9
 COPY . .
 #RUN flake8 --ignore=E501,F401 .
 
@@ -66,8 +66,8 @@ RUN pip install --no-cache /wheels/*
 
 RUN apk update
 RUN apk add build-base
-RUN apk add --no-cache --virtual .build-deps python3-dev proj-dev
-RUN apk update && apk add gdal-dev geos-dev && rm -rf /var/lib/apt/lists/*
+#RUN apk add --no-cache --virtual .build-deps python3-dev proj-dev
+#RUN apk update && apk add gdal-dev geos-dev && rm -rf /var/lib/apt/lists/*
 RUN apk add --no-cache geos gdal
 
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal

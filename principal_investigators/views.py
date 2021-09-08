@@ -16,9 +16,22 @@ from projects.tables import ProjectTable
 from samples.models import Sampletbl
 from samples.tables import SampleTable
 
+
+def get_principal_investigator_queryset(request):
+    is_manager = any(g.name == 'manager' for g in request.user.groups.all())
+
+    if is_manager:
+        pis = Principalinvestigatortbl.objects.all()
+    else:
+        pis = Principalinvestigatortbl.objects.filter(projecttbl__sampletbl__samplesubmittbl__user_id=request.user.id)
+
+    pis = pis.order_by('-id')
+    return pis
+
+
 @login_required
 def index(request):
-    pis = Principalinvestigatortbl.objects.all()
+    pis = get_principal_investigator_queryset(request)
     tfilter = PrincipalInvestigatorsFilter(request.GET, queryset=pis)
     table = PrincipalInvestigatorsTable(tfilter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=20)
@@ -31,7 +44,6 @@ def index(request):
 
 @login_required
 def entry(request):
-
     form = PrincipalInvestigatorForm()
 
     projects = Principalinvestigatortbl.objects.all()

@@ -35,7 +35,7 @@ class Projecttbl(models.Model):
     # userid = models.ForeignKey(User, models.DO_NOTHING, db_column='userID')
     @property
     def piname(self):
-        return f'{self.name}({self.principal_investigatorid.name})'
+        return f'{self.name}({self.principal_investigatorid.full_name})'
 
     def get_absolute_url(self):
         return '/projects/{}/'.format(self.id)
