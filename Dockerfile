@@ -25,14 +25,11 @@ COPY . .
 # install dependencies
 COPY ./requirements.txt .
 
-#RUN apk add ppa:ubuntugis/ppa && apk update
-#RUN apk update
-#RUN apt install gdal-bin libgdal-dev
 RUN apk update
 RUN apk add build-base
-RUN apk add --no-cache --virtual .build-deps python3-dev proj-dev
-RUN apk update && apk add gdal-dev geos-dev && rm -rf /var/lib/apt/lists/*
+RUN apk add gdal-dev geos-dev
 RUN apk add --no-cache geos gdal
+RUN rm -rf /var/lib/apt/lists/*
 
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
@@ -59,16 +56,16 @@ RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
 # install dependencies
-RUN apk update && apk add libpq
+RUN apk update
+RUN apk add libpq
+RUN apk add build-base
+RUN apk add gdal-dev geos-dev
+RUN apk add geos gdal
+RUN rm -rf /var/lib/apt/lists/*
+
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --no-cache /wheels/*
-
-RUN apk update
-RUN apk add build-base
-#RUN apk add --no-cache --virtual .build-deps python3-dev proj-dev
-#RUN apk update && apk add gdal-dev geos-dev && rm -rf /var/lib/apt/lists/*
-RUN apk add --no-cache geos gdal
 
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
