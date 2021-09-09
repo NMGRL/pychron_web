@@ -79,7 +79,7 @@ RUN chown -R app:app $APP_HOME
 
 # change to the app user
 USER app
-CMD python manage.py collectstatic --no-input --clear
+#CMD python manage.py collectstatic --no-input --clear
 
 # run entrypoint.prod.sh
-#ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
+ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
