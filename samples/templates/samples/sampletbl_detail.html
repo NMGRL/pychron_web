@@ -41,7 +41,7 @@
                         var lon = "{{ object.lon }}";
                         var lat = "{{ object.lat }}";
                         // zoom to point & add it to map
-                        map.setView([lat, lon], 6);
+                        map.setView([lat, lon]);
                         L.marker([lat, lon]).addTo(map);}</script>
             </div>
         </div>

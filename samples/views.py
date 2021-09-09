@@ -139,10 +139,11 @@ class SampleDetailView(DetailView):
             samples = samples.filter(id=self.object.id).first()
 
         if samples:
+            project = self.object.projectid
             form = SampleForm(initial={
-                # 'principal_investigator': project.principal_investigatorid.id,
-                # 'project': project,
-                # 'material': self.object.materialid,
+                'principal_investigator': project.principal_investigatorid.id,
+                'project': project,
+                'material': self.object.materialid,
                 'name': self.object.name,
                 'lat': self.object.lat,
                 'lon': self.object.lon,

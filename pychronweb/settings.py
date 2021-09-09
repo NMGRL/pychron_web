@@ -154,10 +154,33 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LEAFLET_CONFIG = {
     # 'SPATIAL_EXTENT': (5.0, 44.0, 7.5, 46),
     'DEFAULT_CENTER': (35, -106.0),
-    'DEFAULT_ZOOM': 5,
+    'DEFAULT_ZOOM': 8,
     'MIN_ZOOM': 3,
-    'MAX_ZOOM': 18,
+    'MAX_ZOOM': 20,
     'DEFAULT_PRECISION': 6,
+    'TILES': [
+        ('USGS Topo',
+         'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
+         'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>'),
+        ('USGS Imagery',
+         'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}',
+         'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>'),
+        ('OpenStreetMap Mapnik',
+         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'),
+        ('OpenTopMap',
+         'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'),
+        ('Stamen Terrain',
+         'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}{r}.png',
+         'Map tiles by <a href="http://stamen.com">Stamen Design</a>, '
+         '<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a '
+         'href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'),
+        ('Google Streets', 'http://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', '&copy Google'),
+        ('Google Hybrid', 'http://mt0.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', '&copy Google'),
+        ('Google Satelite', 'http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', '&copy Google'),
+        ('Google Terrain', 'http://mt0.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', '&copy Google'),
+    ]
 }
 
 # from glob import glob
