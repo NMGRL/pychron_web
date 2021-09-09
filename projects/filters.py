@@ -22,5 +22,7 @@ from samples.models import Projecttbl
 class ProjectFilter(FilterSet):
     class Meta:
         model = Projecttbl
-        fields = {'name': ['icontains', ], }
+        fields = {'name': ['icontains', ],
+                  'id': ['icontains',],
+                  'principal_investigatorid__last_name': ['icontains',]}
 # ============= EOF =============================================

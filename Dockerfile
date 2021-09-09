@@ -8,6 +8,13 @@ FROM python:3.9.6-alpine as builder
 # set work directory
 WORKDIR /usr/src/app
 
+RUN apk update && \
+    apk add build-base gdal-dev geos-dev add geos gdal  &&\
+    rm -rf /var/lib/apt/lists/*
+
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
+
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -24,15 +31,6 @@ COPY . .
 
 # install dependencies
 COPY ./requirements.txt .
-
-RUN apk update
-RUN apk add build-base
-RUN apk add gdal-dev geos-dev
-RUN apk add geos gdal
-RUN rm -rf /var/lib/apt/lists/*
-
-ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-ENV C_INCLUDE_PATH=/usr/include/gdal
 
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
@@ -56,12 +54,9 @@ RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
 # install dependencies
-RUN apk update
-RUN apk add libpq
-RUN apk add build-base
-RUN apk add gdal-dev geos-dev
-RUN apk add geos gdal
-RUN rm -rf /var/lib/apt/lists/*
+RUN apk update && \
+    apk add libpq build-base gdal-dev geos-dev geos gdal &&\
+     rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
