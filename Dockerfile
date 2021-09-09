@@ -56,7 +56,7 @@ WORKDIR $APP_HOME
 
 # install dependencies
 RUN apk update && \
-    apk add libpq build-base gdal-dev geos-dev geos gdal &&\
+    apk add build-base gdal-dev geos-dev geos gdal &&\
      rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/src/app/wheels /wheels
