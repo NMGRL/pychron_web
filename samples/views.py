@@ -75,7 +75,6 @@ def submit_sample(request):
         if form.is_valid():
             s = Sampletbl()
             s.name = form.cleaned_data['name']
-
             material = form.cleaned_data['material']
             # print('masdf', material)
             # gs = form.cleaned_data['grainsize']
@@ -86,10 +85,11 @@ def submit_sample(request):
             #     dbmat.save()
 
             s.materialid = material
-
             project = form.cleaned_data['project']
 
             s.projectid = project
+            for v in ('unit', 'lat', 'lon'):
+                setattr(s, v, form.cleaned_data[v])
 
             s.save()
 
@@ -131,14 +131,17 @@ class SampleDetailView(DetailView):
 
     def get_context_data(self, **kw):
         context = super(SampleDetailView, self).get_context_data(**kw)
+        samples = False
         if is_manager(self.request.user):
             samples = True
         else:
-            pis = Userpiassociationtbl.objects.filter(user=self.request.user.id).values('principal_investigatorid')
-            samples = Sampletbl.objects.filter(samplesubmittbl__user_id=self.request.user.id)
-            samples = samples or Sampletbl.objects.filter(projectid__principal_investigatorid__in=pis)
-            samples = samples.filter(id=self.object.id).first()
-
+            print(self.request.user)
+            if not self.request.user.is_anonymous:
+                pis = Userpiassociationtbl.objects.filter(user=self.request.user.id).values('principal_investigatorid')
+                samples = Sampletbl.objects.filter(samplesubmittbl__user_id=self.request.user.id)
+                samples = samples or Sampletbl.objects.filter(projectid__principal_investigatorid__in=pis)
+                samples = samples.filter(id=self.object.id).first()
+        print('asdfm', samples)
         if samples:
             project = self.object.projectid
             lat = self.object.lat

@@ -19,10 +19,12 @@
                     <table class="table">
                         <thead><tr><th>Attribute</th><th>Current Value</th></tr></thead>
                         <tr><td>Sample</td> <td>{{ object.name }}</td></tr>
-                        <tr><td>Material</td> <td>{{ object.materialid.full_name }}</td></tr>
-                        <tr><td>Project</td> <td>{{ object.projectid.name }}</td></tr>
-                        <tr><td>Principal Investigator</td> <td>
-                            {{ object.projectid.principal_investigatorid.full_name }}</td></tr>
+                        <tr><td>Material</td> <td><a href="/materials/{{ object.materialid.id }}">
+                            {{ object.materialid.full_name }}</a></td></tr>
+                        <tr><td>Project</td> <td><a href="/projects/{{ object.projectid.id }}">
+                            {{ object.projectid.name }}</a></td></tr>
+                        <tr><td>Principal Investigator</td> <td><a href="/principal_investigators/{{ object.projectid.principal_investigatorid.id }}">
+                            {{ object.projectid.principal_investigatorid.full_name }}</a></td></tr>
                         <tr><td>Unit</td> <td>{{ object.unit }}</td></tr>
                         <tr><td>Latitude</td> <td>{{ object.lat }}</td></tr>
                         <tr><td>Longitude</td> <td>{{ object.lon }}</td></tr>
@@ -89,9 +91,12 @@
                 {% endif %}
             </div>
         </div>
-        <div class="table-bordered pychron-table">
-            {% render_table analyses %}
-        </div>
+
+        {% if analyses %}
+            <div class="table-bordered pychron-table">
+                {% render_table analyses %}
+            </div>
+        {%  endif %}
     </div>
 
 
