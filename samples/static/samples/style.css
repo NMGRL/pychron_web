@@ -11,13 +11,18 @@
     padding: 5px;
 }
 
-table thead a {
-    font-size: 18px;
-    color: #c03e3e
- /*background: #929cbd;*/
-    /*color: red;*/
+table {
+    font-weight: bold;
+}
+table td {
+    /*font-weight: bold;*/
 }
 table thead {
+    font-size: 18px;
+    color: #c03e3e
+
+}
+table thead a {
     font-size: 18px;
     color: #c03e3e
 }
