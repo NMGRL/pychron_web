@@ -9,7 +9,7 @@ FROM python:3.9.6-alpine as builder
 WORKDIR /usr/src/app
 
 RUN apk update && \
-    apk add build-base gdal-dev geos-dev add geos gdal  &&\
+    apk add build-base gdal-dev geos-dev geos gdal  &&\
     rm -rf /var/lib/apt/lists/*
 
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
