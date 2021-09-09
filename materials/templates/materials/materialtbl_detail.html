@@ -1,9 +1,19 @@
 {% extends "base.html" %}
 {% load django_tables2 %}
 {% load bootstrap3 %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
+{% endblock %}
 
 {% block content %}
-    <h1>{{ object.name }}</h1>
-    <h2>Samples</h2>
-    {% render_table table %}
+                <h1>Material: {{ object.name }}</h1>
+    <div class="container-fluid">
+        <div class="padded">
+            <div class="table-bordered pychron-table">
+                <h2>Samples</h2>
+                {% render_table table %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

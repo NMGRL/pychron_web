@@ -1,0 +1,23 @@
+.pychron-table{
+    background: #e6e7cf;
+    border-radius: 20px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #696965;
+    padding: 20px;
+}
+
+.padded {
+    padding: 5px;
+}
+
+table thead a {
+    font-size: 18px;
+    color: #c03e3e
+ /*background: #929cbd;*/
+    /*color: red;*/
+}
+table thead {
+    font-size: 18px;
+    color: #c03e3e
+}

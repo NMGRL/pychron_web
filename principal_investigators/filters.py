@@ -22,5 +22,5 @@ from samples.models import Principalinvestigatortbl
 class PrincipalInvestigatorsFilter(FilterSet):
     class Meta:
         model = Principalinvestigatortbl
-        fields = {'name': ['icontains', ], }
+        fields = {'last_name': ['icontains', ], }
 # ============= EOF =============================================

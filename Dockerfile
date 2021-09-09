@@ -28,7 +28,7 @@ COPY ./requirements.txt .
 RUN apk update
 RUN apk add build-base
 RUN apk add gdal-dev geos-dev
-RUN apk add --no-cache geos gdal
+RUN apk add geos gdal
 RUN rm -rf /var/lib/apt/lists/*
 
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal

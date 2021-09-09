@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
     {% leaflet_js %}
     {% leaflet_css %}
 {% endblock %}
@@ -10,9 +11,9 @@
 {% block content %}
 
     <div class="container-fluid">
-        <div class="row">
+        <div class="row padded">
             <div class="col-sm-6">
-                <div class="table-container">
+                <div class="table-bordered pychron-table">
                     <table class="table">
                         <thead><tr><th>Attribute</th><th>Current Value</th></tr></thead>
                         <tr><td>Sample</td> <td>{{ object.name }}</td></tr>
@@ -26,7 +27,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-xs-6">
+            <div class="col-sm-6 table-bordered pychron-table">
                 {% leaflet_map "map" callback='map_init' %}
                 <script type="text/javascript">
                     function map_init(map, options) {
@@ -40,8 +41,7 @@
             </div>
         </div>
 
-
-        <div style="background: aqua; margin: 10px">
+        <div class="padded"><div class="table-bordered pychron-table">
             <div>
                 {% if form  %}
                 <form action="/samples/edit_sample/{{ object.id }}/" method="post">
@@ -63,7 +63,8 @@
                     <h2>You do not have permissions to edit this sample</h2>
                 {% endif %}
             </div>
-        </div>
+        </div></div>
+
     </div>
 
 

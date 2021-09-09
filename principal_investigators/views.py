@@ -107,5 +107,10 @@ class PrincipalInvestigatorDetailView(DetailView):
         data = Projecttbl.objects.filter(principal_investigatorid_id=self.object.id).all()
         table = ProjectTable(data)
         table.paginate(page=self.request.GET.get("page", 1), per_page=20)
-        context['table'] = table
+        context['projects'] = table
+
+        data = Sampletbl.objects.filter(projectid__principal_investigatorid_id=self.object.id).all()
+        table = SampleTable(data)
+        table.paginate(page=self.request.GET.get("page", 1), per_page=20)
+        context['samples'] = table
         return context

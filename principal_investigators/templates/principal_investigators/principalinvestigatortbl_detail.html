@@ -1,9 +1,28 @@
 {% extends "base.html" %}
 {% load django_tables2 %}
 {% load bootstrap3 %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
+{% endblock %}
 
 {% block content %}
-    <h1>{{ object.name }}</h1>
-    <h2>Projects</h2>
-    {% render_table table %}
+    <h1>Principal Investigator: {{ object.full_name }}</h1>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-4 padded">
+                <div class="table-bordered pychron-table">
+                    <h2>Projects</h2>
+                    {% render_table projects %}
+                </div>
+            </div>
+            <div class="col-sm-8 padded">
+                <div class="table-bordered pychron-table">
+                    <h2>Samples</h2>
+                    {% render_table samples %}
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
