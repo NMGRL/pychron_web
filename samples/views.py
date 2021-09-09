@@ -10,6 +10,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.views.generic import DetailView
 
+from analyses.models import Analysistbl
+from analyses.tables import AnalysisTable
 from samples.filters import SampleFilter
 from samples.forms import SampleForm
 from samples.models import Sampletbl, Materialtbl, Samplesubmittbl, Userpiassociationtbl
@@ -147,6 +149,19 @@ class SampleDetailView(DetailView):
                 'unit': self.object.unit})
 
             context['form'] = form
+            data = Analysistbl.objects.filter(irradiation_positionid__sampleid_id=self.object.id)
+            atable = AnalysisTable(data.order_by('-timestamp'))
+            atable.paginate(page=self.request.GET.get("page", 1), per_page=10)
+            context['analyses'] = atable
+            context['nanalyses'] = data.count()
+
+            s = data.order_by('timestamp').first()
+            if s:
+                context['analyses_start'] = s.dtimestamp
+            e = data.order_by('-timestamp').first()
+            if e:
+                context['analyses_end'] = e.dtimestamp
+
         return context
 
 

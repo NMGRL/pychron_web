@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'projects.apps.ProjectsConfig',
     'materials.apps.MaterialsConfig',
     'principal_investigators.apps.PrincipalInvestigatorsConfig',
+    'analyses.apps.AnalysisConfig',
     'users',
 
     'dal',

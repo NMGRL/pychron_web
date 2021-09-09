@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load leaflet_tags %}
 {% load static %}
+{% load django_tables2 %}
+{% load bootstrap3 %}
 
 {% block head %}
     <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
@@ -24,6 +26,9 @@
                         <tr><td>Unit</td> <td>{{ object.unit }}</td></tr>
                         <tr><td>Latitude</td> <td>{{ object.lat }}</td></tr>
                         <tr><td>Longitude</td> <td>{{ object.lon }}</td></tr>
+                        <tr><td>N. Analyses</td> <td>{{ nanalyses }}</td></tr>
+                        <tr><td>Analyses Start</td> <td>{{ analyses_start }}</td></tr>
+                        <tr><td>Analyses End</td> <td>{{ analyses_end }}</td></tr>
                     </table>
                 </div>
             </div>
@@ -40,8 +45,8 @@
                         L.marker([lat, lon]).addTo(map);}</script>
             </div>
         </div>
-
-        <div class="padded"><div class="table-bordered pychron-table">
+        <div class="padded">
+            <div class="table-bordered pychron-table">
             <div>
                 {% if form  %}
                 <form action="/samples/edit_sample/{{ object.id }}/" method="post">
@@ -63,8 +68,10 @@
                     <h2>You do not have permissions to edit this sample</h2>
                 {% endif %}
             </div>
-        </div></div>
-
+        </div>
+        <div class="table-bordered pychron-table">
+            {% render_table analyses %}
+        </div>
     </div>
 
 
