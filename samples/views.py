@@ -3,6 +3,7 @@ import re
 from crispy_forms.layout import Submit
 from dal import autocomplete
 from django import forms
+from django.db.models import Q
 from django.shortcuts import render
 
 # Create your views here.
@@ -140,16 +141,34 @@ class SampleDetailView(DetailView):
 
         if samples:
             project = self.object.projectid
+            lat = self.object.lat
+            lon = self.object.lon
             form = SampleForm(initial={
                 'principal_investigator': project.principal_investigatorid.id,
                 'project': project,
                 'material': self.object.materialid,
                 'name': self.object.name,
-                'lat': self.object.lat,
-                'lon': self.object.lon,
+                'lat': lat,
+                'lon': lon,
                 'unit': self.object.unit})
 
             context['form'] = form
+
+            # find near by samples
+            if lat and lon:
+
+                ns = Sampletbl.objects.filter(lat__gte=lat-1,
+                                              lat__lte=lat+1,
+                                              lon__gte=lon-1,
+                                              lon__lte=lon+1,
+                                              )
+                ns = ns.filter(~Q(id=self.object.id)).all()
+
+                print('asdf', ns, ns.count())
+                for ni in ns:
+                    print(ni, ni.lat, ni.lon)
+                context['nearby_samples'] = ns
+
             data = Analysistbl.objects.filter(irradiation_positionid__sampleid_id=self.object.id)
             atable = AnalysisTable(data.order_by('-timestamp'))
             atable.paginate(page=self.request.GET.get("page", 1), per_page=10)

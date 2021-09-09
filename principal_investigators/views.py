@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.views.generic import DetailView
+from django_tables2 import MultiTableMixin, RequestConfig
 
 from materials.filters import MaterialFilter
 from materials.tables import MaterialTable
@@ -96,7 +97,7 @@ def submit_principal_investigator(request):
     #
     # return HttpResponse('Failed ')
 
-
+MultiTableMixin
 class PrincipalInvestigatorDetailView(DetailView):
     model = Principalinvestigatortbl
     template_name = 'principal_investigators/principalinvestigatortbl_detail.html'
@@ -104,13 +105,15 @@ class PrincipalInvestigatorDetailView(DetailView):
     def get_context_data(self, **kw):
         context = super(PrincipalInvestigatorDetailView, self).get_context_data(**kw)
 
-        data = Projecttbl.objects.filter(principal_investigatorid_id=self.object.id).all()
+        data = Projecttbl.objects.filter(principal_investigatorid=self.object).all()
         table = ProjectTable(data)
-        table.paginate(page=self.request.GET.get("page", 1), per_page=20)
+        table.prefix = 'project'
+        RequestConfig(self.request, paginate={'per_page': 20}).configure(table)
         context['projects'] = table
 
-        data = Sampletbl.objects.filter(projectid__principal_investigatorid_id=self.object.id).all()
+        data = Sampletbl.objects.filter(projectid__principal_investigatorid=self.object).all()
         table = SampleTable(data)
-        table.paginate(page=self.request.GET.get("page", 1), per_page=20)
+        table.prefix = 'sample'
+        RequestConfig(self.request, paginate={'per_page': 20}).configure(table)
         context['samples'] = table
         return context

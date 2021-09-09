@@ -42,7 +42,27 @@
                         var lat = "{{ object.lat }}";
                         // zoom to point & add it to map
                         map.setView([lat, lon]);
-                        L.marker([lat, lon]).addTo(map);}</script>
+                        L.marker([lat, lon]).bindPopup(
+                            '<table class="table"> \
+                    <tr><td>Sample</td><td>{{ object.name }}</td></tr> \
+                <tr><td>Material</td><td>{{ object.materialid.full_name }}</td></tr> \
+            </table>'
+                        ).addTo(map);
+
+                        {% for s in nearby_samples %}
+                            L.circleMarker([{{ s.lat }}, {{ s.lon }}],
+                                {#{radius: 3}#}
+                                ).bindPopup(
+                                    '<table class="table"> \
+                    <tr><td>Sample</td><td>{{ s.name }}</td></tr> \
+                <tr><td>Material</td><td>{{ s.materialid.full_name }}</td></tr> \
+                <tr><td>Project</td><td>{{ s.projectid.piname }}</td></tr> \
+                <tr><td>Unit</td><td>{{ s.unit }}</td></tr> \
+            </table>'
+                            ).addTo(map);
+                        {% endfor %}
+                    }
+                </script>
             </div>
         </div>
         <div class="padded">

@@ -26,3 +26,8 @@ table thead a {
     font-size: 18px;
     color: #c03e3e
 }
+
+.leaflet-container {  /* all maps */
+        width:  600px;
+        height: 00px;
+    }

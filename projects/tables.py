@@ -19,17 +19,21 @@ import django_tables2 as tables
 from samples.models import Projecttbl
 
 
+class PIColumn(tables.Column):
+    def get_url(self, record=None, **kw):
+        return f'/principal_investigators/{record.principal_investigatorid.id}'
+
+
 class ProjectTable(tables.Table):
     id = tables.Column(linkify=True, accessor='id', verbose_name='IR#')
     name = tables.Column(linkify=True, accessor='name')
-    piname = tables.Column(linkify=True,
-                           verbose_name='Principal Investigator',
-                           accessor='principal_investigatorid__full_name')
+
+    piname = PIColumn(verbose_name='Principal Investigator',
+                      accessor='principal_investigatorid__full_name')
 
     class Meta:
         model = Projecttbl
         template_name = "django_tables2/bootstrap.html"
         fields = ['id', 'name', 'piname']
-
 
 # ============= EOF =============================================

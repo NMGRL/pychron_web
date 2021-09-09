@@ -24,7 +24,9 @@ class SampleFilter(FilterSet):
         model = Sampletbl
         fields = {'name': ['icontains', ],
                   'materialid__name': ['icontains', ],
-                  'projectid__name': ['icontains', ]}
+                  'projectid__name': ['icontains', ],
+                  'projectid__principal_investigatorid__last_name': ['icontains',]
+                  }
 
 
 # ============= EOF =============================================
