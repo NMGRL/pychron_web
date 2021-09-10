@@ -21,8 +21,9 @@
             {% leaflet_map "map" callback='map_init' %}
              <script type="text/javascript">
         function map_init(map, options) {
-
-            {#map.setView({{ center }})#}
+            {% if center %}
+                map.setView({{ center }})
+            {% endif %}
 
             {% for g, gs in samples %}
                 {% for s in gs %}
