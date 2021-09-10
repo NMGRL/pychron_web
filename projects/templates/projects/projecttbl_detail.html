@@ -24,8 +24,9 @@
                 </div>
                 <script type="text/javascript">
                     function map_init(map, options) {
-
-                        map.setView({{ center }})
+                        {% if center %}
+                            map.setView({{ center }})
+                        {% endif %}
 
                         {% for s in samples %}
                             L.circleMarker([{{ s.lat }}, {{ s.lon }}],

@@ -20,6 +20,6 @@ def get_center(records):
     if n:
         center = [sum((r.lat for r in records)) / n, sum((r.lon for r in records)) / n]
     else:
-        center, records = (0,0), []
+        center, records = None, []
     return center, records
 # ============= EOF =============================================

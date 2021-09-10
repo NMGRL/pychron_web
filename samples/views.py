@@ -115,7 +115,10 @@ def submit_sample(request):
                 if zone in PROJECTIONS:
                     p = PROJECTIONS[zone]
                 else:
-                    p = pyproj.Proj(proj='utm', zone=int(zone), datum=datum)
+                    kw = {}
+                    if datum:
+                        kw['datum'] = datum
+                    p = pyproj.Proj(proj='utm', zone=int(zone), **kw)
 
                 lon, lat = p(easting, northing, inverse=True)
                 s.lon = lon
@@ -165,13 +168,12 @@ class SampleDetailView(DetailView):
         if is_manager(self.request.user):
             samples = True
         else:
-            print(self.request.user)
             if not self.request.user.is_anonymous:
                 pis = Userpiassociationtbl.objects.filter(user=self.request.user.id).values('principal_investigatorid')
                 samples = Sampletbl.objects.filter(samplesubmittbl__user_id=self.request.user.id)
                 samples = samples or Sampletbl.objects.filter(projectid__principal_investigatorid__in=pis)
                 samples = samples.filter(id=self.object.id).first()
-        print('asdfm', samples)
+
         if samples:
             project = self.object.projectid
             lat = self.object.lat

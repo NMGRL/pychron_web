@@ -6,11 +6,23 @@ from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
 
-from samples.models import Projecttbl, Principalinvestigatortbl
+from samples.models import Projecttbl, Principalinvestigatortbl, Userpiassociationtbl
 from projects.tables import ProjectTable
 from samples.models import Sampletbl
 from samples.tables import SampleTable
 from util import get_center
+
+
+def get_project_sample_queryset(request, projectid):
+    is_manager = any(g.name == 'manager' for g in request.user.groups.all())
+
+    q = Sampletbl.objects.filter(projectid_id=projectid)
+    if not is_manager:
+        pis = Userpiassociationtbl.objects.filter(user=request.user.id).values('principal_investigatorid')
+        q = Sampletbl.objects.filter(projectid__principal_investigatorid_id__in=pis)
+
+    q = q.order_by('-id')
+    return q
 
 
 def get_project_queryset(request):
@@ -100,14 +112,12 @@ class ProjectDetailView(DetailView):
 
     def get_context_data(self, **kw):
         context = super(ProjectDetailView, self).get_context_data(**kw)
-
-        data = Sampletbl.objects.filter(projectid_id=self.object.id).order_by('-id').all()
-        table = SampleTable(data)
+        projects = get_project_sample_queryset(self.request, self.object.id)
+        table = SampleTable(projects)
         table.paginate(page=self.request.GET.get("page", 1), per_page=20)
         context['table'] = table
 
-        records = [r.record for r in table.paginated_rows]
-        center, records = get_center(records)
+        center, records = get_center(projects)
         context['samples'] = records
         context['center'] = center
         return context

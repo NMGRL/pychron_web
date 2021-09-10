@@ -27,8 +27,9 @@
             {% for g, gs in samples %}
                 {% for s in gs %}
                     L.circleMarker([{{ s.lat }}, {{ s.lon }}],
-                        {color: '{{ g.color  }}' }
-                        {#{radius: 3}#}
+                        {color: '{{ g.color  }}',
+                        radius: 5},
+
                         ).bindPopup(
                             '<table class="table"> \
     <tr><td>Sample</td><td><a href="/samples/{{ s.id }}">{{ s.name }}</a></td></tr> \

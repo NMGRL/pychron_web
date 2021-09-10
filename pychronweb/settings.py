@@ -155,7 +155,7 @@ LEAFLET_CONFIG = {
     # 'SPATIAL_EXTENT': (5.0, 44.0, 7.5, 46),
     'DEFAULT_CENTER': (35, -106.0),
     'DEFAULT_ZOOM': 8,
-    'MIN_ZOOM': 3,
+    'MIN_ZOOM': 2,
     'MAX_ZOOM': 20,
     'DEFAULT_PRECISION': 6,
     'TILES': [
