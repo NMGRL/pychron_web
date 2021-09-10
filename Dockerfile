@@ -17,7 +17,7 @@ WORKDIR /usr/src/app
 
 RUN apk update && \
     apk add --no-cache build-base gdal-dev geos-dev geos gdal  &&\
-    apk add --no-cache proj proj-dev
+    apk add --no-cache proj proj-dev proj-util &&\
     rm -rf /var/lib/apt/lists/*
 
 ## install psycopg2 dependencies
@@ -57,7 +57,8 @@ WORKDIR $APP_HOME
 
 # install dependencies
 RUN apk update && \
-    apk add build-base gdal-dev geos-dev geos gdal &&\
+    apk add --no-cache build-base gdal-dev geos-dev geos gdal  &&\
+    apk add --no-cache proj proj-dev proj-util &&\
      rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/src/app/wheels /wheels

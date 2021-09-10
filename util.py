@@ -17,6 +17,9 @@
 def get_center(records):
     records = [r for r in records if r.lat or r.lon]
     n = len(records)
-    center = [sum((r.lat for r in records)) / n, sum((r.lon for r in records)) / n]
+    if n:
+        center = [sum((r.lat for r in records)) / n, sum((r.lon for r in records)) / n]
+    else:
+        center, records = (0,0), []
     return center, records
 # ============= EOF =============================================
