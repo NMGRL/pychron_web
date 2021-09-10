@@ -1,5 +1,9 @@
 import re
+from itertools import groupby
+from operator import attrgetter
 
+import palettable.scientific.scientific
+import pyproj
 from crispy_forms.layout import Submit
 from dal import autocomplete
 from django import forms
@@ -21,6 +25,8 @@ from samples.models import Projecttbl, Principalinvestigatortbl
 
 from django.contrib.auth.decorators import login_required
 
+from util import get_center
+
 
 def is_manager(user):
     return any(g.name == 'manager' for g in user.groups.all())
@@ -31,9 +37,23 @@ def index(request):
     samples = get_sample_queryset(request)
     sample_filter = SampleFilter(request.GET, queryset=samples)
     table = SampleTable(sample_filter.qs)
-    table.paginate(page=request.GET.get("page", 1), per_page=20)
+    page = request.GET.get('page', 1)
+    table.paginate(page=page, per_page=20)
+
+    records = [r.record for r in table.paginated_rows]
+    center, records = get_center(records)
+
+    records = groupby(sorted(records, key=lambda x: x.projectid.id),
+                      key=lambda x: x.projectid.id)
+
+    from palettable.cartocolors.qualitative import Vivid_10
+    cs = Vivid_10.hex_colors
+    records = [({'color': ci}, list(gs)) for ((gi, gs), ci) in zip(records, cs)]
     context = {'table': table,
-               'filter': sample_filter}
+               'filter': sample_filter,
+               'samples': records,
+               'center': center
+               }
 
     template = loader.get_template('samples/index.html')
     return HttpResponse(template.render(context, request))
@@ -66,6 +86,9 @@ def entry(request):
     return HttpResponse(template.render(context, request))
 
 
+PROJECTIONS = {}
+
+
 @login_required
 def submit_sample(request):
     # template = loader.get_template('samples/add_sample.html')
@@ -76,20 +99,27 @@ def submit_sample(request):
             s = Sampletbl()
             s.name = form.cleaned_data['name']
             material = form.cleaned_data['material']
-            # print('masdf', material)
-            # gs = form.cleaned_data['grainsize']
-            # dbmat = Materialtbl.objects.filter(name__exact=material,
-            #                                    grainsize__exact=gs).first()
-            # if not dbmat:
-            #     dbmat = Materialtbl(grainsize=gs, name=material)
-            #     dbmat.save()
 
             s.materialid = material
             project = form.cleaned_data['project']
 
             s.projectid = project
-            for v in ('unit', 'lat', 'lon'):
-                setattr(s, v, form.cleaned_data[v])
+            # for v in ('unit', 'lat', 'lon'):
+            #     setattr(s, v, form.cleaned_data[v])
+            s.unit = form.cleaned_data['unit']
+            northing = form.cleaned_data['northing']
+            easting = form.cleaned_data['easting']
+            zone = form.cleaned_data['zone']
+            datum = None
+            if northing or easting:
+                if zone in PROJECTIONS:
+                    p = PROJECTIONS[zone]
+                else:
+                    p = pyproj.Proj(proj='utm', zone=int(zone), datum=datum)
+
+                lon, lat = p(easting, northing, inverse=True)
+                s.lon = lon
+                s.lat = lat
 
             s.save()
 
@@ -160,10 +190,10 @@ class SampleDetailView(DetailView):
             # find near by samples
             if lat and lon:
 
-                ns = Sampletbl.objects.filter(lat__gte=lat-1,
-                                              lat__lte=lat+1,
-                                              lon__gte=lon-1,
-                                              lon__lte=lon+1,
+                ns = Sampletbl.objects.filter(lat__gte=lat - 1,
+                                              lat__lte=lat + 1,
+                                              lon__gte=lon - 1,
+                                              lon__lte=lon + 1,
                                               )
                 ns = ns.filter(~Q(id=self.object.id)).all()
 

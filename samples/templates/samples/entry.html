@@ -5,8 +5,8 @@
 {% load static %}
 
 {% block content %}
-<div style="background: aqua; margin: 10px">
-    <div>
+<div class="pychron-outer-container">
+    <div class="pychron-inner-container">
         <form action="submit_sample" method="post">
             {% csrf_token %}
             {{ form.as_p }}
@@ -24,6 +24,9 @@
             <input type="submit" />
         </form>
     </div>
+    <div class="pychron-inner-container">
+        {% render_table table %}
+    </div>
 </div>
 {#   {% crispy sample_form %}#}
 {#    {% if filter %}#}
@@ -32,7 +35,6 @@
 {#        {% bootstrap_button 'filter' %}#}
 {#    </form>#}
 {#{% endif %}#}
-{% render_table table %}
 
 {#</div>#}
 {% endblock %}

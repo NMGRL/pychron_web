@@ -2,23 +2,47 @@
 {% load django_tables2 %}
 {% load bootstrap3 %}
 {% load static %}
+{% load leaflet_tags %}
 {% block head %}
-<link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
+    {% leaflet_js %}
+    {% leaflet_css %}
 {% endblock %}
 
 {% block content %}
-
-
-                    <h1>Project: {{ object.name }}</h1>
     <div class="container-fluid">
-
-{#        <div class="row">#}
-            <div class="padded">
-                <div class="table-bordered pychron-table">
-                    <h2>Samples</h2>
-                    {% render_table table %}
-{#                </div>#}
+        <div class="table-bordered pychron-outer-container">
+            <div class="grouptitle">
+                <h1>Project: {{ object.name }}</h1>
             </div>
+            <div  class="grouptitle">
+                <h2>Samples</h2>
+            </div>
+            <div class="table-bordered pychron-inner-container">
+                <div id="map" class="padded" style="width: 100%">
+                     {% leaflet_map "map" callback='map_init' %}
+                </div>
+                <script type="text/javascript">
+                    function map_init(map, options) {
+
+                        map.setView({{ center }})
+
+                        {% for s in samples %}
+                            L.circleMarker([{{ s.lat }}, {{ s.lon }}],
+                                {#{radius: 3}#}
+                                ).bindPopup(
+                                    '<table class="table"> \
+<tr><td>Sample</td><td><a href="/samples/{{ s.id }}">{{ s.name }}</a></td></tr> \
+<tr><td>Material</td><td><a href="/materials/{{ s.materialid.id }}">{{ s.materialid.full_name }}</a></td></tr> \
+<tr><td>Project</td><td><a href="/projects/{{ s.projectid.id }}">{{ s.projectid.piname }}</a></td></tr> \
+<tr><td>Unit</td><td>{{ s.unit }}</td></tr> \
+</table>'
+                            ).addTo(map);
+                        {% endfor %}
+                    }
+                </script>
+                 </div>
+            {% render_table table %}
         </div>
     </div>
 {% endblock %}

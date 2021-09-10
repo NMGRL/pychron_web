@@ -10,6 +10,7 @@ from samples.models import Projecttbl, Principalinvestigatortbl
 from projects.tables import ProjectTable
 from samples.models import Sampletbl
 from samples.tables import SampleTable
+from util import get_center
 
 
 def get_project_queryset(request):
@@ -104,4 +105,9 @@ class ProjectDetailView(DetailView):
         table = SampleTable(data)
         table.paginate(page=self.request.GET.get("page", 1), per_page=20)
         context['table'] = table
+
+        records = [r.record for r in table.paginated_rows]
+        center, records = get_center(records)
+        context['samples'] = records
+        context['center'] = center
         return context

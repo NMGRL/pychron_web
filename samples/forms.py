@@ -47,11 +47,18 @@ class SampleForm(forms.ModelForm):
     # material = forms.ChoiceField(label='Material', choices=matchoices)
     unit = forms.CharField(label='Unit', required=False)
 
+    northing = forms.FloatField(label='northing', required=False)
+    easting = forms.FloatField(label='easting', required=False)
+    zone = forms.ChoiceField(label='zone',
+                             choices=[(i,i) for i in range(1, 61)],
+                             required=False)
+
     # grainsize = forms.CharField(label='Grainsize', required=False)
 
     class Meta:
         model = Sampletbl
-        fields = ('principal_investigator', 'project', 'name', 'material', 'unit', 'lat', 'lon')
+        fields = ('principal_investigator', 'project', 'name', 'material', 'unit', 'lat', 'lon', 'easting',
+                  'northing', 'zone')
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
     #

@@ -1,12 +1,26 @@
-.pychron-table{
+.grouptitle{
+    padding-left: 20px;
+}
+
+.pychron-outer-container{
     background: #e6e7cf;
     border-radius: 20px;
     border-style: solid;
-    border-width: 10px;
+    border-width: 8px;
     border-color: #696965;
-    padding: 20px;
+    /*padding: 10px;*/
+
 }
 
+.pychron-inner-container{
+    background: #e6e7cf;
+    border-radius: 20px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #696965;
+    padding: 20px;
+    margin: 10px;
+}
 .padded {
     padding: 5px;
 }

@@ -5,7 +5,6 @@
 {% load bootstrap3 %}
 
 {% block head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
     {% leaflet_js %}
     {% leaflet_css %}
 {% endblock %}
@@ -15,7 +14,7 @@
     <div class="container-fluid">
         <div class="row padded">
             <div class="col-sm-6">
-                <div class="table-bordered pychron-table">
+                <div class="table-bordered pychron-outer-container">
                     <table class="table">
                         <thead><tr><th>Attribute</th><th>Current Value</th></tr></thead>
                         <tr><td>Sample</td> <td>{{ object.name }}</td></tr>
@@ -34,7 +33,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-sm-6 pychron-table">
+            <div class="col-sm-6 pychron-outer-container">
                 {% leaflet_map "map" callback='map_init' %}
                 <script type="text/javascript">
                     function map_init(map, options) {
@@ -56,11 +55,11 @@
                                 {#{radius: 3}#}
                                 ).bindPopup(
                                     '<table class="table"> \
-                    <tr><td>Sample</td><td>{{ s.name }}</td></tr> \
-                <tr><td>Material</td><td>{{ s.materialid.full_name }}</td></tr> \
-                <tr><td>Project</td><td>{{ s.projectid.piname }}</td></tr> \
-                <tr><td>Unit</td><td>{{ s.unit }}</td></tr> \
-            </table>'
+<tr><td>Sample</td><td><a href="/samples/{{ s.id }}">{{ s.name }}</a></td></tr> \
+<tr><td>Material</td><td><a href="/materials/{{ s.materialid.id }}">{{ s.materialid.full_name }}</a></td></tr> \
+<tr><td>Project</td><td><a href="/projects/{{ s.projectid.id }}">{{ s.projectid.piname }}</a></td></tr> \
+<tr><td>Unit</td><td>{{ s.unit }}</td></tr> \
+</table>'
                             ).addTo(map);
                         {% endfor %}
                     }
@@ -68,7 +67,7 @@
             </div>
         </div>
         <div class="padded">
-            <div class="pychron-table">
+            <div class="pychron-outer-container">
             <div>
                 {% if form  %}
                 <form action="/samples/edit_sample/{{ object.id }}/" method="post">
@@ -93,7 +92,7 @@
         </div>
 
         {% if analyses %}
-            <div class="table-bordered pychron-table">
+            <div class="table-bordered pychron-outer-container">
                 {% render_table analyses %}
             </div>
         {%  endif %}
