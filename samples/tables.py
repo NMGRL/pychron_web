@@ -16,7 +16,7 @@
 
 import django_tables2 as tables
 
-from samples.models import Sampletbl
+from samples.models import SampleTbl
 
 
 class SampleTable(tables.Table):
@@ -37,7 +37,7 @@ class SampleTable(tables.Table):
     name = tables.Column(linkify=True, accessor='name')
 
     class Meta:
-        model = Sampletbl
+        model = SampleTbl
         template_name = "django_tables2/bootstrap.html"
         fields = ['id', 'name', 'lat', 'lon',
                   'unit']

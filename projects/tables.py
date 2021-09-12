@@ -16,7 +16,7 @@
 
 import django_tables2 as tables
 
-from samples.models import Projecttbl
+from samples.models import ProjectTbl
 
 
 class PIColumn(tables.Column):
@@ -32,7 +32,7 @@ class ProjectTable(tables.Table):
                       accessor='principal_investigatorid__full_name')
 
     class Meta:
-        model = Projecttbl
+        model = ProjectTbl
         template_name = "django_tables2/bootstrap.html"
         fields = ['id', 'name', 'piname']
 

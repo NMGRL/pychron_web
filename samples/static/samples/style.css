@@ -56,3 +56,11 @@ table thead a {
     /*height: 100%;*/
 }
 
+.smalltable{
+
+    font-size: 12px;
+    /*height: 200px;*/
+}
+.smalltable thead a {
+    font-size: 12px;
+}

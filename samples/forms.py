@@ -18,7 +18,7 @@ from crispy_forms.layout import Submit
 from dal import autocomplete
 from django import forms
 
-from samples.models import Materialtbl, Projecttbl, Sampletbl, Principalinvestigatortbl
+from samples.models import Materialtbl, ProjectTbl, SampleTbl, Principalinvestigatortbl
 
 
 def matchoices():
@@ -35,7 +35,7 @@ class SampleForm(forms.ModelForm):
                                                     widget=autocomplete.ModelSelect2(
                                                         url='principalinvestigator-autocomplete'))
     project = forms.ModelChoiceField(label='Project',
-                                     queryset=Projecttbl.objects,
+                                     queryset=ProjectTbl.objects,
                                      widget=autocomplete.ModelSelect2(url='project-autocomplete',
                                                                       forward=['principal_investigator']),
                                      )
@@ -56,7 +56,7 @@ class SampleForm(forms.ModelForm):
     # grainsize = forms.CharField(label='Grainsize', required=False)
 
     class Meta:
-        model = Sampletbl
+        model = SampleTbl
         fields = ('principal_investigator', 'project', 'name', 'material', 'unit', 'lat', 'lon', 'easting',
                   'northing', 'zone')
     # def __init__(self, *args, **kwargs):

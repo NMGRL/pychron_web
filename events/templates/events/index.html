@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+{% load static %}
+{% load django_tables2 %}
+{% load bootstrap3 %}
+
+{% block content %}
+    <div class="pychron-outer-container">
+    <div class="grouptitle">
+        <h2>Events</h2>
+    </div>
+    <div class="pychron-inner-container">
+        {%  render_table events %}
+    </div>
+    <div class="pychron-inner-container">
+            {% if filter %}
+                <form action="" method="get" class="form form-inline">
+                    {% bootstrap_form filter.form layout='inline' %}
+                    {% bootstrap_button 'filter' %}
+                </form>
+            {% endif %}
+            {% render_table table %}
+        </div>
+    </div>
+{% endblock %}

@@ -13,20 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-import django_filters
-from django_filters import FilterSet
+from django.conf.urls import url
+from django.urls import path, re_path
 
-from samples.models import SampleTbl, ProjectTbl
+from . import views
 
-
-class SampleFilter(FilterSet):
-    class Meta:
-        model = SampleTbl
-        fields = {'name': ['icontains', ],
-                  'materialid__name': ['icontains', ],
-                  'projectid__name': ['icontains', ],
-                  'projectid__principal_investigatorid__last_name': ['icontains',]
-                  }
-
-
+app_name = 'events'
+urlpatterns = [
+    # path('', views.index, name='index'),
+    #path('submit_sample', views.submit_sample, name='submit_sample'),
+    #re_path(r'edit_sample/(?P<sample_id>\d+)/$', views.edit_sample, name='edit_sample'),
+    #path('entry', views.entry, name='entry'),
+    #path('<int:pk>/', views.SampleDetailView.as_view(), name='detail')
+]
 # ============= EOF =============================================

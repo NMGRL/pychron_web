@@ -6,9 +6,9 @@ from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
 
-from samples.models import Projecttbl, Principalinvestigatortbl, Userpiassociationtbl
+from samples.models import ProjectTbl, Principalinvestigatortbl, Userpiassociationtbl
 from projects.tables import ProjectTable
-from samples.models import Sampletbl
+from samples.models import SampleTbl
 from samples.tables import SampleTable
 from util import get_center
 
@@ -16,10 +16,10 @@ from util import get_center
 def get_project_sample_queryset(request, projectid):
     is_manager = any(g.name == 'manager' for g in request.user.groups.all())
 
-    q = Sampletbl.objects.filter(projectid_id=projectid)
+    q = SampleTbl.objects.filter(projectid_id=projectid)
     if not is_manager:
         pis = Userpiassociationtbl.objects.filter(user=request.user.id).values('principal_investigatorid')
-        q = Sampletbl.objects.filter(projectid__principal_investigatorid_id__in=pis)
+        q = SampleTbl.objects.filter(projectid__principal_investigatorid_id__in=pis)
 
     q = q.order_by('-id')
     return q
@@ -29,9 +29,9 @@ def get_project_queryset(request):
     is_manager = any(g.name == 'manager' for g in request.user.groups.all())
 
     if is_manager:
-        projects = Projecttbl.objects.all()
+        projects = ProjectTbl.objects.all()
     else:
-        projects = Projecttbl.objects.filter(sampletbl__samplesubmittbl__user_id=request.user.id)
+        projects = ProjectTbl.objects.filter(sampletbl__samplesubmittbl__user_id=request.user.id)
 
     projects = projects.order_by('-id')
     return projects
@@ -39,7 +39,7 @@ def get_project_queryset(request):
 
 @login_required
 def index(request):
-    # projects = Projecttbl.objects.all()
+    # projects = ProjectTbl.objects.all()
     projects = get_project_queryset(request)
 
     project_filter = ProjectFilter(request.GET, queryset=projects)
@@ -56,7 +56,7 @@ def index(request):
 def entry(request):
     form = ProjectForm()
 
-    projects = Projecttbl.objects.all()
+    projects = ProjectTbl.objects.all()
     project_filter = ProjectFilter(request.GET, queryset=projects)
     table = ProjectTable(project_filter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=20)
@@ -71,11 +71,11 @@ def entry(request):
 @login_required
 def submit_project(request):
     # template = loader.get_template('samples/add_sample.html')
-    # context = {'samples': Sampletbl.objects.order_by('-id')[:10]}
+    # context = {'samples': SampleTbl.objects.order_by('-id')[:10]}
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
-            s = Projecttbl()
+            s = ProjectTbl()
             s.name = form.cleaned_data['name']
 
             pi = form.cleaned_data['principal_investigator']
@@ -92,10 +92,10 @@ def submit_project(request):
                 if not dbpi:
                     dbpi = Principalinvestigatortbl(last_name=pi)
 
-            dbprj = Projecttbl.objects.filter(name__exact=s.name,
+            dbprj = ProjectTbl.objects.filter(name__exact=s.name,
                                               principal_investigatorid=dbpi).first()
             if not dbprj:
-                dbprj = Projecttbl(name=s.name, principal_investigatorid=dbpi)
+                dbprj = ProjectTbl(name=s.name, principal_investigatorid=dbpi)
                 dbprj.save()
 
             s.projectid = dbprj
@@ -107,7 +107,7 @@ def submit_project(request):
 
 
 class ProjectDetailView(DetailView):
-    model = Projecttbl
+    model = ProjectTbl
     template_name = 'projects/projecttbl_detail.html'
 
     def get_context_data(self, **kw):

@@ -22,7 +22,7 @@ class Principalinvestigatortbl(models.Model):
         db_table = 'PrincipalInvestigatorTbl'
 
 
-class Projecttbl(models.Model):
+class ProjectTbl(models.Model):
     name = models.CharField(max_length=80, blank=True, null=True)
     principal_investigatorid = models.ForeignKey(Principalinvestigatortbl, models.DO_NOTHING,
                                                  db_column='principal_investigatorID')  # Field name made lowercase.
@@ -61,11 +61,11 @@ class Materialtbl(models.Model):
         db_table = 'MaterialTbl'
 
 
-class Sampletbl(models.Model):
+class SampleTbl(models.Model):
     name = models.CharField(max_length=80, blank=True, null=True)
     materialid = models.ForeignKey(Materialtbl, models.DO_NOTHING, db_column='materialID', blank=True,
                                    null=True)  # Field name made lowercase.
-    projectid = models.ForeignKey(Projecttbl, models.DO_NOTHING, db_column='projectID', blank=True,
+    projectid = models.ForeignKey(ProjectTbl, models.DO_NOTHING, db_column='projectID', blank=True,
                                   null=True)  # Field name made lowercase.
     note = models.CharField(max_length=140, blank=True, null=True)
     igsn = models.CharField(max_length=140, blank=True, null=True)
@@ -86,12 +86,21 @@ class Sampletbl(models.Model):
     def get_absolute_url(self):
         return f"/samples/{self.id}/"
 
+    # _active = False
+    # @property
+    # def active(self):
+    #     return self._active
+    #
+    # @active.setter
+    # def active(self, v):
+    #     self._active = v
+
     class Meta:
         db_table = 'SampleTbl'
 
 
 class Samplesubmittbl(models.Model):
-    sample = models.ForeignKey(Sampletbl, models.DO_NOTHING, db_column='sampleID', blank=True, null=True)
+    sample = models.ForeignKey(SampleTbl, models.DO_NOTHING, db_column='sampleID', blank=True, null=True)
     user = models.ForeignKey(User, models.DO_NOTHING, db_column='userID', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

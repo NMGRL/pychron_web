@@ -16,7 +16,7 @@
 import django_filters
 from django_filters import FilterSet
 
-from samples.models import Projecttbl, Materialtbl
+from samples.models import ProjectTbl, Materialtbl
 
 
 class MaterialFilter(FilterSet):

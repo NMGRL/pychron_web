@@ -17,7 +17,7 @@
 import django_tables2 as tables
 
 from analyses.models import Analysistbl
-from samples.models import Projecttbl
+from samples.models import ProjectTbl
 
 
 class AnalysisTable(tables.Table):

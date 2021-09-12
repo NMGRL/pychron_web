@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'materials.apps.MaterialsConfig',
     'principal_investigators.apps.PrincipalInvestigatorsConfig',
     'analyses.apps.AnalysisConfig',
+    'events.apps.EventsConfig',
     'users',
 
     'dal',
@@ -73,7 +74,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'samples/templates',
+            # BASE_DIR / 'samples/templates',
+            # BASE_DIR / 'projects/templates',
+            # BASE_DIR / 'events/templates',
             BASE_DIR / 'templates'
         ],
         'APP_DIRS': True,

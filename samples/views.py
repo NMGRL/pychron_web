@@ -17,11 +17,14 @@ from django.views.generic import DetailView
 
 from analyses.models import Analysistbl
 from analyses.tables import AnalysisTable
+from events.forms import EventsForm
+from events.models import EventsTbl
+from events.tables import EventsTable
 from samples.filters import SampleFilter
 from samples.forms import SampleForm
-from samples.models import Sampletbl, Materialtbl, Samplesubmittbl, Userpiassociationtbl
+from samples.models import SampleTbl, Materialtbl, Samplesubmittbl, Userpiassociationtbl
 from samples.tables import SampleTable
-from samples.models import Projecttbl, Principalinvestigatortbl
+from samples.models import ProjectTbl, Principalinvestigatortbl
 
 from django.contrib.auth.decorators import login_required
 
@@ -61,11 +64,11 @@ def index(request):
 
 def get_sample_queryset(request):
     if is_manager(request.user):
-        samples = Sampletbl.objects.all()
+        samples = SampleTbl.objects.all()
     else:
-        samples = Sampletbl.objects.filter(samplesubmittbl__user_id=request.user.id)
+        samples = SampleTbl.objects.filter(samplesubmittbl__user_id=request.user.id)
         pis = Userpiassociationtbl.objects.filter(user=request.user.id).values('principal_investigatorid')
-        samples = samples or Sampletbl.objects.filter(projectid__principal_investigatorid__in=pis)
+        samples = samples or SampleTbl.objects.filter(projectid__principal_investigatorid__in=pis)
     samples = samples.order_by('-id')
     return samples
 
@@ -92,11 +95,11 @@ PROJECTIONS = {}
 @login_required
 def submit_sample(request):
     # template = loader.get_template('samples/add_sample.html')
-    # context = {'samples': Sampletbl.objects.order_by('-id')[:10]}
+    # context = {'samples': SampleTbl.objects.order_by('-id')[:10]}
     if request.method == 'POST':
         form = SampleForm(request.POST)
         if form.is_valid():
-            s = Sampletbl()
+            s = SampleTbl()
             s.name = form.cleaned_data['name']
             material = form.cleaned_data['material']
 
@@ -139,9 +142,10 @@ def submit_sample(request):
 @login_required
 def edit_sample(request, sample_id):
     if request.method == 'POST':
+        s = None
         form = SampleForm(request.POST)
         if form.is_valid():
-            s = Sampletbl()
+            s = SampleTbl()
             s.id = sample_id
             s.name = form.cleaned_data['name']
 
@@ -156,11 +160,25 @@ def edit_sample(request, sample_id):
 
             s.save()
 
-            return HttpResponseRedirect(f'/samples/{s.id}/')
+        form = EventsForm(request.POST)
+        if form.is_valid():
+            e = EventsTbl()
+            e.event_type = form.cleaned_data['event_type']
+            e.user = request.user
+            if not s:
+                s = SampleTbl.objects.filter(id=sample_id).first()
+            e.sample = s
+            e.message = form.cleaned_data['message']
+
+            dt = form.cleaned_data['event_at']
+            e.event_at = dt
+            e.save()
+
+    return HttpResponseRedirect(f'/samples/{s.id}/')
 
 
 class SampleDetailView(DetailView):
-    model = Sampletbl
+    model = SampleTbl
 
     def get_context_data(self, **kw):
         context = super(SampleDetailView, self).get_context_data(**kw)
@@ -170,8 +188,8 @@ class SampleDetailView(DetailView):
         else:
             if not self.request.user.is_anonymous:
                 pis = Userpiassociationtbl.objects.filter(user=self.request.user.id).values('principal_investigatorid')
-                samples = Sampletbl.objects.filter(samplesubmittbl__user_id=self.request.user.id)
-                samples = samples or Sampletbl.objects.filter(projectid__principal_investigatorid__in=pis)
+                samples = SampleTbl.objects.filter(samplesubmittbl__user_id=self.request.user.id)
+                samples = samples or SampleTbl.objects.filter(projectid__principal_investigatorid__in=pis)
                 samples = samples.filter(id=self.object.id).first()
 
         if samples:
@@ -189,10 +207,17 @@ class SampleDetailView(DetailView):
 
             context['form'] = form
 
+            # events
+            event_form = EventsForm()
+            context['event_form'] = event_form
+            e = EventsTbl.objects.filter(sample_id=self.object.id)
+            t = EventsTable(e)
+            context['events'] = t
+
             # find near by samples
             if lat and lon:
 
-                ns = Sampletbl.objects.filter(lat__gte=lat - 1,
+                ns = SampleTbl.objects.filter(lat__gte=lat - 1,
                                               lat__lte=lat + 1,
                                               lon__gte=lon - 1,
                                               lon__lte=lon + 1,
@@ -262,7 +287,7 @@ class ProjectAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # if self.request.user.groups.first().name in ('manager',)
         # else:
-        qs = Projecttbl.objects.all()
+        qs = ProjectTbl.objects.all()
 
         p = self.forwarded.get('principal_investigator')
         if p:

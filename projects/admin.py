@@ -1,6 +1,6 @@
 from django.contrib import admin
 
 # Register your models here.
-from samples.models import Projecttbl
+from samples.models import ProjectTbl
 
-admin.site.register(Projecttbl)
+admin.site.register(ProjectTbl)

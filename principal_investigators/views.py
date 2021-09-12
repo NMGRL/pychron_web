@@ -12,9 +12,9 @@ from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
 
-from samples.models import Projecttbl, Principalinvestigatortbl, Materialtbl
+from samples.models import ProjectTbl, Principalinvestigatortbl, Materialtbl
 from projects.tables import ProjectTable
-from samples.models import Sampletbl
+from samples.models import SampleTbl
 from samples.tables import SampleTable
 
 
@@ -63,11 +63,11 @@ def entry(request):
 def submit_principal_investigator(request):
     pass
     # # template = loader.get_template('samples/add_sample.html')
-    # # context = {'samples': Sampletbl.objects.order_by('-id')[:10]}
+    # # context = {'samples': SampleTbl.objects.order_by('-id')[:10]}
     # if request.method == 'POST':
     #     form = ProjectForm(request.POST)
     #     if form.is_valid():
-    #         s = Projecttbl()
+    #         s = ProjectTbl()
     #         s.name = form.cleaned_data['name']
     #
     #         pi = form.cleaned_data['principal_investigator']
@@ -84,10 +84,10 @@ def submit_principal_investigator(request):
     #             if not dbpi:
     #                 dbpi = Principalinvestigatortbl(last_name=pi)
     #
-    #         dbprj = Projecttbl.objects.filter(name__exact=s.name,
+    #         dbprj = ProjectTbl.objects.filter(name__exact=s.name,
     #                                           principal_investigatorid=dbpi).first()
     #         if not dbprj:
-    #             dbprj = Projecttbl(name=s.name, principal_investigatorid=dbpi)
+    #             dbprj = ProjectTbl(name=s.name, principal_investigatorid=dbpi)
     #             dbprj.save()
     #
     #         s.projectid = dbprj
@@ -105,13 +105,13 @@ class PrincipalInvestigatorDetailView(DetailView):
     def get_context_data(self, **kw):
         context = super(PrincipalInvestigatorDetailView, self).get_context_data(**kw)
 
-        data = Projecttbl.objects.filter(principal_investigatorid=self.object).all()
+        data = ProjectTbl.objects.filter(principal_investigatorid=self.object).all()
         table = ProjectTable(data)
         table.prefix = 'project'
         RequestConfig(self.request, paginate={'per_page': 20}).configure(table)
         context['projects'] = table
 
-        data = Sampletbl.objects.filter(projectid__principal_investigatorid=self.object).all()
+        data = SampleTbl.objects.filter(projectid__principal_investigatorid=self.object).all()
         table = SampleTable(data)
         table.prefix = 'sample'
         RequestConfig(self.request, paginate={'per_page': 20}).configure(table)

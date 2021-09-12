@@ -13,20 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-import django_filters
-from django_filters import FilterSet
-
-from samples.models import SampleTbl, ProjectTbl
+import django_tables2 as tables
 
 
-class SampleFilter(FilterSet):
-    class Meta:
-        model = SampleTbl
-        fields = {'name': ['icontains', ],
-                  'materialid__name': ['icontains', ],
-                  'projectid__name': ['icontains', ],
-                  'projectid__principal_investigatorid__last_name': ['icontains',]
-                  }
+class EventsTable(tables.Table):
+    message = tables.Column(accessor='message')
+    created_at = tables.Column(accessor='created_at')
+    event_at = tables.Column(accessor='event_at')
+    event_type = tables.Column(accessor='event_type__name')
+    user = tables.Column(accessor='user')
 
-
+    # class Meta:
+    #     attrs = {'class': 'smalltable'}
 # ============= EOF =============================================

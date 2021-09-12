@@ -1,6 +1,6 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Sampletbl
+from .models import SampleTbl
 
-admin.site.register(Sampletbl)
+admin.site.register(SampleTbl)

@@ -16,12 +16,12 @@
 import django_filters
 from django_filters import FilterSet
 
-from samples.models import Projecttbl
+from samples.models import ProjectTbl
 
 
 class ProjectFilter(FilterSet):
     class Meta:
-        model = Projecttbl
+        model = ProjectTbl
         fields = {'name': ['icontains', ],
                   'id': ['icontains',],
                   'principal_investigatorid__last_name': ['icontains',]}

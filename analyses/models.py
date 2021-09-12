@@ -1,6 +1,6 @@
 from django.db import models
 
-from samples.models import Sampletbl
+from samples.models import SampleTbl
 
 BASE = 26
 A_UPPERCASE = ord('A')
@@ -46,7 +46,7 @@ class Leveltbl(models.Model):
 
 class Irradiationpositiontbl(models.Model):
     identifier = models.CharField(unique=True, max_length=80, blank=True, null=True)
-    sampleid = models.ForeignKey(Sampletbl, models.DO_NOTHING, db_column='sampleID', blank=True,
+    sampleid = models.ForeignKey(SampleTbl, models.DO_NOTHING, db_column='sampleID', blank=True,
                                  null=True)  # Field name made lowercase.
     levelid = models.ForeignKey(Leveltbl, models.DO_NOTHING, db_column='levelID', blank=True,
                                 null=True)  # Field name made lowercase.

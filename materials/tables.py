@@ -16,7 +16,7 @@
 
 import django_tables2 as tables
 
-from samples.models import Projecttbl, Materialtbl
+from samples.models import ProjectTbl, Materialtbl
 
 
 class MaterialTable(tables.Table):

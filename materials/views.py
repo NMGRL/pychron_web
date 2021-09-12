@@ -9,9 +9,9 @@ from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
 
-from samples.models import Projecttbl, Principalinvestigatortbl, Materialtbl
+from samples.models import ProjectTbl, Principalinvestigatortbl, Materialtbl
 from projects.tables import ProjectTable
-from samples.models import Sampletbl
+from samples.models import SampleTbl
 from samples.tables import SampleTable
 
 
@@ -32,7 +32,7 @@ def entry(request):
     pass
     # form = ProjectForm()
     #
-    # projects = Projecttbl.objects.all()
+    # projects = ProjectTbl.objects.all()
     # project_filter = ProjectFilter(request.GET, queryset=projects)
     # table = ProjectTable(project_filter.qs)
     # table.paginate(page=request.GET.get("page", 1), per_page=10)
@@ -48,11 +48,11 @@ def entry(request):
 def submit_material(request):
     pass
     # # template = loader.get_template('samples/add_sample.html')
-    # # context = {'samples': Sampletbl.objects.order_by('-id')[:10]}
+    # # context = {'samples': SampleTbl.objects.order_by('-id')[:10]}
     # if request.method == 'POST':
     #     form = ProjectForm(request.POST)
     #     if form.is_valid():
-    #         s = Projecttbl()
+    #         s = ProjectTbl()
     #         s.name = form.cleaned_data['name']
     #
     #         pi = form.cleaned_data['principal_investigator']
@@ -69,10 +69,10 @@ def submit_material(request):
     #             if not dbpi:
     #                 dbpi = Principalinvestigatortbl(last_name=pi)
     #
-    #         dbprj = Projecttbl.objects.filter(name__exact=s.name,
+    #         dbprj = ProjectTbl.objects.filter(name__exact=s.name,
     #                                           principal_investigatorid=dbpi).first()
     #         if not dbprj:
-    #             dbprj = Projecttbl(name=s.name, principal_investigatorid=dbpi)
+    #             dbprj = ProjectTbl(name=s.name, principal_investigatorid=dbpi)
     #             dbprj.save()
     #
     #         s.projectid = dbprj
@@ -90,7 +90,7 @@ class MaterialDetailView(DetailView):
     def get_context_data(self, **kw):
         context = super(MaterialDetailView, self).get_context_data(**kw)
 
-        data = Sampletbl.objects.filter(materialid_id=self.object.id).order_by('-id').all()
+        data = SampleTbl.objects.filter(materialid_id=self.object.id).order_by('-id').all()
         table = SampleTable(data)
         table.paginate(page=self.request.GET.get("page", 1), per_page=20)
         context['table'] = table
