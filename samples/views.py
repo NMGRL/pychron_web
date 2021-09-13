@@ -1,6 +1,6 @@
 import re
 from itertools import groupby
-from operator import attrgetter
+from operator import attrgetter, itemgetter
 
 import palettable.scientific.scientific
 import pyproj
@@ -15,11 +15,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.views.generic import DetailView
 
-from analyses.models import Analysistbl
+from analyses.models import Analysistbl, Irradiationtbl
 from analyses.tables import AnalysisTable
 from events.forms import EventsForm
 from events.models import EventsTbl
-from events.tables import EventsTable
+from events.tables import EventsTable, TrackerTable
 from samples.filters import SampleFilter
 from samples.forms import SampleForm
 from samples.models import SampleTbl, Materialtbl, Samplesubmittbl, Userpiassociationtbl
@@ -35,6 +35,12 @@ def is_manager(user):
     return any(g.name == 'manager' for g in user.groups.all())
 
 
+def get_at(es, tag):
+    for e in es:
+        if e['event_type__name'] == tag:
+            return e['event_at'].strftime('%m/%d/%Y %H:%M')
+
+
 @login_required
 def index(request):
     samples = get_sample_queryset(request)
@@ -44,7 +50,35 @@ def index(request):
     table.paginate(page=page, per_page=20)
 
     records = [r.record for r in table.paginated_rows]
+    sids = [r.id for r in records]
     center, records = get_center(records)
+
+    evts = EventsTbl.objects.filter(sample_id__in=sids).order_by('sample_id').values('sample_id',
+                                                                                     'sample__name',
+                                                                                     'event_type__name',
+                                                                                     'event_at')
+    ts = []
+    for s, es in groupby(evts, key=itemgetter('sample_id')):
+        ans = []
+        irradiations = Irradiationtbl.objects.filter(leveltbl__irradiationpositiontbl__sampleid=s).values('name',
+                                                              'leveltbl__name',
+                                                              'leveltbl__irradiationpositiontbl__position',
+                                                              'leveltbl__irradiationpositiontbl__identifier')
+
+        if irradiations:
+            ans = Analysistbl.objects.filter(irradiation_positionid__sampleid=s).order_by('timestamp').first()
+
+        es = list(es)
+        t = {'sample': es[0]['sample__name'],
+             'received': get_at(es, 'received'),
+             'prepped': get_at(es, 'prepped'),
+             'irradiated': ','.join(['{}{}{} {}'.format(i['name'], i['leveltbl__name'], i['leveltbl__irradiationpositiontbl__position'],
+                                                        i['leveltbl__irradiationpositiontbl__identifier']) for i in irradiations]),
+             'analyzed': ans.dtimestamp if ans else False
+             }
+        ts.append(t)
+
+    tracker = TrackerTable(ts)
 
     records = groupby(sorted(records, key=lambda x: x.projectid.id),
                       key=lambda x: x.projectid.id)
@@ -55,7 +89,8 @@ def index(request):
     context = {'table': table,
                'filter': sample_filter,
                'samples': records,
-               'center': center
+               'center': center,
+               'tracker': tracker
                }
 
     template = loader.get_template('samples/index.html')

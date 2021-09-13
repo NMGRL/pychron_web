@@ -15,6 +15,20 @@
 # ===============================================================================
 import django_tables2 as tables
 
+from table_util import ImageColumn
+
+
+class TrackerTable(tables.Table):
+    sample = tables.Column(accessor='sample')
+    received = ImageColumn('/static/events/img/dialog-ok.png', accessor='received')
+    prepped = ImageColumn('/static/events/img/dialog-ok.png', accessor='prepped')
+    irradiated = ImageColumn('/static/events/img/dialog-ok.png', accessor='irradiated')
+    analyzed = ImageColumn('/static/events/img/dialog-ok.png', accessor='analyzed')
+    # assigned = tables.Column(accessor='sample')
+    # prepped = tables.Column(accessor='sample')
+    # irradiated = tables.Column(accessor='sample')
+    # analyzed = tables.Column(accessor='sample')
+
 
 class EventsTable(tables.Table):
     message = tables.Column(accessor='message')

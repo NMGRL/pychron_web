@@ -1,7 +1,9 @@
 # from itertools import groupby
 #
 # import django_tables2
-# from django.contrib.auth.decorators import login_required
+import datetime
+
+from django.contrib.auth.decorators import login_required
 # from django.http import HttpResponse
 # from django.shortcuts import render
 #
@@ -16,6 +18,25 @@
 #
 #
 #
+from django.http import HttpResponseRedirect
+
+from events.models import EventTypeTbl, EventsTbl
+from samples.models import SampleTbl
+
+
+@login_required
+def received_event(request, sample_id):
+    e = EventsTbl()
+    s = SampleTbl.objects.filter(id=sample_id).first()
+    e.sample = s
+    et = EventTypeTbl.objects.filter(name='received').first()
+    e.event_type = et
+    e.event_at = datetime.datetime.now()
+    e.user = request.user
+    e.save()
+
+    return HttpResponseRedirect('/samples')
+
 # @login_required
 # def index(request):
 #     samples = get_sample_queryset(request)

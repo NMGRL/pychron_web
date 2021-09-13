@@ -15,8 +15,23 @@
 # ===============================================================================
 
 import django_tables2 as tables
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 
 from samples.models import SampleTbl
+
+
+class ImageColumn(tables.Column):
+    def __init__(self, image, *args, **kw):
+        self._image_name = image
+        super(ImageColumn, self).__init__(*args, **kw)
+
+    def render(self, value):
+        # s = f'<input type="submit" src=/static/samples/img/{escape(self._image_name)}.png ' \
+        #     f'formaction=/events/received/{escape(value)}>'
+        # return mark_safe(s)
+        return mark_safe(f'<a href=/events/received/{escape(value)}> <img src="/static/samples/img'
+                         f'/{escape(self._image_name)}.png"/></a>')
 
 
 class SampleTable(tables.Table):
@@ -29,12 +44,15 @@ class SampleTable(tables.Table):
                             linkify=lambda record: f'/projects/{record.projectid_id}')
     principal_investigator = tables.Column(accessor='projectid__principal_investigatorid__full_name',
                                            verbose_name='Principal Investigator',
-            linkify=lambda record: f'/principal_investigators/{record.projectid.principal_investigatorid.id}')
+                                           linkify=lambda
+                                               record: f'/principal_investigators/{record.projectid.principal_investigatorid.id}')
 
     lat = tables.Column(verbose_name='Latitude', accessor='lat')
     lon = tables.Column(verbose_name='Longitude', accessor='lon')
     id = tables.Column(linkify=True, accessor='id')
     name = tables.Column(linkify=True, accessor='name')
+
+    received = ImageColumn('arrow-down-double-3', accessor='id', verbose_name='Received')
 
     class Meta:
         model = SampleTbl

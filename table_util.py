@@ -13,17 +13,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-from django.conf.urls import url
-from django.urls import path, re_path
+import django_tables2 as tables
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 
-from . import views
 
-app_name = 'events'
-urlpatterns = [
-    # path('', views.index, name='index'),
-    #path('submit_sample', views.submit_sample, name='submit_sample'),
-    re_path(r'received/(?P<sample_id>\d+)/$', views.received_event, name='received_event'),
-    #path('entry', views.entry, name='entry'),
-    #path('<int:pk>/', views.SampleDetailView.as_view(), name='detail')
-]
+class ImageColumn(tables.Column):
+    def __init__(self, image, *args, **kw):
+        self._image_src = image
+        super(ImageColumn, self).__init__(*args, **kw)
+
+    def render(self, value):
+        if value:
+            src = self._image_src
+            if not isinstance(value, bool):
+                dt = value
+
+        else:
+            dt = ''
+            src = ''
+            # t = f'<img class="icon" src="{self._image_src}"/></a>'
+
+        return mark_safe(f'<img class="icon" src="{src}"/> {dt}')
+
 # ============= EOF =============================================
