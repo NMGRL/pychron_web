@@ -61,19 +61,24 @@ def index(request):
     for s, es in groupby(evts, key=itemgetter('sample_id')):
         ans = []
         irradiations = Irradiationtbl.objects.filter(leveltbl__irradiationpositiontbl__sampleid=s).values('name',
-                                                              'leveltbl__name',
-                                                              'leveltbl__irradiationpositiontbl__position',
-                                                              'leveltbl__irradiationpositiontbl__identifier')
+                                                                                                          'leveltbl__name',
+                                                                                                          'leveltbl__irradiationpositiontbl__position',
+                                                                                                          'leveltbl__irradiationpositiontbl__identifier')
 
         if irradiations:
             ans = Analysistbl.objects.filter(irradiation_positionid__sampleid=s).order_by('timestamp').first()
 
         es = list(es)
+        istring = ','.join(
+            ['{}{}{} {}'.format(i['name'], i['leveltbl__name'], i['leveltbl__irradiationpositiontbl__position'],
+                                i['leveltbl__irradiationpositiontbl__identifier']) for i in irradiations])
+
+        istring = f'{istring[:30]}...' if len(istring) > 30 else istring
         t = {'sample': es[0]['sample__name'],
              'received': get_at(es, 'received'),
              'prepped': get_at(es, 'prepped'),
-             'irradiated': ','.join(['{}{}{} {}'.format(i['name'], i['leveltbl__name'], i['leveltbl__irradiationpositiontbl__position'],
-                                                        i['leveltbl__irradiationpositiontbl__identifier']) for i in irradiations]),
+
+             'irradiated': istring,
              'analyzed': ans.dtimestamp if ans else False
              }
         ts.append(t)
