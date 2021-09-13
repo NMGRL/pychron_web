@@ -31,7 +31,7 @@ class EventTypeTbl(models.Model):
 class EventsTbl(models.Model):
     message = models.CharField(max_length=140, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    event_at = models.DateTimeField()
+    event_at = models.DateTimeField(null=True)
     event_type = models.ForeignKey(EventTypeTbl, models.DO_NOTHING,
                                    db_column='event_typeID')
     user = models.ForeignKey(User, models.DO_NOTHING,
