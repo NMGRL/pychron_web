@@ -14,15 +14,13 @@
 # limitations under the License.
 # ===============================================================================
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Submit, Layout, Fieldset, Div
 from dal import autocomplete
 from django import forms
+from leaflet.forms.fields import PointField
+from leaflet.forms.widgets import LeafletWidget
 
 from samples.models import Materialtbl, ProjectTbl, SampleTbl, Principalinvestigatortbl
-
-
-def matchoices():
-    return [(m['id'], m['name']) for m in Materialtbl.objects.values('name', 'id').distinct()]
 
 
 class SampleForm(forms.ModelForm):
@@ -47,10 +45,13 @@ class SampleForm(forms.ModelForm):
     # material = forms.ChoiceField(label='Material', choices=matchoices)
     unit = forms.CharField(label='Unit', required=False)
 
-    northing = forms.FloatField(label='northing', required=False)
-    easting = forms.FloatField(label='easting', required=False)
-    zone = forms.ChoiceField(label='zone',
-                             choices=[(i,i) for i in range(1, 61)],
+    northing = forms.FloatField(label='Northing', required=False)
+    easting = forms.FloatField(label='Easting', required=False)
+    pointloc = PointField(label='',
+                          widget=LeafletWidget(attrs={'map_width': '100%', 'map_height': '100px'}),
+                          required=False)
+    zone = forms.ChoiceField(label='Zone',
+                             choices=[(i, i) for i in range(1, 61)],
                              required=False)
 
     # grainsize = forms.CharField(label='Grainsize', required=False)
@@ -58,16 +59,39 @@ class SampleForm(forms.ModelForm):
     class Meta:
         model = SampleTbl
         fields = ('principal_investigator', 'project', 'name', 'material', 'unit', 'lat', 'lon', 'easting',
-                  'northing', 'zone')
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #
-    #     self.helper = FormHelper()
-    #     self.helper.form_id = 'id-exampleForm'
-    #     self.helper.form_class = 'blueForms'
-    #     self.helper.form_method = 'post'
-    #     self.helper.form_action = 'submit_sample'
-    #
-    #     self.helper.add_input(Submit('submit', 'Submit'))
+                  'northing', 'zone', 'pointloc')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-exampleForm'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'submit_sample'
+
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+        col1 = Div(Div(Div('principal_investigator', css_class='col-md-4'),
+                       css_class='row'),
+                   Div(Div('project', css_class='col-md-3'),
+                       css_class='row'),
+                   Div(Div('material', css_class='col-md-3'),
+                       css_class='row'),
+                   Div(Div('name', css_class='col-md-6'),
+                       css_class='row'),
+                   Div(Div('unit', css_class='col-md-6'), css_class='row'),
+                   Div(Div('lat', css_class='col-md-5'),
+                       Div('lon', css_class='col-md-5'),
+                       css_class='row'),
+                   Div(Div('easting', css_class='col-md-5'),
+                       Div('northing', css_class='col-md-5'),
+                       css_class='row'),
+                   css_class='right col-lg-5')
+        col2 = Div('pointloc', css_class='left col-lg-7')
+        self.helper.layout = Layout(
+            Fieldset('Sample Submission',
+                     Div(
+                         Div(col1, col2, css_class='row'),
+                         css_class='container-fluid'
+                     )))
 # ============= EOF =============================================

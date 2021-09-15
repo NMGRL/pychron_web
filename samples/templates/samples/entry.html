@@ -3,26 +3,25 @@
 {% load django_tables2 %}
 {% load bootstrap3 %}
 {% load static %}
+{% load leaflet_tags %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
+    {% leaflet_js plugins="forms" %}
+    {% leaflet_css plugins="forms" %}
+{% endblock %}
 
 {% block content %}
 <div class="pychron-outer-container">
     <div class="pychron-inner-container">
-        <form action="submit_sample" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
+{#        <form action="submit_sample" method="post">#}
+{#            {% csrf_token %}#}
+{#            {{ form.as_p }}#}
+{#            <span id="add-form" class="button">Add form</span>#}
+{#            <input type="submit" />#}
+{#        </form>#}
+        {% crispy form %}
 
-            <table style="display: none">
-                {{ view.formset.empty_form }}
-            </table>
-
-            <table>
-                {{ view.formset }}
-            </table>
-
-            <span id="add-form" class="button">Add form</span>
-
-            <input type="submit" />
-        </form>
     </div>
     <div class="pychron-inner-container">
         {% render_table table %}
@@ -37,4 +36,20 @@
 {#{% endif %}#}
 
 {#</div>#}
+
+     <script type="text/javascript">
+
+
+     window.addEventListener('map:init',function (event){
+         console.log(event)
+
+     })
+
+        {#    map.on('map:loadfield', function (e) {#}
+            {#...#}
+        {#    // Customize map for field#}
+        {#    console.log(e.field, e.fieldid);#}
+            {#...#}
+
+        </script>
 {% endblock %}

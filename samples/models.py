@@ -86,14 +86,13 @@ class SampleTbl(models.Model):
     def get_absolute_url(self):
         return f"/samples/{self.id}/"
 
-    # _active = False
+    # _geom = None
     # @property
-    # def active(self):
-    #     return self._active
-    #
-    # @active.setter
-    # def active(self, v):
-    #     self._active = v
+    # def geom(self):
+    #     return self._geom
+    # @geom.setter
+    # def geom(self, v):
+    #     self._geom = v
 
     class Meta:
         db_table = 'SampleTbl'

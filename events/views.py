@@ -35,7 +35,7 @@ def received_event(request, sample_id):
     e.user = request.user
     e.save()
 
-    return HttpResponseRedirect('/samples')
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 # @login_required
 # def index(request):

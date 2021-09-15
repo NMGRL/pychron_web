@@ -9,6 +9,7 @@ from dal import autocomplete
 from django import forms
 from django.db.models import Q
 from django.shortcuts import render
+from django.contrib.gis.geos.point import Point
 
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
@@ -35,10 +36,20 @@ def is_manager(user):
     return any(g.name == 'manager' for g in user.groups.all())
 
 
-def get_at(es, tag):
+def get_event(es, tag):
     for e in es:
         if e['event_type__name'] == tag:
-            return e['event_at'].strftime('%m/%d/%Y %H:%M')
+            return e
+
+
+def event(es, tag):
+    e = get_event(es, tag)
+    s = ''
+    if e:
+        t = e['event_at'].strftime('%m/%d/%Y %H:%M')
+        s = f'{t} {e["user__username"]}'
+
+    return s
 
 
 @login_required
@@ -56,14 +67,18 @@ def index(request):
     evts = EventsTbl.objects.filter(sample_id__in=sids).order_by('sample_id').values('sample_id',
                                                                                      'sample__name',
                                                                                      'event_type__name',
-                                                                                     'event_at')
+                                                                                     'event_at',
+                                                                                     'user__username')
     ts = []
     for s, es in groupby(evts, key=itemgetter('sample_id')):
         ans = []
-        irradiations = Irradiationtbl.objects.filter(leveltbl__irradiationpositiontbl__sampleid=s).values('name',
-                                                                                                          'leveltbl__name',
-                                                                                                          'leveltbl__irradiationpositiontbl__position',
-                                                                                                          'leveltbl__irradiationpositiontbl__identifier')
+
+        irradiations = Irradiationtbl.objects
+        irradiations = irradiations.filter(leveltbl__irradiationpositiontbl__sampleid=s,
+                                           leveltbl__irradiationpositiontbl__identifier__isnull=False)
+        irradiations = irradiations.values('name', 'leveltbl__name',
+                                           'leveltbl__irradiationpositiontbl__position',
+                                           'leveltbl__irradiationpositiontbl__identifier')
 
         if irradiations:
             ans = Analysistbl.objects.filter(irradiation_positionid__sampleid=s).order_by('timestamp').first()
@@ -75,10 +90,10 @@ def index(request):
 
         istring = f'{istring[:30]}...' if len(istring) > 30 else istring
         t = {'sample': es[0]['sample__name'],
-             'received': get_at(es, 'received'),
-             'prepped': get_at(es, 'prepped'),
+             'received': event(es, 'received') or False,
+             'prepped': event(es, 'prepped') or False,
 
-             'irradiated': istring,
+             'irradiated': istring or False,
              'analyzed': ans.dtimestamp if ans else False
              }
         ts.append(t)
@@ -154,6 +169,7 @@ def submit_sample(request):
             easting = form.cleaned_data['easting']
             zone = form.cleaned_data['zone']
             datum = None
+            lat, lon = None, None
             if northing or easting:
                 if zone in PROJECTIONS:
                     p = PROJECTIONS[zone]
@@ -164,6 +180,13 @@ def submit_sample(request):
                     p = pyproj.Proj(proj='utm', zone=int(zone), **kw)
 
                 lon, lat = p(easting, northing, inverse=True)
+                # s.lon = lon
+                # s.lat = lat
+            else:
+                pointloc = form.cleaned_data['pointloc']
+                lon, lat = pointloc.coords
+
+            if lon or lat:
                 s.lon = lon
                 s.lat = lat
 
@@ -309,7 +332,7 @@ class MaterialAutocomplete(autocomplete.Select2QuerySetView):
         return self.get_result_label(item)
 
     def get_queryset(self):
-        qs = Materialtbl.objects.all()
+        qs = Materialtbl.objects.order_by('name').all()
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
@@ -327,7 +350,7 @@ class ProjectAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # if self.request.user.groups.first().name in ('manager',)
         # else:
-        qs = ProjectTbl.objects.all()
+        qs = ProjectTbl.objects.order_by('principal_investigatorid__last_name').all()
 
         p = self.forwarded.get('principal_investigator')
         if p:
