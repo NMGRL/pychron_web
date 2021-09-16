@@ -37,7 +37,7 @@ def event(es, tag):
     e = get_event(es, tag)
     s = ''
     if e:
-        t = e['event_at'].astimezone(pytz.timezone(settings.TIME_ZONE)).strftime('%m/%d/%Y %I:%M %a')
+        t = e['event_at'].astimezone(pytz.timezone(settings.TIME_ZONE)).strftime('%m/%d/%Y %I:%M %p')
         s = f'{t} {e["user__username"]}'
 
     return s

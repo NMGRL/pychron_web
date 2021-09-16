@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django_tables2',
     'django_filters',
     'bootstrap3',
+    'bootstrap4',
+    'django_bootstrap5',
     'leaflet',
 
     'django.contrib.admin',

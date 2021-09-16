@@ -1,19 +1,39 @@
 {% extends 'base.html' %}
-{% block content %}
-    <h2>Welcome to the Pychron Web App</h2>
 
-    <h1>View</h1>
-        <ul>
-            <li><a href="/principal_investigators">Principal Investigators</a></li>
-            <li><a href="/projects">Projects</a></li>
-            <li><a href="/materials">Materials</a></li>
-            <li><a href="/samples">Samples</a></li>
-        </ul>
-    <h1>Entry</h1>
-        <ul>
-            <li><a href="/principal_investigators/entry">Principal Investigators</a></li>
-            <li><a href="/projects/entry">Projects</a></li>
-            <li><a href="/materials/entry">Materials</a></li>
-            <li><a href="/samples/entry">Samples</a></li>
-        </ul>
+{% block content %}
+    <div class="pychron-main-container">
+        <h2 class="">Welcome to the Pychron Web App</h2>
+        <div class="panel-body">
+            {{ labspecific_content|safe }}
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h1 class="panel-title">View</h1>
+                    </div>
+                    <div class="list-group">
+                        <a class="list-group-item" href="/principal_investigators">Principal Investigators</a>
+                        <a class="list-group-item" href="/projects">Projects</a>
+                        <a class="list-group-item" href="/materials">Materials</a>
+                        <a class="list-group-item" href="/samples">Samples</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h1 class="panel-title">Entry</h1>
+                    </div>
+                    <div class="list-group">
+                        <a class="list-group-item" href="/principal_investigators/entry">Principal Investigators</a>
+                        <a class="list-group-item" href="/projects/entry">Projects</a>
+                        <a class="list-group-item" href="/materials/entry">Materials</a>
+                        <a class="list-group-item" href="/samples/entry">Samples</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

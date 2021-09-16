@@ -13,12 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
+import os
+
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 
 
 def index(request):
     template = loader.get_template('index.html')
-    context = {}
+    p= os.path.join(settings.BASE_DIR, 'plugins', 'home.html')
+    body=''
+    if os.path.isfile(p):
+        with open(p, 'r') as rfile:
+            body = rfile.read()
+
+    context = {'labspecific_content': body}
     return HttpResponse(template.render(context, request))
 # ============= EOF =============================================

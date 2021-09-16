@@ -4,8 +4,8 @@
 
 .pychron-main-container{
     /*background: #19181a;*/
-    border-radius: 20px;
     padding: 1px;
+
 }
 
 .pychron-outer-container{
@@ -55,8 +55,8 @@ table td a {
 }
 
 .leaflet-container {  /* all maps */
-        width:  600px;
-        height: 433px;
+        /*width:  600px;*/
+        /*height: 100%;*/
     }
 
 #specialbigmap {
@@ -70,9 +70,9 @@ table td a {
 }
 
 .smalltable{
-
     font-size: 12px;
-    /*height: 200px;*/
+    height: 300px;
+    /*overflow-y: scroll*/
 }
 .smalltable thead a {
     font-size: 12px;
@@ -97,8 +97,8 @@ table td a {
   border: 1px solid #e3e6f0;
 }
 
-.scrolling {
-    height: 500px; overflow-y: scroll
+.scrolly {
+    overflow-y: scroll
 }
 /*form {*/
 /*    !*position : relative;*!*/
