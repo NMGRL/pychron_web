@@ -18,20 +18,24 @@ import django_tables2 as tables
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
+from events.models import EventsTbl
 from samples.models import SampleTbl
 
 
-class ImageColumn(tables.Column):
-    def __init__(self, image, *args, **kw):
-        self._image_name = image
-        super(ImageColumn, self).__init__(*args, **kw)
+class ActionColumn(tables.Column):
+    def __init__(self, tag, image, *args, **kw):
+        super(ActionColumn, self).__init__(*args, **kw)
+        self.event_tag = tag
+        self.image = image
 
     def render(self, value):
-        # s = f'<input type="submit" src=/static/samples/img/{escape(self._image_name)}.png ' \
-        #     f'formaction=/events/received/{escape(value)}>'
-        # return mark_safe(s)
-        return mark_safe(f'<a href=/events/received/{escape(value)}> <img src="/static/samples/img'
-                         f'/{escape(self._image_name)}.png"/></a>')
+        evts = EventsTbl.objects.filter(sample__id=value).all()
+        if any(e.event_type.name == self.event_tag for e in evts.all()):
+            return mark_safe('')
+        else:
+            return mark_safe(f'<a href=/events/{escape(self.event_tag)}/{value}>'
+                             f'<img src="/static/samples/img/{escape(self.image)}"/ '
+                             f'style="width:16px;height:16px;"></a>')
 
 
 class SampleTable(tables.Table):
@@ -52,7 +56,8 @@ class SampleTable(tables.Table):
     id = tables.Column(linkify=True, accessor='id')
     name = tables.Column(linkify=True, accessor='name')
 
-    received = ImageColumn('arrow-down-double-3', accessor='id', verbose_name='Received')
+    received = ActionColumn('received', 'arrow-down-double-3.png', accessor='id', verbose_name='Check In')
+    prepped = ActionColumn('prepped', 'beaker.png', accessor='id', verbose_name='Prep')
 
     class Meta:
         model = SampleTbl

@@ -36,4 +36,4 @@ class EventsTbl(models.Model):
                                    db_column='event_typeID')
     user = models.ForeignKey(User, models.DO_NOTHING,
                              db_column='userID')
-    sample = models.ForeignKey(SampleTbl, models.DO_NOTHING, db_column='sampleID')
+    sample = models.ForeignKey(SampleTbl, models.DO_NOTHING, db_column='sampleID', related_name='events')

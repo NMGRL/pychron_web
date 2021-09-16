@@ -5,50 +5,55 @@
 {% load bootstrap3 %}
 
 {% block head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
+{#    <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">#}
     {% leaflet_js %}
     {% leaflet_css %}
 {% endblock %}
 
 {% block content %}
+    <div class="pychron-outer-container">
+        <div class="grouptitle">
+            <h1>Samples</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pychron-inner-container smalltable scrolling">
+                    {% render_table tracker %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="pychron-inner-container">
+                    <div id="map" style="width: 100%">
+                {% leaflet_map "map" callback='map_init' %}
+                 <script type="text/javascript">
+                 function map_init(map, options) {
+                            {% if center %}
+                                map.setView({{ center }})
+                            {% endif %}
 
-    <div class="table-bordered pychron-outer-container">
-    <div class="grouptitle">
-        <h1>Samples</h1>
-    </div>
-    <div class="pychron-inner-container">
-        {% render_table tracker %}
-    </div>
-    <div class="table-bordered pychron-inner-container">
-         <div id="map" class="padded" style="width: 100%">
-            {% leaflet_map "map" callback='map_init' %}
-             <script type="text/javascript">
-        function map_init(map, options) {
-            {% if center %}
-                map.setView({{ center }})
-            {% endif %}
+                            {% for g, gs in samples %}
+                                {% for s in gs %}
+                                    L.circleMarker([{{ s.lat }}, {{ s.lon }}],
+                                        {color: '{{ g.color  }}',
+                                        radius: 5},
 
-            {% for g, gs in samples %}
-                {% for s in gs %}
-                    L.circleMarker([{{ s.lat }}, {{ s.lon }}],
-                        {color: '{{ g.color  }}',
-                        radius: 5},
-
-                        ).bindPopup(
-                            '<table class="table"> \
-    <tr><td>Sample</td><td><a href="/samples/{{ s.id }}">{{ s.name }}</a></td></tr> \
-    <tr><td>Material</td><td><a href="/materials/{{ s.materialid.id }}">{{ s.materialid.full_name }}</a></td></tr> \
-    <tr><td>Project</td><td><a href="/projects/{{ s.projectid.id }}">{{ s.projectid.piname }}</a></td></tr> \
-    <tr><td>Unit</td><td>{{ s.unit }}</td></tr> \
-    </table>'
-                    ).addTo(map);
-                {% endfor %}
-            {% endfor %}
-        }
-    </script>
-         </div>
-    </div>
-        <div class="pychron-inner-container">
+                                        ).bindPopup(
+                                            '<table class="table"> \
+                    <tr><td>Sample</td><td><a href="/samples/{{ s.id }}">{{ s.name }}</a></td></tr> \
+                    <tr><td>Material</td><td><a href="/materials/{{ s.materialid.id }}">{{ s.materialid.full_name }}</a></td></tr> \
+                    <tr><td>Project</td><td><a href="/projects/{{ s.projectid.id }}">{{ s.projectid.piname }}</a></td></tr> \
+                    <tr><td>Unit</td><td>{{ s.unit }}</td></tr> \
+                    </table>'
+                                    ).addTo(map);
+                                {% endfor %}
+                            {% endfor %}
+                        }
+                    </script>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="pychron-inner-container smalltable scrolling">
             {% if filter %}
                 <form action="" method="get" class="form form-inline">
                     {% bootstrap_form filter.form layout='inline' %}
@@ -58,6 +63,4 @@
             {% render_table table %}
         </div>
     </div>
-
-
 {% endblock %}

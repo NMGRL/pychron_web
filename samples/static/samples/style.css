@@ -10,7 +10,7 @@
 
 .pychron-outer-container{
     /*background: #479761;*/
-    border-radius: 20px;
+    border-radius: 10px;
     border-style: solid;
     border-width: 1px;
     /*border-color: #696965;*/
@@ -21,7 +21,7 @@
 
 .pychron-inner-container{
     /*background: #a16e83;*/
-    border-radius: 20px;
+    border-radius: 10px;
     border-style: solid;
     border-width: 1px;
     /*border-color: #696965;*/
@@ -92,11 +92,14 @@ table td a {
 }
 
 
-.table-bordered th,
-.table-bordered td {
+.pychron-outer-container th,
+.pychron-outer-container td {
   border: 1px solid #e3e6f0;
 }
 
+.scrolling {
+    height: 500px; overflow-y: scroll
+}
 /*form {*/
 /*    !*position : relative;*!*/
 /*  !*width  : 740px;*!*/

@@ -6,20 +6,30 @@
 
 {% block content %}
     <div class="pychron-outer-container">
-    <div class="grouptitle">
-        <h2>Events</h2>
-    </div>
-    <div class="pychron-inner-container">
-        {%  render_table events %}
-    </div>
-    <div class="pychron-inner-container">
-            {% if filter %}
-                <form action="" method="get" class="form form-inline">
-                    {% bootstrap_form filter.form layout='inline' %}
-                    {% bootstrap_button 'filter' %}
-                </form>
-            {% endif %}
-            {% render_table table %}
+        <div class="grouptitle">
+            <h2>Events</h2>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="pychron-inner-container smalltable scrolling">
+                    {%  render_table events %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="pychron-inner-container smalltable">
+                    {%  render_table tracker %}
+                </div>
+            </div>
         </div>
     </div>
+{#    <div class="pychron-inner-container">#}
+{#            {% if filter %}#}
+{#                <form action="" method="get" class="form form-inline">#}
+{#                    {% bootstrap_form filter.form layout='inline' %}#}
+{#                    {% bootstrap_button 'filter' %}#}
+{#                </form>#}
+{#            {% endif %}#}
+{#            {% render_table table %}#}
+{#        </div>#}
+{#    </div>#}
 {% endblock %}

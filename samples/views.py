@@ -15,12 +15,14 @@ from django.contrib.gis.geos.point import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.views.generic import DetailView
+from django_tables2 import RequestConfig
 
 from analyses.models import Analysistbl, Irradiationtbl
 from analyses.tables import AnalysisTable
 from events.forms import EventsForm
 from events.models import EventsTbl
 from events.tables import EventsTable, TrackerTable
+from events.util import get_pizza_tracker
 from samples.filters import SampleFilter
 from samples.forms import SampleForm
 from samples.models import SampleTbl, Materialtbl, Samplesubmittbl, Userpiassociationtbl
@@ -36,20 +38,7 @@ def is_manager(user):
     return any(g.name == 'manager' for g in user.groups.all())
 
 
-def get_event(es, tag):
-    for e in es:
-        if e['event_type__name'] == tag:
-            return e
 
-
-def event(es, tag):
-    e = get_event(es, tag)
-    s = ''
-    if e:
-        t = e['event_at'].strftime('%m/%d/%Y %H:%M')
-        s = f'{t} {e["user__username"]}'
-
-    return s
 
 
 @login_required
@@ -64,39 +53,7 @@ def index(request):
     sids = [r.id for r in records]
     center, records = get_center(records)
 
-    evts = EventsTbl.objects.filter(sample_id__in=sids).order_by('sample_id').values('sample_id',
-                                                                                     'sample__name',
-                                                                                     'event_type__name',
-                                                                                     'event_at',
-                                                                                     'user__username')
-    ts = []
-    for s, es in groupby(evts, key=itemgetter('sample_id')):
-        ans = []
-
-        irradiations = Irradiationtbl.objects
-        irradiations = irradiations.filter(leveltbl__irradiationpositiontbl__sampleid=s,
-                                           leveltbl__irradiationpositiontbl__identifier__isnull=False)
-        irradiations = irradiations.values('name', 'leveltbl__name',
-                                           'leveltbl__irradiationpositiontbl__position',
-                                           'leveltbl__irradiationpositiontbl__identifier')
-
-        if irradiations:
-            ans = Analysistbl.objects.filter(irradiation_positionid__sampleid=s).order_by('timestamp').first()
-
-        es = list(es)
-        istring = ','.join(
-            ['{}{}{} {}'.format(i['name'], i['leveltbl__name'], i['leveltbl__irradiationpositiontbl__position'],
-                                i['leveltbl__irradiationpositiontbl__identifier']) for i in irradiations])
-
-        istring = f'{istring[:30]}...' if len(istring) > 30 else istring
-        t = {'sample': es[0]['sample__name'],
-             'received': event(es, 'received') or False,
-             'prepped': event(es, 'prepped') or False,
-
-             'irradiated': istring or False,
-             'analyzed': ans.dtimestamp if ans else False
-             }
-        ts.append(t)
+    ts = get_pizza_tracker(sids)
 
     tracker = TrackerTable(ts)
 
@@ -112,7 +69,8 @@ def index(request):
                'center': center,
                'tracker': tracker
                }
-
+    RequestConfig(request).configure(table)
+    RequestConfig(request).configure(tracker)
     template = loader.get_template('samples/index.html')
     return HttpResponse(template.render(context, request))
 

@@ -86,6 +86,9 @@ class SampleTbl(models.Model):
     def get_absolute_url(self):
         return f"/samples/{self.id}/"
 
+    @property
+    def display_name(self):
+        return '{} ({})'.format(self.name, self.materialid.full_name)
     # _geom = None
     # @property
     # def geom(self):

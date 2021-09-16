@@ -20,7 +20,7 @@ from . import views
 
 app_name = 'events'
 urlpatterns = [
-    # path('', views.index, name='index'),
+    path('', views.index, name='index'),
     #path('submit_sample', views.submit_sample, name='submit_sample'),
     re_path(r'received/(?P<sample_id>\d+)/$', views.received_event, name='received_event'),
     #path('entry', views.entry, name='entry'),
