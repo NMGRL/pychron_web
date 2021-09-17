@@ -2,22 +2,24 @@
 
 {% load django_tables2 %}
 {% load bootstrap3 %}
-
 {% load static %}
-{% block head %}
-<link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
-{% endblock %}
+{#{% block head %}#}
+{#<link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">#}
+{#{% endblock %}#}
 
 {% block content %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">Principal Investigators</div>
+        </div>
 
-    <div class="table-bordered pychron-outer-container">
-        <h1>Principal Investigators</h1>
         {% if filter %}
             <form action="" method="get" class="form form-inline">
                 {% bootstrap_form filter.form layout='inline' %}
                 {% bootstrap_button 'filter' %}
             </form>
         {% endif %}
-            {% render_table table %}
+        {% render_table table %}
     </div>
+
 {% endblock %}
