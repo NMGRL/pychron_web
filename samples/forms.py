@@ -85,13 +85,11 @@ class SampleForm(forms.ModelForm):
                        css_class='row'),
                    Div(Div('easting', css_class='col-md-5'),
                        Div('northing', css_class='col-md-5'),
+                       Div('zone', css_class='col-md-2'),
                        css_class='row'),
-                   css_class='right col-lg-5')
-        col2 = Div('pointloc', css_class='left col-lg-7')
-        self.helper.layout = Layout(
-            Fieldset('Sample Submission',
-                     Div(
-                         Div(col1, col2, css_class='row'),
-                         css_class='container-fluid'
-                     )))
+                   css_class='col-lg-5')
+        col2 = Div('pointloc', css_class='col-lg-7')
+
+        self.helper.layout = Layout(Div(Div(col1, col2, css_class='row'),
+                                        css_class='container-fluid'))
 # ============= EOF =============================================

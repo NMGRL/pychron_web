@@ -27,6 +27,6 @@ class MaterialTable(tables.Table):
         model = Materialtbl
         template_name = "django_tables2/bootstrap.html"
         fields = ['id', 'name', 'grainsize']
-
+        attrs = {'class': 'table table-condensed'}
 
 # ============= EOF =============================================

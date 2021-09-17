@@ -38,9 +38,6 @@ def is_manager(user):
     return any(g.name == 'manager' for g in user.groups.all())
 
 
-
-
-
 @login_required
 def index(request):
     samples = get_sample_queryset(request)
@@ -104,6 +101,48 @@ def entry(request):
 
 PROJECTIONS = {}
 
+def set_sample_from_form(s, form):
+    s.name = form.cleaned_data['name']
+    material = form.cleaned_data['material']
+
+    s.materialid = material
+    project = form.cleaned_data['project']
+
+    s.projectid = project
+    # for v in ('unit', 'lat', 'lon'):
+    #     setattr(s, v, form.cleaned_data[v])
+    s.unit = form.cleaned_data['unit']
+    northing = form.cleaned_data['northing']
+    easting = form.cleaned_data['easting']
+    zone = form.cleaned_data['zone']
+    datum = None
+    lat = form.cleaned_data['lat']
+    lon = form.cleaned_data['lon']
+    if northing or easting:
+        if zone in PROJECTIONS:
+            p = PROJECTIONS[zone]
+        else:
+            kw = {}
+            if datum:
+                kw['datum'] = datum
+            p = pyproj.Proj(proj='utm', zone=int(zone), **kw)
+
+        lon, lat = p(easting, northing, inverse=True)
+        # s.lon = lon
+        # s.lat = lat
+    else:
+        pointloc = form.cleaned_data['pointloc']
+        if not pointloc:
+            lat = form.cleaned_data['latitude']
+            lon = form.cleaned_data['longitude']
+        else:
+            lon, lat = pointloc.coords
+
+    if lon or lat:
+        s.lon = lon or 0
+        s.lat = lat or 0
+
+    s.save()
 
 @login_required
 def submit_sample(request):
@@ -113,42 +152,7 @@ def submit_sample(request):
         form = SampleForm(request.POST)
         if form.is_valid():
             s = SampleTbl()
-            s.name = form.cleaned_data['name']
-            material = form.cleaned_data['material']
-
-            s.materialid = material
-            project = form.cleaned_data['project']
-
-            s.projectid = project
-            # for v in ('unit', 'lat', 'lon'):
-            #     setattr(s, v, form.cleaned_data[v])
-            s.unit = form.cleaned_data['unit']
-            northing = form.cleaned_data['northing']
-            easting = form.cleaned_data['easting']
-            zone = form.cleaned_data['zone']
-            datum = None
-            lat, lon = None, None
-            if northing or easting:
-                if zone in PROJECTIONS:
-                    p = PROJECTIONS[zone]
-                else:
-                    kw = {}
-                    if datum:
-                        kw['datum'] = datum
-                    p = pyproj.Proj(proj='utm', zone=int(zone), **kw)
-
-                lon, lat = p(easting, northing, inverse=True)
-                # s.lon = lon
-                # s.lat = lat
-            else:
-                pointloc = form.cleaned_data['pointloc']
-                lon, lat = pointloc.coords
-
-            if lon or lat:
-                s.lon = lon
-                s.lat = lat
-
-            s.save()
+            set_sample_from_form(s, form)
 
             ss = Samplesubmittbl()
             ss.user = request.user
@@ -166,20 +170,11 @@ def edit_sample(request, sample_id):
         s = None
         form = SampleForm(request.POST)
         if form.is_valid():
-            s = SampleTbl()
-            s.id = sample_id
-            s.name = form.cleaned_data['name']
-
-            material = form.cleaned_data['material']
-            s.materialid = material
-
-            project = form.cleaned_data['project']
-            s.projectid = project
-
-            for attr in ('unit', 'lat', 'lon'):
-                setattr(s, attr, form.cleaned_data[attr])
-
-            s.save()
+            # s = SampleTbl()
+            # s.id = sample_id
+            sid = sample_id
+            s = SampleTbl.objects.filter(id=sample_id).first()
+            set_sample_from_form(s, form)
 
         form = EventsForm(request.POST)
         if form.is_valid():
@@ -194,8 +189,9 @@ def edit_sample(request, sample_id):
             dt = form.cleaned_data['event_at']
             e.event_at = dt
             e.save()
+            sid =s.id
 
-    return HttpResponseRedirect(f'/samples/{s.id}/')
+    return HttpResponseRedirect(f'/samples/{sid}/')
 
 
 class SampleDetailView(DetailView):

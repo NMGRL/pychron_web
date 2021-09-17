@@ -23,6 +23,9 @@ from samples.models import SampleTbl
 
 
 class ActionColumn(tables.Column):
+    class Meta:
+        attrs = {'class': 'table table-condensed'}
+
     def __init__(self, tag, image, *args, **kw):
         super(ActionColumn, self).__init__(*args, **kw)
         self.event_tag = tag
@@ -65,4 +68,5 @@ class SampleTable(tables.Table):
         fields = ['id', 'name', 'lat', 'lon',
                   'unit']
 
+        attrs = {'class': 'table table-condensed'}
 # ============= EOF =============================================

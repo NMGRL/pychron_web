@@ -35,5 +35,5 @@ class ProjectTable(tables.Table):
         model = ProjectTbl
         template_name = "django_tables2/bootstrap.html"
         fields = ['id', 'name', 'piname']
-
+        attrs = {'class': 'table table-condensed'}
 # ============= EOF =============================================

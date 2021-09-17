@@ -27,6 +27,6 @@ class PrincipalInvestigatorsTable(tables.Table):
         model = Principalinvestigatortbl
         template_name = "django_tables2/bootstrap.html"
         fields = ['id', 'name']
-
+        attrs = {'class': 'table table-condensed'}
 
 # ============= EOF =============================================

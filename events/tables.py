@@ -47,6 +47,10 @@ class TrackerTable(tables.Table):
     # irradiated = tables.Column(accessor='sample')
     # analyzed = tables.Column(accessor='sample')
 
+    class Meta:
+        attrs = {'class': 'table table-condensed'}
+
+
 class EventsTable(tables.Table):
     event_type = tables.Column(accessor='event_type__name', verbose_name='Event Type')
     message = tables.Column(accessor='message')
@@ -66,6 +70,6 @@ class EventsTable(tables.Table):
                                            linkify=lambda
                                                record: f'/principal_investigators/'
                                                        f'{record.sample.projectid.principal_investigatorid.id}')
-    # class Meta:
-    #     attrs = {'class': 'smalltable'}
+    class Meta:
+        attrs = {'class': 'table table-condensed'}
 # ============= EOF =============================================

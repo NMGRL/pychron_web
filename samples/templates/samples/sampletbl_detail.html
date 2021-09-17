@@ -3,101 +3,137 @@
 {% load static %}
 {% load django_tables2 %}
 {% load bootstrap3 %}
+{% load crispy_forms_tags %}
 
 {% block head %}
-    {% leaflet_js %}
-    {% leaflet_css %}
+    {% leaflet_js plugins="forms" %}
+    {% leaflet_css plugins="forms" %}
 
-{#    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">#}
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-{#    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>#}
-
+{#    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>#}
 {% endblock %}
 
 {% block content %}
-    <div class="container pychron-main-container">
-        <div class="row">
-            <div class="col-md-5">
-                <div class="pychron-inner-container">
-                    <table class="table">
-                        <thead><tr><th>Attribute</th><th>Current Value</th></tr></thead>
-                        <tr><td>Sample</td> <td>{{ object.name }}</td></tr>
-                        <tr><td>Material</td> <td><a href="/materials/{{ object.materialid.id }}">
-                            {{ object.materialid.full_name }}</a></td></tr>
-                        <tr><td>Project</td> <td><a href="/projects/{{ object.projectid.id }}">
-                            {{ object.projectid.name }}</a></td></tr>
-                        <tr><td>Principal Investigator</td> <td><a href="/principal_investigators/{{ object.projectid.principal_investigatorid.id }}">
-                            {{ object.projectid.principal_investigatorid.full_name }}</a></td></tr>
-                        <tr><td>Unit</td> <td>{{ object.unit }}</td></tr>
-                        <tr><td>Latitude</td> <td>{{ object.lat }}</td></tr>
-                        <tr><td>Longitude</td> <td>{{ object.lon }}</td></tr>
-                        <tr><td>N. Analyses</td> <td>{{ nanalyses }}</td></tr>
-                        <tr><td>Analyses Start</td> <td>{{ analyses_start }}</td></tr>
-                        <tr><td>Analyses End</td> <td>{{ analyses_end }}</td></tr>
-                    </table>
-                </div>
-            </div>
-            <div class="col-md-7">
-                <div class="pychron-inner-container">
-                {% leaflet_map "map" callback='map_init' %}
-                </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h1 class="panel-title">{{ object.name }}</h1></div>
+                <table class="table table-condensed" style="height: 400px">
+                    <thead><tr><th>Attribute</th><th>Current Value</th></tr></thead>
+{#                        <tr><td>Sample</td> <td>{{ object.name }}</td></tr>#}
+                    <tr><td>Material</td> <td><a href="/materials/{{ object.materialid.id }}">
+                        {{ object.materialid.full_name }}</a></td></tr>
+                    <tr><td>Project</td> <td><a href="/projects/{{ object.projectid.id }}">
+                        {{ object.projectid.name }}</a></td></tr>
+                    <tr><td>Principal Investigator</td> <td><a href="/principal_investigators/{{ object.projectid.principal_investigatorid.id }}">
+                        {{ object.projectid.principal_investigatorid.full_name }}</a></td></tr>
+                    <tr><td>Unit</td> <td>{{ object.unit }}</td></tr>
+                    <tr><td>Latitude</td> <td>{{ object.lat }}</td></tr>
+                    <tr><td>Longitude</td> <td>{{ object.lon }}</td></tr>
+                    <tr><td>N. Analyses</td> <td>{{ nanalyses }}</td></tr>
+                    <tr><td>Analyses Start</td> <td>{{ analyses_start }}</td></tr>
+                    <tr><td>Analyses End</td> <td>{{ analyses_end }}</td></tr>
+                </table>
             </div>
         </div>
-        <div class="row">
-            {% if events %}
-                <div class="col-md-12">
-                    <div class="pychron-inner-container">
-                        {% render_table events %}
+        <div class="col-sm-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading"><h1 class="panel-title">Location</h1></div>
+                    <div id="map" style="height:400px">
+                        {% leaflet_map "map" callback='map_init' %}
                     </div>
                 </div>
-            {%  endif %}
+            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h1 class="panel-title">Events</h1></div>
+                {% render_table events %}
+            </div>
         </div>
-        <div class="row">
-            <div class="col-md-5">
-                <div class="pychron-inner-container">
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h1 class="panel-title">Edit {{ object.name }}</h1></div>
                 {% if form  %}
-                    <form action="/samples/edit_sample/{{ object.id }}/" method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <input type="submit" value="Save"/>
-                    </form>
+                    {% crispy form %}
+{#                    <div>#}
+{#                        <form action="/samples/edit_sample/{{ object.id }}/" method="post">#}
+{#                            {% csrf_token %}#}
+{#                            {{ form.as_p }}#}
+{#                            <input type="submit" value="Save"/>#}
+{#                        </form>#}
+{#                    </div>#}
                 {% else %}
-                    <h2>You do not have permissions to edit this sample</h2>
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Error</strong>You do not have permissions to edit this sample</h2>
+                    </div>
                 {% endif %}
+        </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {% if analyses %}
+            <div class="col-md-12">
+                <div class="pychron-inner-container">
+                    {% render_table analyses %}
                 </div>
             </div>
-            <div class="col-md-5">
-                <div class="pychron-inner-container">
-                {% if event_form  %}
+        {%  endif %}
+    </div>
 
-                    <form action="/samples/edit_sample/{{ object.id }}/" method="post">
-                        {% csrf_token %}
-                        {{ event_form.as_p }}
+
+{#    <div class="container pychron-main-container">#}
+{#        <div class="row">#}
+{#            <div class="col-md-5">#}
+{#                <div class="pychron-inner-container">#}
+{#                {% if form  %}#}
+{#                    <form action="/samples/edit_sample/{{ object.id }}/" method="post">#}
+{#                        {% csrf_token %}#}
+{#                        {{ form.as_p }}#}
+{#                        <input type="submit" value="Save"/>#}
+{#                    </form>#}
+{#                {% else %}#}
+{#                    <h2>You do not have permissions to edit this sample</h2>#}
+{#                {% endif %}#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="col-md-5">#}
+{#                <div class="pychron-inner-container">#}
+{#                {% if event_form  %}#}
+{#                    <form action="/samples/edit_sample/{{ object.id }}/" method="post">#}
+{#                        {% csrf_token %}#}
+{#                        {{ event_form.as_p }}#}
 {#                        <table style="display: none">{{ view.formset.empty_form }}</table>#}
 {#                        <table>{{ view.formset }}</table>#}
-                        <input type="submit" value="Save"/>
-                    </form>
+{#                        <input type="submit" value="Save"/>#}
+{#                    </form>#}
 {#                    <script>#}
 {#                        $(document).ready(function() {#}
 {#                            $('.datepicker').datepicker();#}
 {#                        });#}
 {#                    </script>#}
-                {% else %}
-                    <h2>You do not have permissions to edit this sample</h2>
-                {% endif %}
-            </div>
-            </div>
-        </div>
-        <div class="row">
-            {% if analyses %}
-                <div class="col-md-12">
-                    <div class="pychron-inner-container">
-                        {% render_table analyses %}
-                    </div>
-                </div>
-            {%  endif %}
-        </div>
-    </div>
+{#                {% else %}#}
+{#                    <h2>You do not have permissions to edit this sample</h2>#}
+{#                {% endif %}#}
+{#            </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="row">#}
+{#            {% if analyses %}#}
+{#                <div class="col-md-12">#}
+{#                    <div class="pychron-inner-container">#}
+{#                        {% render_table analyses %}#}
+{#                    </div>#}
+{#                </div>#}
+{#            {%  endif %}#}
+{#        </div>#}
+{#    </div>#}
 
 
 
