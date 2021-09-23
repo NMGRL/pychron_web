@@ -29,7 +29,7 @@ class SampleForm(forms.ModelForm):
     lon = forms.FloatField(label='Longitude', required=False, initial=-105)
     # principal_investigator = forms.CharField(label='Principal Investigator', initial='NMGRL')
     principal_investigator = forms.ModelChoiceField(label='Principal Investigator',
-                                                    queryset=Principalinvestigatortbl.objects,
+                                                    queryset=Principalinvestigatortbl.objects.all(),
                                                     widget=autocomplete.ModelSelect2(
                                                         url='principalinvestigator-autocomplete'))
     project = forms.ModelChoiceField(label='Project',
@@ -47,6 +47,10 @@ class SampleForm(forms.ModelForm):
 
     northing = forms.FloatField(label='Northing', required=False)
     easting = forms.FloatField(label='Easting', required=False)
+    datum = forms.ChoiceField(label='Datum', required=False,
+                              choices=[(1, 'NAD83'), (2, 'NAD27')],
+                              # initial='NAD83'
+                              )
     pointloc = PointField(label='',
                           widget=LeafletWidget(attrs={'map_width': '100%', 'map_height': '100px'}),
                           required=False)
@@ -58,8 +62,10 @@ class SampleForm(forms.ModelForm):
 
     class Meta:
         model = SampleTbl
-        fields = ('principal_investigator', 'project', 'name', 'material', 'unit', 'lat', 'lon', 'easting',
-                  'northing', 'zone', 'pointloc')
+        fields = ('principal_investigator',
+                  'project', 'material',
+                  'name', 'unit', 'lat', 'lon', 'easting',
+                  'northing', 'zone', 'datum', 'pointloc')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -85,7 +91,9 @@ class SampleForm(forms.ModelForm):
                        css_class='row'),
                    Div(Div('easting', css_class='col-md-5'),
                        Div('northing', css_class='col-md-5'),
-                       Div('zone', css_class='col-md-2'),
+                       css_class='row'),
+                   Div(Div('zone', css_class='col-md-2'),
+                       Div('datum', css_class='col-md-3'),
                        css_class='row'),
                    css_class='col-lg-5')
         col2 = Div('pointloc', css_class='col-lg-7')

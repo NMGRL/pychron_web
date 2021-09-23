@@ -26,8 +26,8 @@ DEBUG = bool(int(os.environ.get("DEBUG", default=0)))
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(' ')
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap3"
+CRISPY_TEMPLATE_PACK = "bootstrap3"
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
 
 # Application definition
@@ -41,14 +41,13 @@ INSTALLED_APPS = [
     'events.apps.EventsConfig',
     'users',
 
-    'dal',
-    'dal_select2',
     'crispy_forms',
-    'crispy_bootstrap5',
     'django_tables2',
     'django_filters',
     'bootstrap3',
     'leaflet',
+    'dal',
+    'dal_select2',
 
     'django.contrib.admin',
     'django.contrib.auth',

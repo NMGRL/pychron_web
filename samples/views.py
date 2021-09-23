@@ -101,6 +101,7 @@ def entry(request):
 
 PROJECTIONS = {}
 
+
 def set_sample_from_form(s, form):
     s.name = form.cleaned_data['name']
     material = form.cleaned_data['material']
@@ -115,17 +116,14 @@ def set_sample_from_form(s, form):
     northing = form.cleaned_data['northing']
     easting = form.cleaned_data['easting']
     zone = form.cleaned_data['zone']
-    datum = None
-    lat = form.cleaned_data['lat']
-    lon = form.cleaned_data['lon']
+    datum = form.cleaned_data['datum']
+    key = '{}{}'.format(zone, datum)
     if northing or easting:
-        if zone in PROJECTIONS:
-            p = PROJECTIONS[zone]
+        if key in PROJECTIONS:
+            p = PROJECTIONS[key]
         else:
-            kw = {}
-            if datum:
-                kw['datum'] = datum
-            p = pyproj.Proj(proj='utm', zone=int(zone), **kw)
+            p = pyproj.Proj(proj='utm', zone=int(zone), datum=datum)
+            PROJECTIONS[key] = p
 
         lon, lat = p(easting, northing, inverse=True)
         # s.lon = lon
@@ -143,6 +141,7 @@ def set_sample_from_form(s, form):
         s.lat = lat or 0
 
     s.save()
+
 
 @login_required
 def submit_sample(request):
@@ -189,7 +188,7 @@ def edit_sample(request, sample_id):
             dt = form.cleaned_data['event_at']
             e.event_at = dt
             e.save()
-            sid =s.id
+            sid = s.id
 
     return HttpResponseRedirect(f'/samples/{sid}/')
 
@@ -271,7 +270,7 @@ class PrincipalInvestigatorAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_queryset(self):
         qs = Principalinvestigatortbl.objects.all()
-
+        print('asdf', qs)
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
         return qs
