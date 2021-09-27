@@ -77,28 +77,15 @@ def submit_project(request):
         if form.is_valid():
             name = form.cleaned_data['name']
             dbpi = form.cleaned_data['principal_investigator']
-            # pi = pi.strip()
-            # if ',' in pi:
-            #     lastname, firstinitial = pi.split(',')
-            #     dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=lastname.strip(),
-            #                                                    first_initial__exact=firstinitial.strip()).first()
-            #     if not dbpi:
-            #         dbpi = PrincipalInvestigatorTbl(last_name=lastname, first_initial=firstinitial)
-            #         dbpi.save()
-            # else:
-            #     dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=pi).first()
-            #     if not dbpi:
-            #         dbpi = PrincipalInvestigatorTbl(last_name=pi)
+
             if name == '?':
                 nir = ProjectTbl.objects.order_by('-id').first()
-                name = f'{dbpi.last_name}{nir.id+1}'
+                name = f'{dbpi.last_name}{nir.id+1:05n}'
 
             dbprj = ProjectTbl.objects.filter(name__exact=name,
                                               principal_investigatorid=dbpi).first()
             if not dbprj:
                 dbprj = ProjectTbl(name=name, principal_investigatorid=dbpi)
-                print('asdf', name)
-                print('ptoj', dbprj, dbpi)
                 dbprj.save()
 
             return HttpResponseRedirect('/projects/entry')
