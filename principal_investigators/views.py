@@ -12,7 +12,7 @@ from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
 
-from samples.models import ProjectTbl, Principalinvestigatortbl, Materialtbl
+from samples.models import ProjectTbl, PrincipalInvestigatorTbl, Materialtbl
 from projects.tables import ProjectTable
 from samples.models import SampleTbl
 from samples.tables import SampleTable
@@ -22,9 +22,9 @@ def get_principal_investigator_queryset(request):
     is_manager = any(g.name == 'manager' for g in request.user.groups.all())
 
     if is_manager:
-        pis = Principalinvestigatortbl.objects.all()
+        pis = PrincipalInvestigatorTbl.objects.all()
     else:
-        pis = Principalinvestigatortbl.objects.filter(projecttbl__sampletbl__samplesubmittbl__user_id=request.user.id)
+        pis = PrincipalInvestigatorTbl.objects.filter(projecttbl__sampletbl__samplesubmittbl__user_id=request.user.id)
 
     pis = pis.order_by('-id')
     return pis
@@ -47,7 +47,7 @@ def index(request):
 def entry(request):
     form = PrincipalInvestigatorForm()
 
-    projects = Principalinvestigatortbl.objects.all()
+    projects = PrincipalInvestigatorTbl.objects.order_by('-id').all()
     tfilter = PrincipalInvestigatorsFilter(request.GET, queryset=projects)
     table = PrincipalInvestigatorsTable(tfilter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=10)
@@ -74,15 +74,15 @@ def submit_principal_investigator(request):
     #         pi = pi.strip()
     #         if ',' in pi:
     #             lastname, firstinitial = pi.split(',')
-    #             dbpi = Principalinvestigatortbl.objects.filter(last_name__exact=lastname.strip(),
+    #             dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=lastname.strip(),
     #                                                            first_initial__exact=firstinitial.strip()).first()
     #             if not dbpi:
-    #                 dbpi = Principalinvestigatortbl(last_name=lastname, first_initial=firstinitial)
+    #                 dbpi = PrincipalInvestigatorTbl(last_name=lastname, first_initial=firstinitial)
     #                 dbpi.save()
     #         else:
-    #             dbpi = Principalinvestigatortbl.objects.filter(last_name__exact=pi).first()
+    #             dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=pi).first()
     #             if not dbpi:
-    #                 dbpi = Principalinvestigatortbl(last_name=pi)
+    #                 dbpi = PrincipalInvestigatorTbl(last_name=pi)
     #
     #         dbprj = ProjectTbl.objects.filter(name__exact=s.name,
     #                                           principal_investigatorid=dbpi).first()
@@ -99,7 +99,7 @@ def submit_principal_investigator(request):
 
 MultiTableMixin
 class PrincipalInvestigatorDetailView(DetailView):
-    model = Principalinvestigatortbl
+    model = PrincipalInvestigatorTbl
     template_name = 'principal_investigators/principalinvestigatortbl_detail.html'
 
     def get_context_data(self, **kw):

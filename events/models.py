@@ -37,3 +37,12 @@ class EventsTbl(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING,
                              db_column='userID')
     sample = models.ForeignKey(SampleTbl, models.DO_NOTHING, db_column='sampleID', related_name='events')
+
+
+class EventValuesTbl(models.Model):
+    str_value = models.TextField()
+    int_value = models.IntegerField()
+    float_value = models.FloatField()
+    name = models.CharField(max_length=80)
+
+    event = models.ForeignKey(EventsTbl, models.DO_NOTHING, db_column='eventID', related_name='values')

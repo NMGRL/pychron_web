@@ -15,25 +15,53 @@
 # ===============================================================================
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
+from dal import autocomplete
 from django import forms
+from django.urls import reverse_lazy
+
+from samples.models import PrincipalInvestigatorTbl, ProjectTbl
 
 
-class ProjectForm(forms.Form):
+class ProjectForm(forms.ModelForm):
+    principal_investigator = forms.ModelChoiceField(label='Principal Investigator',
+                                                    queryset=PrincipalInvestigatorTbl.objects.all(),
+                                                    widget=autocomplete.ModelSelect2(
+                                                        url=reverse_lazy('principalinvestigator-autocomplete')))
     name = forms.CharField(label='Project')
-    # latitude = forms.FloatField(label='Latitude', required=False, initial=35)
-    # longitude = forms.FloatField(label='Longitude', required=False, initial=-105)
-    principal_investigator = forms.CharField(label='Principal Investigator', initial='NMGRL')
-    project = forms.CharField(label='Project', initial='REFERENCES')
+
+    class Meta:
+        fields = ['principal_investigator', 'name']
+        model = ProjectTbl
 
     def __init__(self, *args, **kwargs):
+        # kwargs.pop('instance')
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_id = 'id-exampleForm'
         self.helper.form_class = 'blueForms'
         self.helper.form_method = 'post'
-        self.helper.form_action = 'submit_sample'
+        self.helper.form_action = 'submit_project'
 
         self.helper.add_input(Submit('submit', 'Submit'))
+
+# class ProjectForm(forms.Form):
+#     name = forms.CharField(label='Project')
+#     # latitude = forms.FloatField(label='Latitude', required=False, initial=35)
+#     # longitude = forms.FloatField(label='Longitude', required=False, initial=-105)
+#     principal_investigator = forms.CharField(label='Principal Investigator', initial='NMGRL')
+#     project = forms.CharField(label='Project', initial='REFERENCES')
+#
+#     def __init__(self, *args, **kwargs):
+#         kwargs.pop('instance')
+#         super().__init__(*args, **kwargs)
+#
+#         self.helper = FormHelper()
+#         self.helper.form_id = 'id-exampleForm'
+#         self.helper.form_class = 'blueForms'
+#         self.helper.form_method = 'post'
+#         self.helper.form_action = 'submit_sample'
+#
+#         self.helper.add_input(Submit('submit', 'Submit'))
 
 # ============= EOF =============================================

@@ -9,14 +9,4 @@ class Migration(migrations.Migration):
         ('events', '0001_initial'),
     ]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='eventstbl',
-            name='timestamp',
-        ),
-        migrations.AddField(
-            model_name='eventstbl',
-            name='event_at',
-            field=models.DateTimeField(null=True),
-        ),
-    ]
+

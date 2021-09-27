@@ -3,7 +3,7 @@ from django.db import models
 
 
 # Create your models here.
-class Principalinvestigatortbl(models.Model):
+class PrincipalInvestigatorTbl(models.Model):
     name = models.CharField(max_length=140, blank=True, null=True)
     email = models.CharField(max_length=140, blank=True, null=True)
     affiliation = models.CharField(max_length=140, blank=True, null=True)
@@ -24,7 +24,7 @@ class Principalinvestigatortbl(models.Model):
 
 class ProjectTbl(models.Model):
     name = models.CharField(max_length=80, blank=True, null=True)
-    principal_investigatorid = models.ForeignKey(Principalinvestigatortbl, models.DO_NOTHING,
+    principal_investigatorid = models.ForeignKey(PrincipalInvestigatorTbl, models.DO_NOTHING,
                                                  db_column='principal_investigatorID')  # Field name made lowercase.
     checkin_date = models.DateField(blank=True, null=True)
     lab_contact = models.CharField(max_length=80, blank=True, null=True)
@@ -125,5 +125,5 @@ class Samplesubmittbl(models.Model):
 
 class Userpiassociationtbl(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING, db_column='userID', blank=True, null=True)
-    principal_investigatorid = models.ForeignKey(Principalinvestigatortbl, models.DO_NOTHING,
+    principal_investigatorid = models.ForeignKey(PrincipalInvestigatorTbl, models.DO_NOTHING,
                                                  db_column='principal_investigatorID')

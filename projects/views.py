@@ -6,7 +6,7 @@ from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
 
-from samples.models import ProjectTbl, Principalinvestigatortbl, Userpiassociationtbl
+from samples.models import ProjectTbl, PrincipalInvestigatorTbl, Userpiassociationtbl
 from projects.tables import ProjectTable
 from samples.models import SampleTbl
 from samples.tables import SampleTable
@@ -56,7 +56,7 @@ def index(request):
 def entry(request):
     form = ProjectForm()
 
-    projects = ProjectTbl.objects.all()
+    projects = ProjectTbl.objects.order_by('-id').all()
     project_filter = ProjectFilter(request.GET, queryset=projects)
     table = ProjectTable(project_filter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=20)
@@ -75,32 +75,32 @@ def submit_project(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
-            s = ProjectTbl()
-            s.name = form.cleaned_data['name']
+            name = form.cleaned_data['name']
+            dbpi = form.cleaned_data['principal_investigator']
+            # pi = pi.strip()
+            # if ',' in pi:
+            #     lastname, firstinitial = pi.split(',')
+            #     dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=lastname.strip(),
+            #                                                    first_initial__exact=firstinitial.strip()).first()
+            #     if not dbpi:
+            #         dbpi = PrincipalInvestigatorTbl(last_name=lastname, first_initial=firstinitial)
+            #         dbpi.save()
+            # else:
+            #     dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=pi).first()
+            #     if not dbpi:
+            #         dbpi = PrincipalInvestigatorTbl(last_name=pi)
+            if name == '?':
+                nir = ProjectTbl.objects.order_by('-id').first()
+                name = f'{dbpi.last_name}{nir.id+1}'
 
-            pi = form.cleaned_data['principal_investigator']
-            pi = pi.strip()
-            if ',' in pi:
-                lastname, firstinitial = pi.split(',')
-                dbpi = Principalinvestigatortbl.objects.filter(last_name__exact=lastname.strip(),
-                                                               first_initial__exact=firstinitial.strip()).first()
-                if not dbpi:
-                    dbpi = Principalinvestigatortbl(last_name=lastname, first_initial=firstinitial)
-                    dbpi.save()
-            else:
-                dbpi = Principalinvestigatortbl.objects.filter(last_name__exact=pi).first()
-                if not dbpi:
-                    dbpi = Principalinvestigatortbl(last_name=pi)
-
-            dbprj = ProjectTbl.objects.filter(name__exact=s.name,
+            dbprj = ProjectTbl.objects.filter(name__exact=name,
                                               principal_investigatorid=dbpi).first()
             if not dbprj:
-                dbprj = ProjectTbl(name=s.name, principal_investigatorid=dbpi)
+                dbprj = ProjectTbl(name=name, principal_investigatorid=dbpi)
+                print('asdf', name)
+                print('ptoj', dbprj, dbpi)
                 dbprj.save()
 
-            s.projectid = dbprj
-
-            s.save()
             return HttpResponseRedirect('/projects/entry')
 
     return HttpResponse('Failed ')

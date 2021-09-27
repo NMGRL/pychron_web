@@ -12,6 +12,17 @@
         <div class="well">
             {{ labspecific_content|safe }}
         </div>
+        <div class="well">
+            The following process is used to add a sample to the system.
+            <ol>
+                <li>Add the <a href="/principal_investigators/entry"> Principal Investigator</a>.  Enter a single
+                    name or lastName,firstInitial  e.g "Ross,J" </li>
+                <li>Add the <a href="/projects/entry">Project.</a> Select the Principal Investigator from step 1.
+                    Enter a <strong>name</strong> for the Project. If <code>?</code> is used than the project name will be
+                    generated from the PI's<code>last name</code> and the Project's <code>IR number</code></li>
+                <li>Add the <a href="/samples/entry">Sample</a></li>
+            </ol>
+        </div>
         <div class="row">
             <div class="col-sm-6">
                 <div class="panel panel-primary">

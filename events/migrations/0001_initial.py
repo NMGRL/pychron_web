@@ -39,7 +39,6 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('message', models.CharField(blank=True, max_length=140, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
                 ('event_type',
                  models.ForeignKey(db_column='event_typeID', on_delete=django.db.models.deletion.DO_NOTHING,
                                    to='events.eventtypetbl')),

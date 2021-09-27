@@ -17,6 +17,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 
+import projects.views
 from pychronweb import views
 from samples.views import ProjectAutocomplete, MaterialAutocomplete, PrincipalInvestigatorAutocomplete
 

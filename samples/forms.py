@@ -20,7 +20,22 @@ from django import forms
 from leaflet.forms.fields import PointField
 from leaflet.forms.widgets import LeafletWidget
 
-from samples.models import Materialtbl, ProjectTbl, SampleTbl, Principalinvestigatortbl
+from samples.models import Materialtbl, ProjectTbl, SampleTbl, PrincipalInvestigatorTbl
+
+
+# class PIProjectForm(forms.Form):
+#     principal_investigator = forms.CharField(label='Principal Investigator')
+#     project = forms.CharField(label='Project')
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.helper = FormHelper()
+#         self.helper.form_id = 'id-exampleForm'
+#         self.helper.form_class = 'blueForms'
+#         self.helper.form_method = 'post'
+#         self.helper.form_action = 'submit_pp'
+#
+#         self.helper.add_input(Submit('submit', 'Submit'))
 
 
 class SampleForm(forms.ModelForm):
@@ -28,15 +43,15 @@ class SampleForm(forms.ModelForm):
     lat = forms.FloatField(label='Latitude', required=False, initial=35)
     lon = forms.FloatField(label='Longitude', required=False, initial=-105)
     # principal_investigator = forms.CharField(label='Principal Investigator', initial='NMGRL')
-    principal_investigator = forms.ModelChoiceField(label='Principal Investigator',
-                                                    queryset=Principalinvestigatortbl.objects.all(),
-                                                    widget=autocomplete.ModelSelect2(
-                                                        url='principalinvestigator-autocomplete'))
+    # principal_investigator = forms.ModelChoiceField(label='Principal Investigator',
+    #                                                 queryset=PrincipalInvestigatorTbl.objects.all(),
+    #                                                 widget=autocomplete.ModelSelect2(
+    #                                                     url='principalinvestigator-autocomplete'))
     project = forms.ModelChoiceField(label='Project',
                                      queryset=ProjectTbl.objects,
-                                     widget=autocomplete.ModelSelect2(url='project-autocomplete',
-                                                                      forward=['principal_investigator']),
-                                     )
+                                     widget=autocomplete.ModelSelect2(
+                                         url='project-autocomplete'))
+
     material = forms.ModelChoiceField(label='Material',
                                       queryset=Materialtbl.objects,
                                       widget=autocomplete.ModelSelect2(url='material-autocomplete'),
@@ -62,8 +77,7 @@ class SampleForm(forms.ModelForm):
 
     class Meta:
         model = SampleTbl
-        fields = ('principal_investigator',
-                  'project', 'material',
+        fields = ('project', 'material',
                   'name', 'unit', 'lat', 'lon', 'easting',
                   'northing', 'zone', 'datum', 'pointloc')
 
@@ -77,25 +91,24 @@ class SampleForm(forms.ModelForm):
 
         self.helper.add_input(Submit('submit', 'Submit'))
 
-        col1 = Div(Div(Div('principal_investigator', css_class='col-md-4'),
-                       css_class='row'),
-                   Div(Div('project', css_class='col-md-3'),
-                       css_class='row'),
-                   Div(Div('material', css_class='col-md-3'),
-                       css_class='row'),
-                   Div(Div('name', css_class='col-md-6'),
-                       css_class='row'),
-                   Div(Div('unit', css_class='col-md-6'), css_class='row'),
-                   Div(Div('lat', css_class='col-md-5'),
-                       Div('lon', css_class='col-md-5'),
-                       css_class='row'),
-                   Div(Div('easting', css_class='col-md-5'),
-                       Div('northing', css_class='col-md-5'),
-                       css_class='row'),
-                   Div(Div('zone', css_class='col-md-2'),
-                       Div('datum', css_class='col-md-3'),
-                       css_class='row'),
-                   css_class='col-lg-5')
+        col1 = Div(
+            Div(Div('project', css_class='col-md-3'),
+                css_class='row'),
+            Div(Div('material', css_class='col-md-3'),
+                css_class='row'),
+            Div(Div('name', css_class='col-md-6'),
+                css_class='row'),
+            Div(Div('unit', css_class='col-md-6'), css_class='row'),
+            Div(Div('lat', css_class='col-md-5'),
+                Div('lon', css_class='col-md-5'),
+                css_class='row'),
+            Div(Div('easting', css_class='col-md-5'),
+                Div('northing', css_class='col-md-5'),
+                css_class='row'),
+            Div(Div('zone', css_class='col-md-2'),
+                Div('datum', css_class='col-md-3'),
+                css_class='row'),
+            css_class='col-lg-5')
         col2 = Div('pointloc', css_class='col-lg-7')
 
         self.helper.layout = Layout(Div(Div(col1, col2, css_class='row'),

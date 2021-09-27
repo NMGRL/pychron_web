@@ -1,6 +1,6 @@
 import re
 from itertools import groupby
-from operator import attrgetter, itemgetter
+from operator import attrgetter, itemgetter, or_
 
 import palettable.scientific.scientific
 import pyproj
@@ -14,7 +14,7 @@ from django.contrib.gis.geos.point import Point
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.views.generic import DetailView
+from django.views.generic import DetailView, CreateView
 from django_tables2 import RequestConfig
 
 from analyses.models import Analysistbl, Irradiationtbl
@@ -23,11 +23,12 @@ from events.forms import EventsForm
 from events.models import EventsTbl
 from events.tables import EventsTable, TrackerTable
 from events.util import get_pizza_tracker
+from projects.forms import ProjectForm
 from samples.filters import SampleFilter
 from samples.forms import SampleForm
 from samples.models import SampleTbl, Materialtbl, Samplesubmittbl, Userpiassociationtbl
 from samples.tables import SampleTable
-from samples.models import ProjectTbl, Principalinvestigatortbl
+from samples.models import ProjectTbl, PrincipalInvestigatorTbl
 
 from django.contrib.auth.decorators import login_required
 
@@ -86,12 +87,14 @@ def get_sample_queryset(request):
 @login_required
 def entry(request):
     form = SampleForm()
+    # projform = ProjectForm()
 
     samples = get_sample_queryset(request)
     sample_filter = SampleFilter(request.GET, queryset=samples)
     table = SampleTable(sample_filter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=20)
     context = {'form': form,
+               # 'projform':projform,
                'table': table,
                'filter': sample_filter}
 
@@ -232,17 +235,12 @@ class SampleDetailView(DetailView):
 
             # find near by samples
             if lat and lon:
-
                 ns = SampleTbl.objects.filter(lat__gte=lat - 1,
                                               lat__lte=lat + 1,
                                               lon__gte=lon - 1,
                                               lon__lte=lon + 1,
                                               )
                 ns = ns.filter(~Q(id=self.object.id)).all()
-
-                print('asdf', ns, ns.count())
-                for ni in ns:
-                    print(ni, ni.lat, ni.lon)
                 context['nearby_samples'] = ns
 
             data = Analysistbl.objects.filter(irradiation_positionid__sampleid_id=self.object.id)
@@ -262,6 +260,7 @@ class SampleDetailView(DetailView):
 
 
 class PrincipalInvestigatorAutocomplete(autocomplete.Select2QuerySetView):
+
     def get_result_label(self, item):
         return item.full_name
 
@@ -269,11 +268,17 @@ class PrincipalInvestigatorAutocomplete(autocomplete.Select2QuerySetView):
         return self.get_result_label(item)
 
     def get_queryset(self):
-        qs = Principalinvestigatortbl.objects.all()
-        print('asdf', qs)
+        qs = PrincipalInvestigatorTbl.objects.order_by('last_name')
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
-        return qs
+            if ',' in self.q:
+                ln, fi = self.q.split(',')[:2]
+                qs = qs.filter(Q(last_name__icontains=ln) & Q(first_initial__icontains=fi))
+
+            else:
+                ln, fi = self.q, self.q
+                qs = qs.filter(Q(last_name__icontains=ln) | Q(first_initial__icontains=fi))
+
+        return qs.all()
 
 
 class MaterialAutocomplete(autocomplete.Select2QuerySetView):

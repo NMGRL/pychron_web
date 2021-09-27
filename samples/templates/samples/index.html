@@ -11,6 +11,23 @@
 {% endblock %}
 
 {% block content %}
+     <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h2 class="panel-title">Samples</h2>
+        </div>
+        <div style="margin: 5px">
+            {% if filter %}
+                    <form action="" method="get" class="form form-inline">
+                        {% bootstrap_form filter.form layout='inline' %}
+                        {% bootstrap_button 'filter' %}
+                    </form>
+                {% endif %}
+        </div>
+        <div class="smalltable scrolly">
+            {% render_table table %}
+        </div>
+    </div>
+
     <div class="row">
             <div class="col-lg-6">
                 <div class="panel panel-primary">
@@ -35,12 +52,11 @@
                                 {% if center %}
                                     map.setView({{ center }})
                                 {% endif %}
-                                {#var wmsOptions = {'layers': }#}
-                                L.tileLayer('http://tiles.macrostrat.org/carto/{z}/{x}/{y}.png').setOpacity(0.5).addTo
-                            (map)
+
+                                var samples = L.layerGroup()
                                 {% for g, gs in samples %}
                                     {% for s in gs %}
-                                        L.circleMarker([{{ s.lat }}, {{ s.lon }}],
+                                        var m = L.marker([{{ s.lat }}, {{ s.lon }}],
                                             {color: '{{ g.color  }}',
                                             radius: 5},
 
@@ -51,9 +67,29 @@
                         <tr><td>Project</td><td><a href="/projects/{{ s.projectid.id }}">{{ s.projectid.piname }}</a></td></tr> \
                         <tr><td>Unit</td><td>{{ s.unit }}</td></tr> \
                         </table>'
-                                        ).addTo(map);
+                                        )
+                                        samples.addLayer(m)
+
                                     {% endfor %}
                                 {% endfor %}
+
+                                var macrostrat = L.tileLayer('http://tiles.macrostrat.org/carto/{z}/{x}/{y}.png',
+                                                            {'attribution': '<a href="macrostrat.org"> Macrostrat' +
+                                                                    '.org</a>'}).setOpacity(0.25)
+                                var usgs_topo = L.tileLayer(
+         'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
+                                    {'attribution': 'Tiles courtesy of the <a href="https://usgs.gov/">U.S' +
+                                            '.Geological Survey</a>'})
+                                var baseMaps = {"USGS Topo": usgs_topo}
+
+                                var overlaysMaps = {"Macrostrat": macrostrat,
+                                                    "Samples": samples}
+
+                                L.control.layers(baseMaps, overlaysMaps).addTo(map)
+
+                                usgs_topo.addTo(map)
+                                macrostrat.addTo(map)
+                                samples.addTo(map)
                             }
                         </script>
                     </div>
@@ -61,20 +97,5 @@
             </div>
         </div>
 
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h2 class="panel-title">Samples</h2>
-        </div>
-        <div style="margin: 5px">
-            {% if filter %}
-                    <form action="" method="get" class="form form-inline">
-                        {% bootstrap_form filter.form layout='inline' %}
-                        {% bootstrap_button 'filter' %}
-                    </form>
-                {% endif %}
-        </div>
-        <div class="smalltable scrolly">
-            {% render_table table %}
-        </div>
-    </div>
+
 {% endblock %}

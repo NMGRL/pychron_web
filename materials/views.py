@@ -9,7 +9,7 @@ from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
 
-from samples.models import ProjectTbl, Principalinvestigatortbl, Materialtbl
+from samples.models import ProjectTbl, PrincipalInvestigatorTbl, Materialtbl
 from projects.tables import ProjectTable
 from samples.models import SampleTbl
 from samples.tables import SampleTable
@@ -59,15 +59,15 @@ def submit_material(request):
     #         pi = pi.strip()
     #         if ',' in pi:
     #             lastname, firstinitial = pi.split(',')
-    #             dbpi = Principalinvestigatortbl.objects.filter(last_name__exact=lastname.strip(),
+    #             dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=lastname.strip(),
     #                                                            first_initial__exact=firstinitial.strip()).first()
     #             if not dbpi:
-    #                 dbpi = Principalinvestigatortbl(last_name=lastname, first_initial=firstinitial)
+    #                 dbpi = PrincipalInvestigatorTbl(last_name=lastname, first_initial=firstinitial)
     #                 dbpi.save()
     #         else:
-    #             dbpi = Principalinvestigatortbl.objects.filter(last_name__exact=pi).first()
+    #             dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=pi).first()
     #             if not dbpi:
-    #                 dbpi = Principalinvestigatortbl(last_name=pi)
+    #                 dbpi = PrincipalInvestigatorTbl(last_name=pi)
     #
     #         dbprj = ProjectTbl.objects.filter(name__exact=s.name,
     #                                           principal_investigatorid=dbpi).first()

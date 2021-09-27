@@ -34,7 +34,7 @@ class EventsForm(forms.ModelForm):
     # lon = forms.FloatField(label='Longitude', required=False, initial=-105)
     # principal_investigator = forms.CharField(label='Principal Investigator', initial='NMGRL')
     # principal_investigator = forms.ModelChoiceField(label='Principal Investigator',
-    #                                                 queryset=Principalinvestigatortbl.objects,
+    #                                                 queryset=PrincipalInvestigatorTbl.objects,
     #                                                 widget=autocomplete.ModelSelect2(
     #                                                     url='principalinvestigator-autocomplete'))
     # project = forms.ModelChoiceField(label='Project',

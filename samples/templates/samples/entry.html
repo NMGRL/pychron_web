@@ -16,38 +16,53 @@
 
 
 {% block content %}
-<div class="pychron-outer-container">
-    <div class="pychron-inner-container">
-{#        <form action="submit_sample" method="post">#}
-{#            {% csrf_token %}#}
-{#            {{ form.as_p }}#}
-{#            <span id="add-form" class="button">Add form</span>#}
-{#            <input type="submit" />#}
-{#        </form>#}
-        {% crispy form %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h2 class="panel-title">Enter a new Sample</h2>
+        </div>
 
+        <div class="well">
+            <ol>
+                <li>Select a project and material.</li>
+                <li>Enter a sample name. Optional enter the geologic unit</li>
+                <li>To location the sample, select a point on the map
+                <strong>OR</strong> enter a latitude and longitude
+                <strong>OR</strong> enter UTM coordinates</li>
+            </ol>
+        </div>
+
+        {% crispy form %}
     </div>
-    <div class="pychron-inner-container">
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h2 class="panel-title">Samples</h2>
+        </div>
         {% render_table table %}
     </div>
-</div>
-{#   {% crispy sample_form %}#}
-{#    {% if filter %}#}
-{#    <form action="" method="get" class="form form-inline">#}
-{#        {% bootstrap_form filter.form layout='inline' %}#}
-{#        {% bootstrap_button 'filter' %}#}
-{#    </form>#}
-{#{% endif %}#}
-
-{#</div>#}
 
      <script type="text/javascript">
 
 
      window.addEventListener('map:init',function (event){
-         console.log(event)
+         var macrostrat = L.tileLayer('http://tiles.macrostrat.org/carto/{z}/{x}/{y}.png',
+                                                            {'attribution': '<a href="macrostrat.org"> Macrostrat' +
+                                                                    '.org</a>'}).setOpacity(0.25)
+         var usgs_topo = L.tileLayer(
+'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
+            {'attribution': 'Tiles courtesy of the <a href="https://usgs.gov/">U.S' +
+                    '.Geological Survey</a>'})
+         var baseMaps = {"USGS Topo": usgs_topo}
 
-     })
+         var map = event.detail.map
+         var overlaysMaps = {"Macrostrat": macrostrat}
+
+         L.control.layers(baseMaps, overlaysMaps).addTo(map)
+
+        usgs_topo.addTo(map)
+        macrostrat.addTo(map)
+
+     }, false);
 
         {#    map.on('map:loadfield', function (e) {#}
             {#...#}

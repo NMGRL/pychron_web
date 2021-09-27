@@ -16,7 +16,7 @@
 
 import django_tables2 as tables
 
-from samples.models import Principalinvestigatortbl
+from samples.models import PrincipalInvestigatorTbl
 
 
 class PrincipalInvestigatorsTable(tables.Table):
@@ -24,7 +24,7 @@ class PrincipalInvestigatorsTable(tables.Table):
     name = tables.Column(linkify=True, accessor='full_name')
 
     class Meta:
-        model = Principalinvestigatortbl
+        model = PrincipalInvestigatorTbl
         template_name = "django_tables2/bootstrap.html"
         fields = ['id', 'name']
         attrs = {'class': 'table table-condensed'}

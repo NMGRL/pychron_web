@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Principalinvestigatortbl',
+            name='PrincipalInvestigatorTbl',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(blank=True, max_length=140, null=True)),

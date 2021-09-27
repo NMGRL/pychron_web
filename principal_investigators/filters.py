@@ -16,11 +16,11 @@
 import django_filters
 from django_filters import FilterSet
 
-from samples.models import Principalinvestigatortbl
+from samples.models import PrincipalInvestigatorTbl
 
 
 class PrincipalInvestigatorsFilter(FilterSet):
     class Meta:
-        model = Principalinvestigatortbl
+        model = PrincipalInvestigatorTbl
         fields = {'last_name': ['icontains', ], }
 # ============= EOF =============================================
