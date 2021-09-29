@@ -40,9 +40,7 @@ class EventsTbl(models.Model):
 
 
 class EventValuesTbl(models.Model):
-    str_value = models.TextField()
-    int_value = models.IntegerField()
-    float_value = models.FloatField()
+    value = models.TextField()
     name = models.CharField(max_length=80)
 
     event = models.ForeignKey(EventsTbl, models.DO_NOTHING, db_column='eventID', related_name='values')

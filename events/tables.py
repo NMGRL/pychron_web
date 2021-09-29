@@ -14,10 +14,10 @@
 # limitations under the License.
 # ===============================================================================
 import django_tables2 as tables
-from django.utils.html import escape
+from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 
-from events.models import EventsTbl
+from events.models import EventsTbl, EventValuesTbl
 from events.util import get_pizza_tracker
 from table_util import ImageColumn
 
@@ -36,11 +36,11 @@ class TrackerTable(tables.Table):
     project = tables.Column(accessor='project',
                             verbose_name='Project',
                             linkify=lambda record: f'/projects/{record["project"]}')
+
     # principal_investigator = tables.Column(accessor='projectid__principal_investigatorid__full_name',
     #                                        verbose_name='Principal Investigator',
     #                                        linkify=lambda
     #                                            record: f'/principal_investigators/{record.projectid.principal_investigatorid.id}')
-
 
     # assigned = tables.Column(accessor='sample')
     # prepped = tables.Column(accessor='sample')
@@ -51,14 +51,29 @@ class TrackerTable(tables.Table):
         attrs = {'class': 'table table-condensed'}
 
 
-class EventsTable(tables.Table):
-    event_type = tables.Column(accessor='event_type__name', verbose_name='Event Type')
+class SimpleEventsTable(tables.Table):
+    event_type = tables.Column(accessor='event_type__name', verbose_name='Event Type',
+                               attrs={'td':{'class': 'details'}})
     message = tables.Column(accessor='message')
     created_at = tables.DateTimeColumn(accessor='created_at', verbose_name='Created At',
                                        format='m/d/Y h:i A')
     event_at = tables.DateTimeColumn(accessor='event_at', verbose_name='Event At',
                                      format='m/d/Y h:i A')
     user = tables.Column(accessor='user')
+
+    class Meta:
+        attrs = {'class': 'table table-condensed'}
+
+    def render_event_type(self, record):
+        values = EventValuesTbl.objects.filter(event_id=record.id).all()
+        t = f'{record.event_type.name}'
+        if values:
+            values = '<br/>'.join([f'{v.name}: {v.value}' for v in values])
+            t = format_html(f'{t}<span class="detailstext">{values}</span>')
+        return format_html(t)
+
+
+class EventsTable(SimpleEventsTable):
     sample = tables.Column(linkify=lambda record: f'/samples/{record.sample.id}',
                            verbose_name='Sample',
                            accessor='sample.name')
@@ -70,6 +85,4 @@ class EventsTable(tables.Table):
                                            linkify=lambda
                                                record: f'/principal_investigators/'
                                                        f'{record.sample.projectid.principal_investigatorid.id}')
-    class Meta:
-        attrs = {'class': 'table table-condensed'}
 # ============= EOF =============================================

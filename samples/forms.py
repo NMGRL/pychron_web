@@ -81,8 +81,20 @@ class SampleForm(forms.ModelForm):
                   'name', 'unit', 'lat', 'lon', 'easting',
                   'northing', 'zone', 'datum', 'pointloc')
 
+    @staticmethod
+    def project_label(obj):
+        return obj.piname
+
+    @staticmethod
+    def material_label(obj):
+        return obj.full_name
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.fields['project'].label_from_instance = self.project_label
+        self.fields['material'].label_from_instance = self.material_label
+
         self.helper = FormHelper()
         self.helper.form_id = 'id-exampleForm'
         self.helper.form_class = 'blueForms'

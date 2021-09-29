@@ -1,3 +1,44 @@
+.loaded_for_irradiation {
+    background-color: orange;
+}
+.analyzed {
+    background-color: #87e187;
+}
+
+.details {
+  position: relative;
+}
+
+.details .detailstext {
+  position: absolute;
+  top: 0;
+  transform: translateY(70%);
+  /*display: none;*/
+  background: white;
+  z-index: 20;
+  min-width: 100%;
+  padding: 1rem;
+  border: 1px solid black;
+    opacity: 0;
+    transition-property: opacity;
+    transition-delay: 1s;
+    /*transition-property: display;*/
+}
+
+.details:hover .detailstext {
+    visibility: visible;
+    opacity: 1;
+  /*display: inline;*/
+    /*transition: 1s display;*/
+}
+
+/*td {*/
+  /*padding: 1rem;*/
+  /*background: whitesmoke;*/
+  /*border: 1px solid black;*/
+/*}*/
+
+
 .grouptitle{
     padding-left: 20px;
 }

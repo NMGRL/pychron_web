@@ -44,36 +44,57 @@
                 </div>
             </div>
     </div>
+
+{#    Events#}
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="panel panel-primary">
                 <div class="panel-heading"><h1 class="panel-title">Events</h1></div>
-                {% render_table events %}
+                 {% render_table events %}
             </div>
         </div>
-
-
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h1 class="panel-title">Add Events</h1></div>
+                {% crispy event_form %}
+            </div>
+        </div>
     </div>
 
+{#    Edit sample#}
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading"><h1 class="panel-title">Edit {{ object.name }}</h1></div>
                 {% if form  %}
                     {% crispy form %}
-{#                    <div>#}
-{#                        <form action="/samples/edit_sample/{{ object.id }}/" method="post">#}
-{#                            {% csrf_token %}#}
-{#                            {{ form.as_p }}#}
-{#                            <input type="submit" value="Save"/>#}
-{#                        </form>#}
-{#                    </div>#}
+                    <script type="text/javascript">
+                        window.addEventListener('map:init', function (event) {
+                            var macrostrat = L.tileLayer('http://tiles.macrostrat.org/carto/{z}/{x}/{y}.png',
+                                {'attribution': '<a href="macrostrat.org"> Macrostrat.org</a>'
+                                }).setOpacity(0.25)
+
+                            var usgs_topo = L.tileLayer(
+                                'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
+                                            {'attribution': 'Tiles courtesy of the <a href="https://usgs.gov/">U.S.Geological Survey</a>'
+                                })
+                            var hill_shade = L.tileLayer('http://tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png',
+                                {'attribution': 'Tiles courtesy of wmflabs.org'})
+
+                            var baseMaps = {"USGS Topo": usgs_topo, "HillShade": hill_shade}
+                            var map = event.detail.map
+                            var overlaysMaps = {"Macrostrat": macrostrat}
+                            L.control.layers(baseMaps, overlaysMaps).addTo(map)
+                            usgs_topo.addTo(map)
+                            macrostrat.addTo(map)
+                        }, false);
+                    </script>
                 {% else %}
                     <div class="alert alert-warning" role="alert">
                         <strong>Error</strong>You do not have permissions to edit this sample</h2>
                     </div>
                 {% endif %}
-        </div>
+            </div>
         </div>
     </div>
 
@@ -87,84 +108,34 @@
         {%  endif %}
     </div>
 
+    <script type="text/javascript">
+        function map_init(map, options) {
 
-{#    <div class="container pychron-main-container">#}
-{#        <div class="row">#}
-{#            <div class="col-md-5">#}
-{#                <div class="pychron-inner-container">#}
-{#                {% if form  %}#}
-{#                    <form action="/samples/edit_sample/{{ object.id }}/" method="post">#}
-{#                        {% csrf_token %}#}
-{#                        {{ form.as_p }}#}
-{#                        <input type="submit" value="Save"/>#}
-{#                    </form>#}
-{#                {% else %}#}
-{#                    <h2>You do not have permissions to edit this sample</h2>#}
-{#                {% endif %}#}
-{#                </div>#}
-{#            </div>#}
-{#            <div class="col-md-5">#}
-{#                <div class="pychron-inner-container">#}
-{#                {% if event_form  %}#}
-{#                    <form action="/samples/edit_sample/{{ object.id }}/" method="post">#}
-{#                        {% csrf_token %}#}
-{#                        {{ event_form.as_p }}#}
-{#                        <table style="display: none">{{ view.formset.empty_form }}</table>#}
-{#                        <table>{{ view.formset }}</table>#}
-{#                        <input type="submit" value="Save"/>#}
-{#                    </form>#}
-{#                    <script>#}
-{#                        $(document).ready(function() {#}
-{#                            $('.datepicker').datepicker();#}
-{#                        });#}
-{#                    </script>#}
-{#                {% else %}#}
-{#                    <h2>You do not have permissions to edit this sample</h2>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="row">#}
-{#            {% if analyses %}#}
-{#                <div class="col-md-12">#}
-{#                    <div class="pychron-inner-container">#}
-{#                        {% render_table analyses %}#}
-{#                    </div>#}
-{#                </div>#}
-{#            {%  endif %}#}
-{#        </div>#}
-{#    </div>#}
+            // get point lat and lon
+            var lon = "{{ object.lon }}";
+            var lat = "{{ object.lat }}";
+            // zoom to point & add it to map
+            map.setView([lat, lon]);
 
+            L.marker([lat, lon]).bindPopup(
+                '<table class="table"> \
+        <tr><td>Sample</td><td>{{ object.name }}</td></tr> \
+    <tr><td>Material</td><td>{{ object.materialid.full_name }}</td></tr> \
+    </table>'
+            ).addTo(map);
 
-
-
-<script type="text/javascript">
-                        function map_init(map, options) {
-
-                            // get point lat and lon
-                            var lon = "{{ object.lon }}";
-                            var lat = "{{ object.lat }}";
-                            // zoom to point & add it to map
-                            map.setView([lat, lon]);
-                            L.marker([lat, lon]).bindPopup(
-                                '<table class="table"> \
-                        <tr><td>Sample</td><td>{{ object.name }}</td></tr> \
-                    <tr><td>Material</td><td>{{ object.materialid.full_name }}</td></tr> \
-                </table>'
-                            ).addTo(map);
-
-                            {% for s in nearby_samples %}
-                                L.circleMarker([{{ s.lat }}, {{ s.lon }}],
-                                    {radius: 3}
-                                    ).bindPopup(
-                                        '<table class="table"> \
+            {% for s in nearby_samples %}
+                L.circleMarker([{{ s.lat }}, {{ s.lon }}],
+                    {radius: 3}
+                    ).bindPopup(
+                        '<table class="table"> \
     <tr><td>Sample</td><td><a href="/samples/{{ s.id }}">{{ s.name }}</a></td></tr> \
     <tr><td>Material</td><td><a href="/materials/{{ s.materialid.id }}">{{ s.materialid.full_name }}</a></td></tr> \
     <tr><td>Project</td><td><a href="/projects/{{ s.projectid.id }}">{{ s.projectid.piname }}</a></td></tr> \
     <tr><td>Unit</td><td>{{ s.unit }}</td></tr> \
     </table>'
-                                ).addTo(map);
-                            {% endfor %}
-                        }
-                    </script>
+                ).addTo(map);
+            {% endfor %}
+        }
+    </script>
 {% endblock %}

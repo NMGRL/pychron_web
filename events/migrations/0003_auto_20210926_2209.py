@@ -20,9 +20,7 @@ class Migration(migrations.Migration):
             name='EventValuesTbl',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('str_value', models.TextField()),
-                ('int_value', models.IntegerField()),
-                ('float_value', models.FloatField()),
+                ('value', models.TextField()),
                 ('name', models.CharField(max_length=80)),
                 ('event', models.ForeignKey(db_column='eventID', on_delete=django.db.models.deletion.DO_NOTHING, related_name='values', to='events.eventstbl')),
             ],

@@ -22,7 +22,8 @@ app_name = 'samples'
 urlpatterns = [
     path('', views.index, name='index'),
     path('submit_sample', views.submit_sample, name='submit_sample'),
-    re_path(r'edit_sample/(?P<sample_id>\d+)/$', views.edit_sample, name='edit_sample'),
+    # re_path(r'edit_sample/(?P<sample_id>\d+)/$', views.edit_sample, name='edit_sample'),
+    re_path(r'(?P<sample_id>\d+)/edit_sample$', views.edit_sample, name='edit_sample'),
     path('entry', views.entry, name='entry'),
     path('<int:pk>/', views.SampleDetailView.as_view(), name='detail')
 ]

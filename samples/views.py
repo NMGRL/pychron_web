@@ -14,14 +14,15 @@ from django.contrib.gis.geos.point import Point
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+from django.utils import timezone
 from django.views.generic import DetailView, CreateView
 from django_tables2 import RequestConfig
 
 from analyses.models import Analysistbl, Irradiationtbl
 from analyses.tables import AnalysisTable
 from events.forms import EventsForm
-from events.models import EventsTbl
-from events.tables import EventsTable, TrackerTable
+from events.models import EventsTbl, EventValuesTbl
+from events.tables import EventsTable, TrackerTable, SimpleEventsTable
 from events.util import get_pizza_tracker
 from projects.forms import ProjectForm
 from samples.filters import SampleFilter
@@ -189,8 +190,20 @@ def edit_sample(request, sample_id):
             e.message = form.cleaned_data['message']
 
             dt = form.cleaned_data['event_at']
-            e.event_at = dt
+            if dt:
+                e.event_at = dt
+            else:
+                e.event_at = timezone.now()
             e.save()
+
+            for ei in form.cleaned_data['event_values'].split('|'):
+                if ':' in ei:
+                    args = ei.split(':')
+                    name = args[0]
+                    value = ':'.join(args[1:])
+                    ev = EventValuesTbl(name=name, value=value, event=e)
+                    ev.save()
+
             sid = s.id
 
     return HttpResponseRedirect(f'/samples/{sid}/')
@@ -230,7 +243,7 @@ class SampleDetailView(DetailView):
             event_form = EventsForm()
             context['event_form'] = event_form
             e = EventsTbl.objects.filter(sample_id=self.object.id)
-            t = EventsTable(e)
+            t = SimpleEventsTable(e)
             context['events'] = t
 
             # find near by samples

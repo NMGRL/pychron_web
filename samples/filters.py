@@ -14,19 +14,44 @@
 # limitations under the License.
 # ===============================================================================
 import django_filters
-from django_filters import FilterSet
+from django_filters import FilterSet, ChoiceFilter
 
+from analyses.models import Irradiationpositiontbl, Analysistbl
 from samples.models import SampleTbl, ProjectTbl
 
 
 class SampleFilter(FilterSet):
+    state = ChoiceFilter(choices=[('Not Irradiated', 'Not Irradiated'),
+                                  ('Not Analyzed', 'Not Analyzed'),
+                                  ('Irradiated', 'Irradiated'),
+                                  ('Analyzed', 'Analyzed'),
+                                  ], method='state_filter')
+
     class Meta:
         model = SampleTbl
         fields = {'name': ['icontains', ],
                   'materialid__name': ['icontains', ],
                   'projectid__name': ['icontains', ],
-                  'projectid__principal_investigatorid__last_name': ['icontains',]
+                  'projectid__principal_investigatorid__last_name': ['icontains', ]
                   }
 
+    def state_filter(self, qs, name, value):
+        print(name, value, 'afs')
+        sampleid_ids =Irradiationpositiontbl.objects.filter(sampleid__isnull=False).values_list('sampleid__id', flat=True)
+        if value == 'Not Irradiated':
+            r = qs.exclude(id__in=sampleid_ids)
+        elif value == 'Irradiated':
+            r = qs.filter(id__in=sampleid_ids).all()
+        elif value == 'Analyzed':
+            ips = Irradiationpositiontbl.objects.filter(sampleid__isnull=False)
+            sids = Analysistbl.objects.filter(irradiation_positionid__in=ips).values_list(
+                'irradiation_positionid__sampleid_id', flat=True)
+            r = qs.filter(id__in=sids).all()
+        elif value == 'Not Analyzed':
+            ips = Irradiationpositiontbl.objects.filter(sampleid__isnull=False)
+            sids = Analysistbl.objects.filter(irradiation_positionid__in=ips).values_list(
+                'irradiation_positionid__sampleid_id', flat=True)
+            r = qs.exclude(id__in=sids)
+        return r
 
 # ============= EOF =============================================

@@ -7,9 +7,7 @@
 {#  integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="#}
 {#  crossorigin="anonymous"></script>#}
 
-    {% load bootstrap3 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
+
 
 {#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />#}
     <meta charset="utf-8">
@@ -20,6 +18,10 @@
 {#    <link rel="stylesheet" href="{% static 'css/styles.css' %}">#}
     <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
     <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+    {% load bootstrap3 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 
     {% block head %}{% endblock %}
 </head>
@@ -39,18 +41,57 @@
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <div id='navbar' class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li {% if request.resolver_match.view_name == 'samples:index' %}class="active"{% endif %}><a
-                href="/samples">Samples <span class="sr-only">(current)</span></a></li>
-        <li {% if request.resolver_match.view_name == 'projects:index' %}class="active"{% endif %}><a
-                href="/projects">Projects <span class="sr-only">(current)</span></a></li>
-        <li {% if request.resolver_match.view_name == 'materials:index' %}class="active"{% endif %}><a
-                href="/materials">Materials <span class="sr-only">(current)</span></a></li>
-        <li {% if request.resolver_match.view_name == 'principal_investigators:index' %}class="active"{% endif %}><a
-                href="/principal_investigators">Principal Investigators <span class="sr-only">(current)</span></a></li>
-        <li {% if request.resolver_match.view_name == 'events:index' %}class="active"{% endif %}><a
-                href="/events">Events<span class="sr-only">(current)</span></a></li>
+{#        <li {% if request.resolver_match.view_name == 'samples:index' %}class="active"{% endif %}><a#}
+{#                href="/samples">Samples <span class="sr-only">(current)</span></a></li>#}
+{#        <li {% if request.resolver_match.view_name == 'projects:index' %}class="active"{% endif %}><a#}
+{#                href="/projects">Projects <span class="sr-only">(current)</span></a></li>#}
+{#        <li {% if request.resolver_match.view_name == 'materials:index' %}class="active"{% endif %}><a#}
+{#                href="/materials">Materials <span class="sr-only">(current)</span></a></li>#}
+{#        <li {% if request.resolver_match.view_name == 'principal_investigators:index' %}class="active"{% endif %}><a#}
+{#                href="/principal_investigators">Principal Investigators <span class="sr-only">(current)</span></a></li>#}
+{#        <li {% if request.resolver_match.view_name == 'events:index' %}class="active"{% endif %}><a#}
+{#                href="/events">Events<span class="sr-only">(current)</span></a></li>#}
+
+          <li class="dropdown {% if request.resolver_match.view_name == 'principal_investigators:index' %}
+              active {% endif %}">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                 role="button" aria-haspopup="true" aria-expanded="false">Principal Investigators</a>
+              <ul class="dropdown-menu">
+                  <li><a href="/principal_investigators">View</a></li>
+                  <li><a href="/principal_investigators/entry">Entry</a></li>
+              </ul>
+          </li>
+          <li class="dropdown{% if request.resolver_match.view_name == 'projects:index' %}
+              active {% endif %}">
+              <a href="" class="dropdown-toggle" data-toggle="dropdown"
+                 role="button" aria-haspopup="true" aria-expanded="false">Projects</a>
+              <ul class="dropdown-menu">
+                  <li><a href="/projects">View</a></li>
+                  <li><a href="/projects/entry">Entry</a></li>
+              </ul>
+          </li>
+          <li class="dropdown{% if request.resolver_match.view_name == 'materials:index' %}
+              active {% endif %}">
+              <a href="" class="dropdown-toggle" data-toggle="dropdown"
+                 role="button" aria-haspopup="true" aria-expanded="false">Materials</a>
+              <ul class="dropdown-menu">
+                  <li><a href="/materials">View</a></li>
+                  <li><a href="/materials/entry">Entry</a></li>
+              </ul>
+          </li>
+          <li class="dropdown{% if request.resolver_match.view_name == 'samples:index' %}
+              active {% endif %}">
+              <a href="" class="dropdown-toggle" data-toggle="dropdown"
+                 role="button" aria-haspopup="true" aria-expanded="false">Samples</span></a>
+              <ul class="dropdown-menu">
+                  <li><a href="/samples">View</a></li>
+                  <li><a href="/samples/entry">Entry</a></li>
+              </ul>
+          </li>
+
+
       </ul>
 
       <ul class="nav navbar-nav navbar-right">

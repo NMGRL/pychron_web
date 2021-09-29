@@ -18,6 +18,7 @@ import django_tables2 as tables
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
+from analyses.models import Irradiationpositiontbl, Analysistbl
 from events.models import EventsTbl
 from samples.models import SampleTbl
 
@@ -39,6 +40,17 @@ class ActionColumn(tables.Column):
             return mark_safe(f'<a href=/events/{escape(self.event_tag)}/{value}>'
                              f'<img src="/static/samples/img/{escape(self.image)}"/ '
                              f'style="width:16px;height:16px;"></a>')
+
+
+def render_row(record):
+    ipt = Irradiationpositiontbl.objects.filter(sampleid=record.id).first()
+    c = ''
+    if ipt:
+        c = 'loaded_for_irradiation'
+        a = Analysistbl.objects.filter(irradiation_positionid=ipt.id).first()
+        if a:
+            c = 'analyzed'
+    return c
 
 
 class SampleTable(tables.Table):
@@ -69,4 +81,5 @@ class SampleTable(tables.Table):
                   'unit']
 
         attrs = {'class': 'table table-condensed'}
+        row_attrs = {'class': render_row}
 # ============= EOF =============================================

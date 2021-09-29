@@ -10,8 +10,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
     {% leaflet_js plugins="forms" %}
     {% leaflet_css plugins="forms" %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
 {% endblock %}
 
 
@@ -42,8 +40,6 @@
     </div>
 
      <script type="text/javascript">
-
-
      window.addEventListener('map:init',function (event){
          var macrostrat = L.tileLayer('http://tiles.macrostrat.org/carto/{z}/{x}/{y}.png',
                                                             {'attribution': '<a href="macrostrat.org"> Macrostrat' +
