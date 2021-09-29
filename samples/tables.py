@@ -15,7 +15,7 @@
 # ===============================================================================
 
 import django_tables2 as tables
-from django.utils.html import escape
+from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 
 from analyses.models import Irradiationpositiontbl, Analysistbl
@@ -70,6 +70,7 @@ class SampleTable(tables.Table):
     lon = tables.Column(verbose_name='Longitude', accessor='lon')
     id = tables.Column(linkify=True, accessor='id')
     name = tables.Column(linkify=True, accessor='name')
+    irradiations = tables.Column(empty_values=())
 
     received = ActionColumn('received', 'arrow-down-double-3.png', accessor='id', verbose_name='Check In')
     prepped = ActionColumn('prepped', 'beaker.png', accessor='id', verbose_name='Prep')
@@ -82,4 +83,16 @@ class SampleTable(tables.Table):
 
         attrs = {'class': 'table table-condensed'}
         row_attrs = {'class': render_row}
+
+    # def render_id(self, record):
+
+    def render_irradiations(self, record):
+        ipts = Irradiationpositiontbl.objects.filter(sampleid_id=record.id).all()
+
+        t = ''
+        if ipts:
+            names = {f'{i.levelid.irradiationid.name}' for i in ipts}
+            t = ','.join(list(names))
+
+        return format_html(t)
 # ============= EOF =============================================

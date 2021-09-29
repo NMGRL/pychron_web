@@ -36,8 +36,8 @@ class SampleFilter(FilterSet):
                   }
 
     def state_filter(self, qs, name, value):
-        print(name, value, 'afs')
-        sampleid_ids =Irradiationpositiontbl.objects.filter(sampleid__isnull=False).values_list('sampleid__id', flat=True)
+        sampleid_ids = Irradiationpositiontbl.objects.filter(sampleid__isnull=False).values_list('sampleid__id',
+                                                                                                 flat=True)
         if value == 'Not Irradiated':
             r = qs.exclude(id__in=sampleid_ids)
         elif value == 'Irradiated':
