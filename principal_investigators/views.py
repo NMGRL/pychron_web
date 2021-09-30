@@ -1,4 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
 from django.template import loader
 from django.views.generic import DetailView
 from django_tables2 import MultiTableMixin, RequestConfig
@@ -30,14 +31,18 @@ def get_principal_investigator_queryset(request):
     return pis
 
 
-@login_required
-def index(request):
+def make_context(request):
     pis = get_principal_investigator_queryset(request)
     tfilter = PrincipalInvestigatorsFilter(request.GET, queryset=pis)
     table = PrincipalInvestigatorsTable(tfilter.qs)
     table.paginate(page=request.GET.get("page", 1), per_page=20)
     context = {'table': table,
                'filter': tfilter}
+    return context
+
+@login_required
+def index(request):
+    context = make_context(request)
 
     template = loader.get_template('principal_investigators/index.html')
     return HttpResponse(template.render(context, request))
@@ -61,43 +66,30 @@ def entry(request):
 
 @login_required
 def submit_principal_investigator(request):
-    pass
-    # # template = loader.get_template('samples/add_sample.html')
-    # # context = {'samples': SampleTbl.objects.order_by('-id')[:10]}
-    # if request.method == 'POST':
-    #     form = ProjectForm(request.POST)
-    #     if form.is_valid():
-    #         s = ProjectTbl()
-    #         s.name = form.cleaned_data['name']
-    #
-    #         pi = form.cleaned_data['principal_investigator']
-    #         pi = pi.strip()
-    #         if ',' in pi:
-    #             lastname, firstinitial = pi.split(',')
-    #             dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=lastname.strip(),
-    #                                                            first_initial__exact=firstinitial.strip()).first()
-    #             if not dbpi:
-    #                 dbpi = PrincipalInvestigatorTbl(last_name=lastname, first_initial=firstinitial)
-    #                 dbpi.save()
-    #         else:
-    #             dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=pi).first()
-    #             if not dbpi:
-    #                 dbpi = PrincipalInvestigatorTbl(last_name=pi)
-    #
-    #         dbprj = ProjectTbl.objects.filter(name__exact=s.name,
-    #                                           principal_investigatorid=dbpi).first()
-    #         if not dbprj:
-    #             dbprj = ProjectTbl(name=s.name, principal_investigatorid=dbpi)
-    #             dbprj.save()
-    #
-    #         s.projectid = dbprj
-    #
-    #         s.save()
-    #         return HttpResponseRedirect('/projects/entry')
-    #
-    # return HttpResponse('Failed ')
+    if request.method == 'POST':
+        form = PrincipalInvestigatorForm(request.POST)
+        if form.is_valid():
+            pi = form.cleaned_data['name'].strip()
+            if ',' in pi:
+                lastname, firstinitial = pi.split(',')
+                dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=lastname.strip(),
+                                                           first_initial__exact=firstinitial.strip()).first()
+                if not dbpi:
+                    dbpi = PrincipalInvestigatorTbl(last_name=lastname, first_initial=firstinitial)
+            else:
+                dbpi = PrincipalInvestigatorTbl.objects.filter(last_name__exact=pi).first()
+                if not dbpi:
+                    dbpi = PrincipalInvestigatorTbl(last_name=pi)
 
-MultiTableMixin
+            dbpi.save()
+        else:
+            ctx = make_context(request)
+            ctx['form'] = form
+            return render(request, 'principal_investigators/entry.html', ctx)
+
+    return HttpResponseRedirect('/principal_investigators/entry')
+
+
 class PrincipalInvestigatorDetailView(DetailView):
     model = PrincipalInvestigatorTbl
     template_name = 'principal_investigators/principalinvestigatortbl_detail.html'

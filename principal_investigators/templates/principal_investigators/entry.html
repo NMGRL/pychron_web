@@ -7,12 +7,12 @@
 {% block content %}
    {% crispy form %}
     {% if filter %}
-    <form action="" method="get" class="form form-inline">
-        {% bootstrap_form filter.form layout='inline' %}
-        {% bootstrap_button 'filter' %}
-    </form>
-{% endif %}
-{% render_table table %}
+        <form action="" method="get" class="form form-inline">
+            {% bootstrap_form filter.form layout='inline' %}
+            {% bootstrap_button 'filter' %}
+        </form>
+    {% endif %}
+    {% render_table table %}
 
 {% endblock %}
 
