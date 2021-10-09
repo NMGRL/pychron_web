@@ -88,13 +88,12 @@
                   <li><a href="/samples/entry">Entry</a></li>
               </ul>
           </li>
-
+            <li {% if request.resolver_match.view_name == 'events:index' %}class="active"{% endif %}><a
+                href="/events">Events<span class="sr-only">(current)</span></a></li>
 
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
-            <li {% if request.resolver_match.view_name == 'events:index' %}class="active"{% endif %}><a
-                href="/events">Events</a></li>
           {% if user.is_authenticated %}
               <li><a href="/dashboard">{{ user.get_username }}</a></li>
           {% endif %}
