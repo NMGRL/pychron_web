@@ -29,3 +29,9 @@ Django-based Web interface to a pychron db
    docker-compose exec web python manage.py createsuperuser
    ```
 9. Open a browser at `http://localhost:8000/samples/`
+
+#MSSQL Support
+To use a SQL Server database
+
+1. set DATABASE_KIND=mssql in your .env.production file
+2. use ```shell docker-compose build -f DockerfileMSSQL``` in step #5 instead

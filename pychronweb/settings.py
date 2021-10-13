@@ -95,6 +95,9 @@ WSGI_APPLICATION = 'pychronweb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+
+engine = 'sql_server.pyodbc' if os.environ.get('DATABASE_KIND', 'mysql') == 'mssql' else 'mysql.connector.django'
+
 DATABASES = {
     # 'default': {
     #     'ENGINE': 'django.db.backends.sqlite3',
