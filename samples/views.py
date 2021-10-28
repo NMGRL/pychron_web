@@ -135,8 +135,8 @@ def set_sample_from_form(s, form):
     else:
         pointloc = form.cleaned_data['pointloc']
         if not pointloc:
-            lat = form.cleaned_data['latitude']
-            lon = form.cleaned_data['longitude']
+            lat = form.cleaned_data['lat']
+            lon = form.cleaned_data['lon']
         else:
             lon, lat = pointloc.coords
 
