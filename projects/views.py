@@ -119,8 +119,7 @@ def cleanup(request):
     ).annotate(name_count=Count('name')).filter(name_count__gt=1)
     dups = ProjectTbl.objects.filter(name__in=[item['name'] for item in duplicate_projects]).order_by('name')
     table = DuplicateProjectTable(dups)
-    context = {'projects': dups,
-               'project_table': table}
+    context = {'project_table': table}
     template = loader.get_template('projects/cleanup.html')
     RequestConfig(request).configure(table)
 
