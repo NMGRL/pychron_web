@@ -36,4 +36,44 @@ class ProjectTable(tables.Table):
         template_name = "django_tables2/bootstrap.html"
         fields = ['id', 'name', 'piname']
         attrs = {'class': 'table table-condensed'}
+
+def closure():
+    _state = {}
+
+    def duplicate_render_row(record):
+        c = 'g0'
+        if _state:
+            c = _state['c']
+
+        name = record.name
+        if _state and name != _state['name']:
+            c = 'g1'
+            if _state['c'] == c:
+                c = 'g0'
+
+        _state['name'] = name
+        _state['c'] = c
+        return c
+        # ipt = Irradiationpositiontbl.objects.filter(sampleid=record.id).first()
+        # c = ''
+        # if ipt:
+        #     c = 'loaded_for_irradiation'
+        #     a = Analysistbl.objects.filter(irradiation_positionid=ipt.id).first()
+        #     if a:
+        #         c = 'analyzed'
+        # return c
+
+    return duplicate_render_row
+
+
+class DuplicateProjectTable(ProjectTable):
+    nsamples = tables.Column(accessor='nsamples')
+
+    class Meta:
+        model = ProjectTbl
+        template_name = "django_tables2/bootstrap.html"
+        fields = ['id', 'name', 'piname', 'nsamples']
+        attrs = {'class': 'table table-condensed'}
+
+        row_attrs = {'class': closure()}
 # ============= EOF =============================================

@@ -1,13 +1,15 @@
+from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.views.generic import DetailView
+from django_tables2 import RequestConfig
 
 from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
 
 from samples.models import ProjectTbl, PrincipalInvestigatorTbl, Userpiassociationtbl
-from projects.tables import ProjectTable
+from projects.tables import ProjectTable, DuplicateProjectTable
 from samples.models import SampleTbl
 from samples.tables import SampleTable
 from util import get_center
@@ -108,3 +110,18 @@ class ProjectDetailView(DetailView):
         context['samples'] = records
         context['center'] = center
         return context
+
+
+@login_required
+def cleanup(request):
+    duplicate_projects = ProjectTbl.objects.values(
+        'name'
+    ).annotate(name_count=Count('name')).filter(name_count__gt=1)
+    dups = ProjectTbl.objects.filter(name__in=[item['name'] for item in duplicate_projects]).order_by('name')
+    table = DuplicateProjectTable(dups)
+    context = {'projects': dups,
+               'project_table': table}
+    template = loader.get_template('projects/cleanup.html')
+    RequestConfig(request).configure(table)
+
+    return HttpResponse(template.render(context, request))

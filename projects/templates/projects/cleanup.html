@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{#{% load leaflet_tags %}#}
+{% load static %}
+{% load django_tables2 %}
+{% load bootstrap3 %}
+
+{% block head %}
+{#    <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">#}
+{#    {% leaflet_js %}#}
+{#    {% leaflet_css %}#}
+{% endblock %}
+
+{% block content %}
+     <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h2 class="panel-title">Samples</h2>
+        </div>
+     </div>
+    <div class="scrolly">
+            {% render_table project_table %}
+        </div>
+
+{% endblock %}

@@ -36,6 +36,10 @@ class ProjectTbl(models.Model):
     def piname(self):
         return f'{self.name}({self.principal_investigatorid.full_name})'
 
+    @property
+    def nsamples(self):
+        return SampleTbl.objects.filter(projectid=self.id).count()
+
     def get_absolute_url(self):
         return '/projects/{}/'.format(self.id)
 
