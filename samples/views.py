@@ -235,7 +235,8 @@ class SampleDetailView(DetailView):
                 'name': self.object.name,
                 'lat': lat,
                 'lon': lon,
-                'unit': self.object.unit})
+                'unit': self.object.unit},
+                form_action='edit_sample')
 
             context['form'] = form
 

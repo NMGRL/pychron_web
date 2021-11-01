@@ -90,6 +90,10 @@ class SampleForm(forms.ModelForm):
         return obj.full_name
 
     def __init__(self, *args, **kwargs):
+        form_action = None
+        if 'form_action' in kwargs:
+            form_action = kwargs.pop('form_action')
+
         super().__init__(*args, **kwargs)
 
         self.fields['project'].label_from_instance = self.project_label
@@ -99,7 +103,7 @@ class SampleForm(forms.ModelForm):
         self.helper.form_id = 'id-exampleForm'
         self.helper.form_class = 'blueForms'
         self.helper.form_method = 'post'
-        self.helper.form_action = 'submit_sample'
+        self.helper.form_action = form_action or 'submit_sample'
 
         self.helper.add_input(Submit('submit', 'Submit'))
 
