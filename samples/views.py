@@ -88,6 +88,17 @@ def get_sample_queryset(request):
 @login_required
 def entry(request):
     form = SampleForm()
+    psample = request.session.get('sample')
+    if psample:
+        for k in form.remembered_fields:
+            v = psample.get(k)
+            if k == 'project':
+                v = ProjectTbl.objects.filter(id=v).first()
+            elif k == 'material':
+                v = Materialtbl.objects.filter(id=v).first()
+
+            form.fields[k].initial = v
+
     # projform = ProjectForm()
 
     samples = get_sample_queryset(request)
@@ -152,11 +163,26 @@ def submit_sample(request):
     # template = loader.get_template('samples/add_sample.html')
     # context = {'samples': SampleTbl.objects.order_by('-id')[:10]}
     if request.method == 'POST':
+
         form = SampleForm(request.POST)
+
         if form.is_valid():
             s = SampleTbl()
             set_sample_from_form(s, form)
 
+            ctx = {}
+            for k in form.remembered_fields:
+                kk = k
+                if k == 'project':
+                    kk = 'projectid_id'
+                elif k == 'material':
+                    kk = 'materialid_id'
+                try:
+                    ctx[k] = getattr(s, kk)
+                except AttributeError:
+                    ctx[k] = form.cleaned_data[k]
+
+            request.session['sample'] = ctx
             ss = Samplesubmittbl()
             ss.user = request.user
             ss.sample = s

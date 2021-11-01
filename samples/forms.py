@@ -74,12 +74,14 @@ class SampleForm(forms.ModelForm):
                              required=False)
 
     # grainsize = forms.CharField(label='Grainsize', required=False)
+    remembered_fields = ('project', 'material', 'lat', 'lon', 'unit', 'easting', 'northing', 'datum', 'zone')
 
     class Meta:
         model = SampleTbl
         fields = ('project', 'material',
                   'name', 'unit', 'lat', 'lon', 'easting',
                   'northing', 'zone', 'datum', 'pointloc')
+
 
     @staticmethod
     def project_label(obj):
