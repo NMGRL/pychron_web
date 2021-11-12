@@ -28,7 +28,7 @@ class ProjectForm(forms.ModelForm):
                                                     widget=autocomplete.ModelSelect2(
                                                         url=reverse_lazy('principalinvestigator-autocomplete')))
     name = forms.CharField(label='Project',
-                           help_text='Use ? if you want PizzaTracker to automatically generate a Project name based '
+                           help_text='Use ? if you want SampleTracker to automatically generate a Project name based '
                                      'on the Principal Investigator')
 
     class Meta:
