@@ -81,7 +81,7 @@ RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
 # change to the app user
 USER app
-#CMD python manage.py collectstatic --no-input --clear
+CMD python manage.py collectstatic --no-input --clear
 
 # run entrypoint.prod.sh
 ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
