@@ -4,8 +4,6 @@ services:
   web:
     restart: always
     build: ./web
-      context: .
-      dockerfile: ./Dockerfile
     #command: gunicorn pychronweb.wsgi:application --bind 0.0.0.0:8000
     command: gunicorn pychronweb.wsgi:application -w 2 -b :8
     volumes:
