@@ -105,15 +105,10 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': engine,
-        # 'NAME': os.environ.get('DATABASE_NAME'),
-        # 'USER': os.environ.get('DATABASE_USER'),
-        # 'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        # 'HOST': os.environ.get('DATABASE_HOST'),
-
-        'NAME': 'pychrondvc_import',
-        'USER': 'root',
-        'PASSWORD': 'geochr0n!!',
-        'HOST': 'localhost'
+        'NAME': os.environ.get('DATABASE_NAME'),
+        'USER': os.environ.get('DATABASE_USER'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'HOST': os.environ.get('DATABASE_HOST'),
     }
 }
 
