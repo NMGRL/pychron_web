@@ -22,9 +22,9 @@ from pychronweb import views
 from samples.views import ProjectAutocomplete, MaterialAutocomplete, PrincipalInvestigatorAutocomplete
 
 urlpatterns = [
-    path('', views.index),
-    path('admin/', admin.site.urls),
-    path('samples/', include('samples.urls')),
+    path('labs/argon/pizzatracker', views.index),
+    path('labs/argon/pizzatracker/admin/', admin.site.urls),
+    path('labs/argon/pizzatracker/samples/', include('samples.urls')),
     path('projects/', include('projects.urls')),
     path('materials/', include('materials.urls')),
     path('events/', include('events.urls')),
