@@ -32,12 +32,12 @@ class TrackerTable(tables.Table):
 
     material = tables.Column(accessor='material',
                              verbose_name='Material',
-                             linkify=lambda record: reverse('material:detail', args=[record['material']]), )
+                             linkify=lambda record: reverse('material:detail', args=[record['material_id']]), )
     # linkify=lambda record: reverse('materials:detail'))
     # grainsize = tables.Column(accessor='materialid__grainsize')
     project = tables.Column(accessor='project',
                             verbose_name='Project',
-                            linkify=lambda record: reverse('project:detail', args=[record['project']]), )
+                            linkify=lambda record: reverse('project:detail', args=[record['project_id']]), )
 
     # principal_investigator = tables.Column(accessor='projectid__principal_investigatorid__full_name',
     #                                        verbose_name='Principal Investigator',
