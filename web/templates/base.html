@@ -57,8 +57,8 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                  role="button" aria-haspopup="true" aria-expanded="false">Principal Investigators</a>
               <ul class="dropdown-menu">
-                  <li><a href="/principal_investigators">View</a></li>
-                  <li><a href="/principal_investigators/entry">Entry</a></li>
+                  <li><a href={% url "principal_investigators:index" %}>View</a></li>
+                  <li><a href={% url "principal_investigators:entry" %}>Entry</a></li>
               </ul>
           </li>
           <li class="dropdown{% if request.resolver_match.view_name == 'projects:index' %}
@@ -66,9 +66,10 @@
               <a href="" class="dropdown-toggle" data-toggle="dropdown"
                  role="button" aria-haspopup="true" aria-expanded="false">Projects</a>
               <ul class="dropdown-menu">
-                  <li><a href="/projects">View</a></li>
-                  <li><a href="/projects/entry">Entry</a></li>
-                  <li><a href="/projects/cleanup">Cleanup</a></li>
+                  <li><a href={% url "projects:index" %}>View</a></li>
+                  <li><a href={% url "projects:entry" %}>Entry</a></li>
+                  <li><a href={% url "projects:cleanup" %}>Cleanup</a></li>
+
               </ul>
           </li>
           <li class="dropdown{% if request.resolver_match.view_name == 'materials:index' %}
@@ -76,33 +77,33 @@
               <a href="" class="dropdown-toggle" data-toggle="dropdown"
                  role="button" aria-haspopup="true" aria-expanded="false">Materials</a>
               <ul class="dropdown-menu">
-                  <li><a href="/materials">View</a></li>
-                  <li><a href="/materials/entry">Entry</a></li>
+                  <li><a href={% url "materials:index" %}>View</a></li>
+                  <li><a href={% url "materials:entry" %}>Entry</a></li>
               </ul>
           </li>
           <li class="dropdown{% if request.resolver_match.view_name == 'samples:index' %}
               active {% endif %}">
               <a href="" class="dropdown-toggle" data-toggle="dropdown"
-                 role="button" aria-haspopup="true" aria-expanded="false">Samples</span></a>
+                 role="button" aria-haspopup="true" aria-expanded="false">Samples</a>
               <ul class="dropdown-menu">
-                  <li><a href="/samples">View</a></li>
-                  <li><a href="/samples/entry">Entry</a></li>
+                  <li><a href={% url "samples:index" %}>View</a></li>
+                  <li><a href={% url "samples:entry" %}>Entry</a></li>
               </ul>
           </li>
             <li {% if request.resolver_match.view_name == 'events:index' %}class="active"{% endif %}><a
-                href="/events">Events<span class="sr-only">(current)</span></a></li>
+                href={% url "events" %}>Events<span class="sr-only">(current)</span></a></li>
 
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
-              <li><a href="/dashboard">{{ user.get_username }}</a></li>
+              <li><a href={% url "dashboard" %}>{{ user.get_username }}</a></li>
           {% endif %}
           {% if user.is_authenticated %}
               <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
               {% if user.is_superuser %}
               <li><a href="{% url 'manage'%}?next={{request.path}}">Manage</a></li>
-              <li><a href="/admin">Admin</a></li>
+              <li><a href={% url "admin" %}>Admin</a></li>
               {% endif %}
           {% else %}
               <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
