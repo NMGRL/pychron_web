@@ -82,9 +82,9 @@ def get_pizza_tracker(sids):
              'received': event(es, 'received') or False,
              'prepped': event(es, 'prepped') or False,
              'project': e0['sample__projectid__name'],
-             'material': e0['sample__materialid_name'],
+             'material': e0['sample__materialid__name'],
              'project_id': e0['sample__projectid__id'],
-             'material_id': e0['sample__materialid_id'],
+             'material_id': e0['sample__materialid__id'],
              'irradiated': istring or False,
              'analyzed': ans.dtimestamp if ans else False
              }
