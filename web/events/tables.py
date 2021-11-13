@@ -14,6 +14,7 @@
 # limitations under the License.
 # ===============================================================================
 import django_tables2 as tables
+from django.urls import reverse
 from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 
@@ -31,7 +32,7 @@ class TrackerTable(tables.Table):
 
     material = tables.Column(accessor='material',
                              verbose_name='Material',
-                             linkify=lambda record: f'materials/{record["material"]}/')
+                             linkify=lambda record: reverse('materials:detail', args=[record["material"]]))
     # grainsize = tables.Column(accessor='materialid__grainsize')
     project = tables.Column(accessor='project',
                             verbose_name='Project',
