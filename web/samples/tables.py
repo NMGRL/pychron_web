@@ -15,6 +15,7 @@
 # ===============================================================================
 
 import django_tables2 as tables
+from django.urls import reverse
 from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 
@@ -56,15 +57,16 @@ def render_row(record):
 class SampleTable(tables.Table):
     material = tables.Column(accessor='materialid__name',
                              verbose_name='Material',
-                             linkify=lambda record: f'/materials/{record.materialid_id}/')
+                             linkify=lambda record: reverse('materials:detail', args=[record.materialid_id]))
     grainsize = tables.Column(accessor='materialid__grainsize')
     project = tables.Column(accessor='projectid__name',
                             verbose_name='Project',
-                            linkify=lambda record: f'/projects/{record.projectid_id}')
+                            linkify=lambda record: reverse('projects:detail', args=[record.projectid_id]))
     principal_investigator = tables.Column(accessor='projectid__principal_investigatorid__full_name',
                                            verbose_name='Principal Investigator',
                                            linkify=lambda
-                                               record: f'/principal_investigators/{record.projectid.principal_investigatorid.id}')
+                                               record: reverse('principal_investigators:detail',
+                                                               args=[record.projectid.principal_investigatorid.id]))
 
     lat = tables.Column(verbose_name='Latitude', accessor='lat')
     lon = tables.Column(verbose_name='Longitude', accessor='lon')
