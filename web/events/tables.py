@@ -31,11 +31,11 @@ class TrackerTable(tables.Table):
 
     material = tables.Column(accessor='material',
                              verbose_name='Material',
-                             linkify=lambda record: f'/materials/{record["material"]}/')
+                             linkify=lambda record: f'materials/{record["material"]}/')
     # grainsize = tables.Column(accessor='materialid__grainsize')
     project = tables.Column(accessor='project',
                             verbose_name='Project',
-                            linkify=lambda record: f'/projects/{record["project"]}')
+                            linkify=lambda record: f'projects/{record["project"]}')
 
     # principal_investigator = tables.Column(accessor='projectid__principal_investigatorid__full_name',
     #                                        verbose_name='Principal Investigator',
@@ -74,15 +74,15 @@ class SimpleEventsTable(tables.Table):
 
 
 class EventsTable(SimpleEventsTable):
-    sample = tables.Column(linkify=lambda record: f'/samples/{record.sample.id}',
+    sample = tables.Column(linkify=lambda record: f'samples/{record.sample.id}',
                            verbose_name='Sample',
                            accessor='sample.name')
     project = tables.Column(accessor='sample__projectid__name',
                             verbose_name='Project',
-                            linkify=lambda record: f'/projects/{record.sample.projectid_id}')
+                            linkify=lambda record: f'projects/{record.sample.projectid_id}')
     principal_investigator = tables.Column(accessor='sample__projectid__principal_investigatorid__full_name',
                                            verbose_name='Principal Investigator',
                                            linkify=lambda
-                                               record: f'/principal_investigators/'
+                                               record: f'principal_investigators/'
                                                        f'{record.sample.projectid.principal_investigatorid.id}')
 # ============= EOF =============================================
