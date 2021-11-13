@@ -12,19 +12,14 @@ from django.template import loader
 import django_tables2 as tables
 from django_tables2 import RequestConfig
 
-from events.models import EventsTbl
-from events.tables import EventsTable, TrackerTable
-from events.util import get_pizza_tracker
-from samples.filters import SampleFilter
-from samples.views import get_sample_queryset
-from util import get_center
-#
-#
-#
+
+# from events.tables import EventsTable, TrackerTable
 from django.http import HttpResponseRedirect
 
-from events.models import EventTypeTbl, EventsTbl
-from samples.models import SampleTbl
+from web.events.util import get_pizza_tracker
+from web.events.models import EventsTbl, EventTypeTbl
+from web.events.tables import EventsTable, TrackerTable
+from web.samples.models import SampleTbl
 
 
 @login_required

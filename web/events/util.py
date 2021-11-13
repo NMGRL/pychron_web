@@ -20,8 +20,8 @@ from operator import itemgetter
 
 import pytz
 
-from analyses.models import Irradiationtbl, Analysistbl
-from events.models import EventsTbl
+from web.analyses.models import Irradiationtbl, Analysistbl
+from web.events.models import EventsTbl
 from django.conf import settings
 
 os.environ['TZ'] = settings.TIME_ZONE
@@ -79,8 +79,8 @@ def get_pizza_tracker(sids):
         t = {'sample': e0['sample__name'],
              'received': event(es, 'received') or False,
              'prepped': event(es, 'prepped') or False,
-             'project': e0['sample__projectid__name'],
-             'material': e0['sample__materialid__name'],
+             'project': e0['sample__projectid'],
+             'material': e0['sample__materialid'],
              'irradiated': istring or False,
              'analyzed': ans.dtimestamp if ans else False
              }

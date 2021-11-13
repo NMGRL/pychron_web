@@ -32,12 +32,12 @@ class TrackerTable(tables.Table):
 
     material = tables.Column(accessor='material',
                              verbose_name='Material',
-                             linkify= lambda record: '',)
-                             # linkify=lambda record: reverse('materials:detail'))
+                             linkify=lambda record: reverse('material:detail', args=[record['material'].id]), )
+    # linkify=lambda record: reverse('materials:detail'))
     # grainsize = tables.Column(accessor='materialid__grainsize')
     project = tables.Column(accessor='project',
                             verbose_name='Project',
-                            linkify=lambda record: f'projects/{record["project"]}')
+                            linkify=lambda record: reverse('project:detail', args=[record['project'].id]), )
 
     # principal_investigator = tables.Column(accessor='projectid__principal_investigatorid__full_name',
     #                                        verbose_name='Principal Investigator',
@@ -55,7 +55,7 @@ class TrackerTable(tables.Table):
 
 class SimpleEventsTable(tables.Table):
     event_type = tables.Column(accessor='event_type__name', verbose_name='Event Type',
-                               attrs={'td':{'class': 'details'}})
+                               attrs={'td': {'class': 'details'}})
     message = tables.Column(accessor='message')
     created_at = tables.DateTimeColumn(accessor='created_at', verbose_name='Created At',
                                        format='m/d/Y h:i A')
@@ -81,12 +81,11 @@ class EventsTable(SimpleEventsTable):
                            accessor='sample.name')
     project = tables.Column(accessor='sample__projectid__name',
                             verbose_name='Project',
-                            linkify=lambda record: f'projects/{record.sample.projectid_id}')
+                            linkify=lambda record: reverse('projects:detail', args=[record.sample.projectid_id]))
     principal_investigator = tables.Column(accessor='sample__projectid__principal_investigatorid__full_name',
                                            verbose_name='Principal Investigator',
-                                           linkify=lambda
-                                               record: reverse(f'principal_investigators:detail',
-                                                               args=[
-                                                                   record.sample.projectid.principal_investigatorid.id])
+                                           linkify=lambda record: reverse('principal_investigators:detail',
+                                                                          args=[
+                                                                              record.sample.projectid.principal_investigatorid.id])
                                            )
 # ============= EOF =============================================
