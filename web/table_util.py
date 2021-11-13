@@ -14,6 +14,7 @@
 # limitations under the License.
 # ===============================================================================
 import django_tables2 as tables
+from django.templatetags.static import static
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
@@ -33,7 +34,7 @@ class ImageColumn(tables.Column):
             dt = ''
             src = ''
             # t = f'<img class="icon" src="{self._image_src}"/></a>'
-
-        return mark_safe(f'<img class="icon" src="{{% static {src} %}}"/> {dt}')
+        src = static(src)
+        return mark_safe(f'<img class="icon" src="{src}"/> {dt}')
 
 # ============= EOF =============================================
