@@ -42,6 +42,8 @@ COPY . .
 
 # pull official base image
 FROM python:3.9.6-alpine
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 # create directory for the app user
 RUN mkdir -p /home/app

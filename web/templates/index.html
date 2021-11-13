@@ -15,12 +15,14 @@
         <div class="well">
             The following process is used to add a sample to the system.
             <ol>
-                <li>Add the <a href="/principal_investigators/entry"> Principal Investigator</a>.  Enter a single
+                <li>Add the <a href={% url "principal_investigators:entry" %}> Principal Investigator</a>.  Enter a
+                    single
                     name or lastName,firstInitial  e.g "Ross,J" </li>
-                <li>Add the <a href="/projects/entry">Project.</a> Select the Principal Investigator from step 1.
+                <li>Add the <a href={% url "projects:entry" %}>Project.</a> Select the Principal Investigator from
+                    step 1.
                     Enter a <strong>name</strong> for the Project. If <code>?</code> is used than the project name will be
                     generated from the PI's<code>last name</code> and the Project's <code>IR number</code></li>
-                <li>Add the <a href="/samples/entry">Sample</a></li>
+                <li>Add the <a href={% url "samples:entry" %}>Sample</a></li>
             </ol>
         </div>
         <div class="row">
@@ -30,10 +32,10 @@
                         <h1 class="panel-title">View</h1>
                     </div>
                     <div class="list-group">
-                        <a class="list-group-item" href="/principal_investigators">Principal Investigators</a>
-                        <a class="list-group-item" href="/projects">Projects</a>
-                        <a class="list-group-item" href="/materials">Materials</a>
-                        <a class="list-group-item" href="/samples">Samples</a>
+                        <a class="list-group-item" href={% url "principal_invesitgators" %}>Principal Investigators</a>
+                        <a class="list-group-item" href={% url "projects" %}>Projects</a>
+                        <a class="list-group-item" href={% url "materials" %}>Materials</a>
+                        <a class="list-group-item" href={% url "samples" %}>Samples</a>
                     </div>
                 </div>
             </div>
@@ -43,10 +45,11 @@
                         <h1 class="panel-title">Entry</h1>
                     </div>
                     <div class="list-group">
-                        <a class="list-group-item" href="/principal_investigators/entry">Principal Investigators</a>
-                        <a class="list-group-item" href="/projects/entry">Projects</a>
-                        <a class="list-group-item" href="/materials/entry">Materials</a>
-                        <a class="list-group-item" href="/samples/entry">Samples</a>
+                        <a class="list-group-item" href={% url "principal_invesitgators:entry" %}>Principal
+                            Investigators</a>
+                        <a class="list-group-item" href={% url "projects:entry" %}>Projects</a>
+                        <a class="list-group-item" href={% url "materials:entry" %}>Materials</a>
+                        <a class="list-group-item" href={% url "samples:entry" %}>Samples</a>
                     </div>
                 </div>
             </div>
