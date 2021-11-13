@@ -91,7 +91,7 @@
               </ul>
           </li>
             <li {% if request.resolver_match.view_name == 'events:index' %}class="active"{% endif %}><a
-                href={% url "events" %}>Events<span class="sr-only">(current)</span></a></li>
+                href={% url "events:index" %}>Events<span class="sr-only">(current)</span></a></li>
 
       </ul>
 
