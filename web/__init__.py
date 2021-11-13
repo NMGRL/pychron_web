@@ -13,27 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-import django_tables2 as tables
-from django.utils.html import escape
-from django.utils.safestring import mark_safe
 
-
-class ImageColumn(tables.Column):
-    def __init__(self, image, *args, **kw):
-        self._image_src = image
-        super(ImageColumn, self).__init__(*args, **kw)
-
-    def render(self, value):
-        if value:
-            src = self._image_src
-            if not isinstance(value, bool):
-                dt = value
-
-        else:
-            dt = ''
-            src = ''
-            # t = f'<img class="icon" src="{self._image_src}"/></a>'
-
-        return mark_safe(f'<img class="icon" src="{{% static {src} %}}"/> {dt}')
 
 # ============= EOF =============================================

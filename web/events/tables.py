@@ -24,10 +24,10 @@ from table_util import ImageColumn
 
 class TrackerTable(tables.Table):
     sample = tables.Column(accessor='sample')
-    received = ImageColumn('static/events/img/package.png', accessor='received')
-    prepped = ImageColumn('static/events/img/beaker.png', accessor='prepped')
-    irradiated = ImageColumn('static/events/img/radioactivity.png', accessor='irradiated')
-    analyzed = ImageColumn('static/events/img/assembled_diagram.png', accessor='analyzed')
+    received = ImageColumn('events/img/package.png', accessor='received')
+    prepped = ImageColumn('events/img/beaker.png', accessor='prepped')
+    irradiated = ImageColumn('events/img/radioactivity.png', accessor='irradiated')
+    analyzed = ImageColumn('events/img/assembled_diagram.png', accessor='analyzed')
 
     material = tables.Column(accessor='material',
                              verbose_name='Material',
