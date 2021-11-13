@@ -76,7 +76,7 @@ class SimpleEventsTable(tables.Table):
 
 
 class EventsTable(SimpleEventsTable):
-    sample = tables.Column(linkify=lambda record: f'samples/{record.sample.id}',
+    sample = tables.Column(linkify=lambda record: reverse('samples:detail', args=[record.sample.id]),
                            verbose_name='Sample',
                            accessor='sample.name')
     project = tables.Column(accessor='sample__projectid__name',
