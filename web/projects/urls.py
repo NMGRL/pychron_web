@@ -23,7 +23,7 @@ urlpatterns = [
     path('submit_project', views.submit_project, name='submit_project'),
     path('entry', views.entry, name='entry'),
     path('<int:pk>/', views.ProjectDetailView.as_view(), name='detail'),
-    path('cleanup', views.cleanup, name='cleanup_projects'),
+    path('cleanup', views.cleanup, name='cleanup'),
 
 ]
 # ============= EOF =============================================
