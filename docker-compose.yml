@@ -5,7 +5,7 @@ services:
     restart: always
     build: ./web
     #command: gunicorn pychronweb.wsgi:application --bind 0.0.0.0:8000
-    command: gunicorn pychronweb.wsgi:application -w 2 -b :8000
+    command: gunicorn pychronweb.wsgi:application -w 2 -b :8000 --reload
     volumes:
       - web-django:/home/app/web
       - static_volume:/home/app/web/staticfiles
