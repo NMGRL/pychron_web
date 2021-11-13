@@ -74,7 +74,7 @@ ENV C_INCLUDE_PATH=/usr/include/gdal
 COPY . $APP_HOME
 # change to the app user
 
-RUN mkdir $APP_HOME/staticfiles
+#RUN mkdir $APP_HOME/staticfiles
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
