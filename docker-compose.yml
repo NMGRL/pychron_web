@@ -7,7 +7,7 @@ services:
     #command: gunicorn pychronweb.wsgi:application --bind 0.0.0.0:8000
     command: gunicorn pychronweb.wsgi:application -w 2 -b :8000 --reload
     volumes:
-      - .:/home/app/web
+      - ./web:/home/app/web
       - static_volume:/home/app/web/staticfiles
     expose:
       - 8000
