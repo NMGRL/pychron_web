@@ -84,6 +84,8 @@ class EventsTable(SimpleEventsTable):
     principal_investigator = tables.Column(accessor='sample__projectid__principal_investigatorid__full_name',
                                            verbose_name='Principal Investigator',
                                            linkify=lambda
-                                               record: f'principal_investigators/'
-                                                       f'{record.sample.projectid.principal_investigatorid.id}')
+                                               record: reverse(f'principal_investigators:detail',
+                                                               args=[
+                                                                   record.sample.projectid.principal_investigatorid.id])
+                                           )
 # ============= EOF =============================================
