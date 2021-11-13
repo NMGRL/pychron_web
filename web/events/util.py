@@ -20,8 +20,8 @@ from operator import itemgetter
 
 import pytz
 
-from web.analyses.models import Irradiationtbl, Analysistbl
-from web.events.models import EventsTbl
+from analyses.models import Irradiationtbl, Analysistbl
+from events.models import EventsTbl
 from django.conf import settings
 
 os.environ['TZ'] = settings.TIME_ZONE

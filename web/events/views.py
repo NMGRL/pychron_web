@@ -16,10 +16,10 @@ from django_tables2 import RequestConfig
 # from events.tables import EventsTable, TrackerTable
 from django.http import HttpResponseRedirect
 
-from web.events.util import get_pizza_tracker
-from web.events.models import EventsTbl, EventTypeTbl
-from web.events.tables import EventsTable, TrackerTable
-from web.samples.models import SampleTbl
+from events.util import get_pizza_tracker
+from events.models import EventsTbl, EventTypeTbl
+from events.tables import EventsTable, TrackerTable
+from samples.models import SampleTbl
 
 
 @login_required
