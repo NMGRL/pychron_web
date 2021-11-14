@@ -38,8 +38,10 @@ class ActionColumn(tables.Column):
         if any(e.event_type.name == self.event_tag for e in evts.all()):
             return mark_safe('')
         else:
+            from django.templatetags.static import static
+            src = static(f'samples/img/{escape(self.image)}')
             return mark_safe(f'<a href=/events/{escape(self.event_tag)}/{value}>'
-                             f'<img src="/static/samples/img/{escape(self.image)}"/ '
+                             f'<img src={src}/ '
                              f'style="width:16px;height:16px;"></a>')
 
 
