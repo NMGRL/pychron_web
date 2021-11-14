@@ -1,10 +1,10 @@
 {% extends "base.html" %}
+{% load leaflet_tags %}
+{% load static %}
 {% load django_tables2 %}
 {% load bootstrap3 %}
-{% load static %}
-{% load leaflet_tags %}
 {% block head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
+{#    <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">#}
     {% leaflet_js %}
     {% leaflet_css %}
 {% endblock %}
@@ -28,6 +28,25 @@
                         {% if center %}
                             map.setView({{ center }})
                         {% endif %}
+
+                        let macrostrat = L.tileLayer('http://tiles.macrostrat.org/carto/{z}/{x}/{y}.png',
+                            {
+                                'attribution': '<a href="macrostrat.org"> Macrostrat.org</a>'
+                            }).setOpacity(0.25);
+
+                        let usgs_topo = L.tileLayer(
+                            'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
+                                        {'attribution': 'Tiles courtesy of the <a href="https://usgs.gov/">U.S.Geological Survey</a>'
+                            })
+                        let hill_shade = L.tileLayer('http://tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png',
+                            {'attribution': 'Tiles courtesy of wmflabs.org'})
+
+                        let baseMaps = {"USGS Topo": usgs_topo, "HillShade": hill_shade}
+
+                        let overlaysMaps = {"Macrostrat": macrostrat}
+                        L.control.layers(baseMaps, overlaysMaps).addTo(map)
+                        usgs_topo.addTo(map)
+                        macrostrat.addTo(map)
 
                         {% for s in samples %}
                             L.circleMarker([{{ s.lat }}, {{ s.lon }}],
