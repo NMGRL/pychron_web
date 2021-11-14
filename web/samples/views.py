@@ -14,6 +14,7 @@ from django.contrib.gis.geos.point import Point
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, CreateView
 from django_tables2 import RequestConfig
@@ -232,7 +233,7 @@ def edit_sample(request, sample_id):
 
             sid = s.id
 
-    return HttpResponseRedirect(f'/samples/{sid}/')
+    return HttpResponseRedirect(reverse('samples:detail', args=[sid]))
 
 
 class SampleDetailView(DetailView):
