@@ -31,7 +31,7 @@ urlpatterns = [
     path('principal_investigators/', include('principal_investigators.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
 
-    url(r"^", include("users.urls")),
+    path(r"^", include("users.urls")),
 
     path('project-autocomplete/', ProjectAutocomplete.as_view(), name='project-autocomplete'),
     path('material-autocomplete/', MaterialAutocomplete.as_view(), name='material-autocomplete'),
