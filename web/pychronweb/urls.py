@@ -22,7 +22,7 @@ from pychronweb import views
 from samples.views import ProjectAutocomplete, MaterialAutocomplete, PrincipalInvestigatorAutocomplete
 
 urlpatterns = [
-    path('', views.index),
+    path('', views.index, name='home'),
     path('admin/', admin.site.urls),
     path('samples/', include('samples.urls')),
     path('projects/', include('projects.urls')),
