@@ -22,7 +22,7 @@ from samples.models import PrincipalInvestigatorTbl
 
 class PrincipalInvestigatorColumn(tables.Column):
     def get_url(self, record, **kw):
-        return reverse('principal_investigator:detail', args=[record.id])
+        return reverse('principal_investigators:detail', args=[record.id])
 
 
 class PrincipalInvestigatorsTable(tables.Table):
