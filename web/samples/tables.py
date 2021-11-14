@@ -54,6 +54,11 @@ def render_row(record):
     return c
 
 
+class SamplesColumn(tables.Column):
+    def get_url(self, record, **kw):
+        return reverse('samples:detail', args=[record.id])
+
+
 class SampleTable(tables.Table):
     material = tables.Column(accessor='materialid__name',
                              verbose_name='Material',
@@ -70,8 +75,8 @@ class SampleTable(tables.Table):
 
     lat = tables.Column(verbose_name='Latitude', accessor='lat')
     lon = tables.Column(verbose_name='Longitude', accessor='lon')
-    id = tables.Column(linkify=True, accessor='id')
-    name = tables.Column(linkify=True, accessor='name')
+    id = SamplesColumn(accessor='id')
+    name = SamplesColumn(accessor='name')
     irradiations = tables.Column(empty_values=())
 
     received = ActionColumn('received', 'arrow-down-double-3.png', accessor='id', verbose_name='Check In')
