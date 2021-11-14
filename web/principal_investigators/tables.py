@@ -15,13 +15,19 @@
 # ===============================================================================
 
 import django_tables2 as tables
+from django.urls import reverse
 
 from samples.models import PrincipalInvestigatorTbl
 
 
+class PrincipalInvestigatorColumn(tables.Column):
+    def get_url(self, record, **kw):
+        return reverse('principal_investigator:detail', args=[record.id])
+
+
 class PrincipalInvestigatorsTable(tables.Table):
-    id = tables.Column(linkify=True, accessor='id')
-    name = tables.Column(linkify=True, accessor='full_name')
+    id = PrincipalInvestigatorColumn(accessor='id')
+    name = PrincipalInvestigatorColumn(accessor='full_name')
 
     class Meta:
         model = PrincipalInvestigatorTbl
