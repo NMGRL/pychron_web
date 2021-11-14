@@ -15,18 +15,24 @@
 # ===============================================================================
 
 import django_tables2 as tables
+from django.urls import reverse
 
 from samples.models import ProjectTbl
 
 
 class PIColumn(tables.Column):
     def get_url(self, record=None, **kw):
-        return f'/principal_investigators/{record.principal_investigatorid.id}'
+        return reverse('principal_investigators:detail', args=[record.principal_investigatorid.id])
+
+
+class ProjectColumn(tables.Column):
+    def get_url(self, record=None, **kw):
+        return reverse('projects:detail', args=[record.id])
 
 
 class ProjectTable(tables.Table):
-    id = tables.Column(linkify=True, accessor='id', verbose_name='IR#')
-    name = tables.Column(linkify=True, accessor='name')
+    id = ProjectColumn(accessor='id', verbose_name='IR#')
+    name = ProjectColumn(accessor='name')
 
     piname = PIColumn(verbose_name='Principal Investigator',
                       accessor='principal_investigatorid__full_name')
@@ -36,6 +42,7 @@ class ProjectTable(tables.Table):
         template_name = "django_tables2/bootstrap.html"
         fields = ['id', 'name', 'piname']
         attrs = {'class': 'table table-condensed'}
+
 
 def closure():
     _state = {}
