@@ -41,7 +41,7 @@ class ActionColumn(tables.Column):
             from django.templatetags.static import static
             src = static(f'samples/img/{escape(self.image)}')
             return mark_safe(f'<a href=/events/{escape(self.event_tag)}/{value}>'
-                             f'<img src={src}/ '
+                             f'<img src={src} '
                              f'style="width:16px;height:16px;"></a>')
 
 
