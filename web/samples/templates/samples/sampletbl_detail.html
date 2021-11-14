@@ -20,13 +20,13 @@
                 <table class="table table-condensed" style="height: 400px">
                     <thead><tr><th>Attribute</th><th>Current Value</th></tr></thead>
 {#                        <tr><td>Sample</td> <td>{{ object.name }}</td></tr>#}
-                    <tr><td>Material</td> <td><a href={% url "materials:detail" "{{ object.materialid.id }}" %}>
+                    <tr><td>Material</td> <td><a href={% url "materials:detail" {{ object.materialid.id }} %}>
                         {{ object.materialid.full_name }}</a></td></tr>
-                    <tr><td>Project</td> <td><a href={% url "projects:detail" "{{ object.projectid.id }}" %}>
+                    <tr><td>Project</td> <td><a href={% url "projects:detail" {{ object.projectid.id }} %}>
                         {{ object.projectid.name }}</a></td></tr>
                     <tr><td>Principal Investigator</td>
                         <td><a href=
-                                {% url "principal_investigators:detail" "{{ object.projectid.principal_investigatorid.id }}" %}>
+                                {% url "principal_investigators:detail" {{ object.projectid.principal_investigatorid.id }} %}>
                         {{ object.projectid.principal_investigatorid.full_name }}</a></td></tr>
                     <tr><td>Unit</td> <td>{{ object.unit }}</td></tr>
                     <tr><td>Latitude</td> <td>{{ object.lat }}</td></tr>
@@ -131,9 +131,9 @@
                     {radius: 3}
                     ).bindPopup(
                         '<table class="table"> \
-    <tr><td>Sample</td><td><a href={% url "samples:detail" "{{ s.id }}" %}>{{ s.name }}</a></td></tr> \
-    <tr><td>Material</td><td><a href={% url "materials:detail" "{{ s.materialid.id }}" %}>{{ s.materialid.full_name }}</a></td></tr> \
-    <tr><td>Project</td><td><a href={% url "projects:detail" "{{ s.projectidid.id }}" %}>{{ s.projectid.piname }}</a></td></tr> \
+    <tr><td>Sample</td><td><a href={% url "samples:detail" {{ s.id }} %}>{{ s.name }}</a></td></tr> \
+    <tr><td>Material</td><td><a href={% url "materials:detail" {{ s.materialid.id }} %}>{{ s.materialid.full_name }}</a></td></tr> \
+    <tr><td>Project</td><td><a href={% url "projects:detail" {{ s.projectidid.id }} %}>{{ s.projectid.piname }}</a></td></tr> \
     <tr><td>Unit</td><td>{{ s.unit }}</td></tr> \
     </table>'
                 ).addTo(map);
