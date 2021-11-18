@@ -65,7 +65,7 @@ def set_password(request):
         if form.is_valid():
             form.save()
             login(request, user)
-            return redirect('/')
+            return redirect(reverse('home'))
     else:
         form = SetPasswordForm(user)
 
