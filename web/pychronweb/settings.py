@@ -153,7 +153,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-LOGIN_REDIRECT_URL = '/signup'
+LOGIN_REDIRECT_URL = 'signup'
+LOGIN_URL = 'accounts/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LEAFLET_CONFIG = {

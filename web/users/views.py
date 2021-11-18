@@ -20,6 +20,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User
 from django.shortcuts import render
+from django.urls import reverse
 from users.forms import SignUpForm
 from users.tokens import account_activation_token
 
@@ -43,7 +44,7 @@ def activate(request, uidb64, token):
 
         user.save()
         login(request, user)
-        return redirect('/set_password')
+        return redirect(reverse('set_password'))
     else:
         return render(request, 'account_activation_invalid.html')
 
