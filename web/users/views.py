@@ -15,6 +15,7 @@
 # ===============================================================================
 import os
 
+from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
@@ -85,14 +86,14 @@ def add_user(request):
                 user.save()
                 current_site = get_current_site(request)
                 # subject = 'Activate Your MySite Account'
-                port = os.environ.get('DJANGO_HOST_PORT', ':1337')
-                if port and not port.startswith(':'):
-                    port = f':{port}'
+                # port = os.environ.get('DJANGO_HOST_PORT', ':1337')
+                # if port and not port.startswith(':'):
+                #     port = f':{port}'
 
                 message = render_to_string('account_activation_email.html', {
                     'user': user,
-                    'port': port,
-                    'domain': current_site.domain,
+                    'domain': settings.DOMAIN,
+                    'prefix': settings.PREFIX,
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                     'token': account_activation_token.make_token(user),
                 })
