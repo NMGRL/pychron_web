@@ -189,7 +189,7 @@ def submit_sample(request):
             ss.sample = s
             ss.save()
 
-            return HttpResponseRedirect('/samples/entry')
+            return HttpResponseRedirect(reverse('samples:entry'))
 
     return HttpResponse('Failed {}'.format(form.errors))
 
