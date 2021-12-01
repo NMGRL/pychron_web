@@ -133,7 +133,7 @@
                         '<table class="table"> \
     <tr><td>Sample</td><td><a href={% url "samples:detail" s.id  %}>{{ s.name }}</a></td></tr> \
     <tr><td>Material</td><td><a href={% url "materials:detail"  s.materialid.id  %}>{{ s.materialid.full_name }}</a></td></tr> \
-    <tr><td>Project</td><td><a href={% url "projects:detail"  s.projectidid.id  %}>{{ s.projectid.piname }}</a></td></tr> \
+    <tr><td>Project</td><td><a href={% url "projects:detail"  s.projectid.id  %}>{{ s.projectid.piname }}</a></td></tr> \
     <tr><td>Unit</td><td>{{ s.unit }}</td></tr> \
     </table>'
                 ).addTo(map);

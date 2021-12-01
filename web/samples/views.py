@@ -232,6 +232,8 @@ def edit_sample(request, sample_id):
                     ev.save()
 
             sid = s.id
+    else:
+        sid = sample_id
 
     return HttpResponseRedirect(reverse('samples:detail', args=[sid]))
 
