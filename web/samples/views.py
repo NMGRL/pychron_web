@@ -133,6 +133,8 @@ def set_sample_from_form(s, form):
     easting = form.cleaned_data['easting']
     zone = form.cleaned_data['zone']
     datum = form.cleaned_data['datum']
+    datum = 'NAD83' if int(datum) == 1 else 'NAD27'
+
     key = '{}{}'.format(zone, datum)
     if northing or easting:
         if key in PROJECTIONS:
