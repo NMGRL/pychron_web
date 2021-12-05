@@ -205,7 +205,7 @@ def clone_repo(name):
     organization = settings.PYCHRON_DATA_ORGANIZATION
     url = f'https://github.com/{organization}/{name}'
     print(f'clone repo {name} url={url}')
-    if not os.path.isdir(name):
+    if not os.path.isdir(f'staticfiles/{name}'):
         try:
             Repo.clone_from(url, f'staticfiles/{name}', depth=10)
             print(f'repo {name} cloned')
