@@ -17,6 +17,7 @@ WORKDIR /usr/src/app
 
 RUN apk update && \
     apk add --no-cache build-base gdal-dev geos-dev geos gdal git &&\
+    apk add --no-cache jpeg-dev zlib-dev &&\
     apk add --no-cache proj proj-dev proj-util &&\
     rm -rf /var/lib/apt/lists/*
 
