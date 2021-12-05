@@ -169,7 +169,7 @@ def plot_assoc(context, assoc):
 
 def plot_analysis(context, repo, uuid):
     root, tail = uuid[:2], uuid[2:]
-    path = os.path.join('repositories', repo, root, f'{tail}.json')
+    path = os.path.join('staticfiles', repo, root, f'{tail}.json')
     with open(path, 'r') as rfile:
         jobj = json.load(rfile)
         print(jobj.keys())
@@ -207,7 +207,7 @@ def clone_repo(name):
     print(f'clone repo {name} url={url}')
     if not os.path.isdir(name):
         try:
-            Repo.clone_from(url, f'repositories/{name}', depth=10)
+            Repo.clone_from(url, f'staticfiles/{name}', depth=10)
             print(f'repo {name} cloned')
         except GitCommandError as e:
             print(e)
