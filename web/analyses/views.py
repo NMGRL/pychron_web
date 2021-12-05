@@ -209,8 +209,8 @@ def clone_repo(name):
         try:
             Repo.clone_from(url, name, depth=10)
             print('repo {name} cloned')
-        except GitCommandError:
-            pass
+        except GitCommandError as e:
+            print(e)
     else:
         print('repo already exists. pulling')
         repo = Repo(name)
