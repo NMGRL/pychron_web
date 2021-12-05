@@ -207,7 +207,7 @@ def clone_repo(name):
     print(f'clone repo {name} url={url}')
     if not os.path.isdir(name):
         try:
-            Repo.clone_from(url, name, depth=10)
+            Repo.clone_from(url, f'staticfiles/{name}', depth=10)
             print('repo {name} cloned')
         except GitCommandError as e:
             print(e)
