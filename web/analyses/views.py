@@ -182,7 +182,7 @@ def plot_analysis(context, repo, uuid):
                                         )])
     context['table'] = rows
     print(context['table'])
-    path = os.path.join(repo, root, '.data', f'{tail}.dat.json')
+    path = os.path.join('staticfiles', repo, root, '.data', f'{tail}.dat.json')
     with open(path, 'r') as rfile:
         dataobj = json.load(rfile)
         # x = [1,2,3,4]
