@@ -5,10 +5,10 @@
 {% load static %}
 {% block head %}
     <link rel="stylesheet" type="text/css" href="{% static 'samples/style.css' %}">
-    <link href="http://cdn.pydata.org/bokeh/release/bokeh-2.4.2.min.css" rel="stylesheet" type="text/css">
-    <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-2.4.2.min.css" rel="stylesheet" type="text/css">
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-2.4.2.min.js"></script>
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-2.4.2.min.js"></script>
+    <link href="https://cdn.pydata.org/bokeh/release/bokeh-2.4.2.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.4.2.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-2.4.2.min.js"></script>
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.4.2.min.js"></script>
     {% for s,d in figures %}
         {{ s | safe }}
     {% endfor %}
