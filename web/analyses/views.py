@@ -1,10 +1,22 @@
-# from django.http import HttpResponse, HttpResponseRedirect
-# from django.template import loader
+import base64
+import json
+import os.path
+import struct
+
+from bokeh.embed import components
+from bokeh.plotting import figure
+from django.conf import settings
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template import loader
 # from django.views.generic import DetailView
 #
 # from projects.filters import ProjectFilter
 # from projects.forms import ProjectForm
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView
+from git import Repo
+from git.exc import GitCommandError
+
 #
 # from samples.models import ProjectTbl, PrincipalInvestigatorTbl
 # from projects.tables import ProjectTable
@@ -105,3 +117,102 @@
 #         table.paginate(page=self.request.GET.get("page", 1), per_page=20)
 #         context['table'] = table
 #         return context
+from analyses.models import AnalysisTbl
+
+from analyses.models import RepositoryAssociationTbl
+
+
+@login_required
+def recent_regressions(request):
+    # get the last n analyses
+    # group by repository identifier
+    # clone each identifier
+    # extract regressions
+    # plot each isotope
+
+    context = {}
+    analyses = AnalysisTbl.objects.order_by('-id')[:2]
+    # repos = {ai.repository for ai in analyses}
+    repo_associations = RepositoryAssociationTbl.objects.filter(analysisID__in=[a.id for a in analyses])
+    repos = {r.repository for r in repo_associations}
+
+    # repos = ['Irradiation-NM-321', ]
+    for r in repos:
+        clone_repo(r)
+
+    for assoc in repo_associations:
+        plot_assoc(context, assoc)
+    # for repo, uuid in (('Irradiation-NM-321', '0a0ff3c4-ef60-4f26-8241-298c57558916'),):
+    #     plot_analyses(context, repo, uuid)
+    # for a in analyses:
+    #     plot_analyses(context, )
+    template = loader.get_template('analyses/recent.html')
+    return HttpResponse(template.render(context, request))
+
+
+def unpack(blob, fmt, step=8):
+    blob = base64.b64decode(blob)
+    return list(
+        zip(
+            *[
+                struct.unpack(fmt, blob[i: i + step])
+                for i in range(0, len(blob), step)
+            ]
+        )
+    )
+
+def plot_assoc(context, assoc):
+    repo = assoc.repository
+    ans = assoc.analysisID
+    plot_analysis(context, repo, ans.uuid)
+
+
+def plot_analysis(context, repo, uuid):
+    root, tail = uuid[:2], uuid[2:]
+    path = os.path.join(repo, root, f'{tail}.json')
+    with open(path, 'r') as rfile:
+        jobj = json.load(rfile)
+        print(jobj.keys())
+    rows = [('Irradiation', f'{jobj["irradiation"]} {jobj["irradiation_level"]}{jobj["irradiation_position"]}'),
+            ('RunID', f'{jobj["identifier"]}-{jobj["aliquot"]}{jobj["increment"] or ""}')]
+
+    rows.extend([(k, jobj[k]) for k in ('project',
+                                        'sample',
+                                        'timestamp',
+                                        )])
+    context['table'] = rows
+    print(context['table'])
+    path = os.path.join(repo, root, '.data', f'{tail}.dat.json')
+    with open(path, 'r') as rfile:
+        dataobj = json.load(rfile)
+        # x = [1,2,3,4]
+        # y = [1,23,123,31]
+        signals = dataobj['signals']
+        figures = []
+        fmt = dataobj['format']
+        for si in signals:
+            x, y = unpack(si['blob'], fmt)
+
+            plot = figure(y_axis_label=si['isotope'], height=100)
+            plot.scatter(x, y)
+            script, div = components(plot)
+            figures.append((script, div))
+
+        context['figures'] = figures
+
+
+def clone_repo(name):
+    organization = settings.PYCHRON_DATA_ORGANIZATION
+    url = f'https://github.com/{organization}/{name}'
+    print(f'clone repo {name} url={url}')
+    if not os.path.isdir(name):
+        try:
+            Repo.clone_from(url, name, depth=10)
+            print('repo {name} cloned')
+        except GitCommandError:
+            pass
+    else:
+        print('repo already exists. pulling')
+        repo = Repo(name)
+        o = repo.remotes.origin
+        o.pull()

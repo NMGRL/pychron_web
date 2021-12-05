@@ -14,15 +14,19 @@
 # limitations under the License.
 # ===============================================================================
 
-# from django.urls import path
-#
-# from . import views
-# app_name = 'projects'
-# urlpatterns = [
-#     path('', views.index, name='index'),
-#     path('submit_project', views.submit_project, name='submit_project'),
-#     path('entry', views.entry, name='entry'),
-#     path('<int:pk>/', views.ProjectDetailView.as_view(), name='detail')
-#
-# ]
+from django.urls import path
+
+from . import views
+
+app_name = 'analyses'
+urlpatterns = [
+    path('', views.recent_regressions, name='index'),
+    # path('chart', views.line_chart, name='line_chart'),
+    # path('chartJSON', views.LineChartJSONView.as_view(), name='line_chart_json'),
+
+    # path('submit_project', views.submit_project, name='submit_project'),
+    # path('entry', views.entry, name='entry'),
+    # path('<int:pk>/', views.ProjectDetailView.as_view(), name='detail')
+
+]
 # ============= EOF =============================================

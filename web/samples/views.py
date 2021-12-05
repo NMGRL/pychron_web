@@ -19,7 +19,7 @@ from django.utils import timezone
 from django.views.generic import DetailView, CreateView
 from django_tables2 import RequestConfig
 
-from analyses.models import Analysistbl, Irradiationtbl
+from analyses.models import AnalysisTbl, Irradiationtbl
 from analyses.tables import AnalysisTable
 from events.forms import EventsForm
 from events.models import EventsTbl, EventValuesTbl
@@ -288,7 +288,7 @@ class SampleDetailView(DetailView):
                 ns = ns.filter(~Q(id=self.object.id)).all()
                 context['nearby_samples'] = ns
 
-            data = Analysistbl.objects.filter(irradiation_positionid__sampleid_id=self.object.id)
+            data = AnalysisTbl.objects.filter(irradiation_positionid__sampleid_id=self.object.id)
             atable = AnalysisTable(data.order_by('-timestamp'))
             atable.paginate(page=self.request.GET.get("page", 1), per_page=10)
             context['analyses'] = atable

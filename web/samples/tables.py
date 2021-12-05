@@ -19,7 +19,7 @@ from django.urls import reverse
 from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 
-from analyses.models import Irradiationpositiontbl, Analysistbl
+from analyses.models import Irradiationpositiontbl, AnalysisTbl
 from events.models import EventsTbl
 from samples.models import SampleTbl
 
@@ -50,7 +50,7 @@ def render_row(record):
     c = ''
     if ipt:
         c = 'loaded_for_irradiation'
-        a = Analysistbl.objects.filter(irradiation_positionid=ipt.id).first()
+        a = AnalysisTbl.objects.filter(irradiation_positionid=ipt.id).first()
         if a:
             c = 'analyzed'
     return c

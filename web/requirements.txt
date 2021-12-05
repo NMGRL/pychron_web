@@ -10,3 +10,5 @@ django-leaflet==0.28.1
 gdal==3.2.3
 pyproj
 palettable==3.3.0
+gitpython
+bokeh==2.4.2

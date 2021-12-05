@@ -20,7 +20,7 @@ from operator import itemgetter
 
 import pytz
 
-from analyses.models import Irradiationtbl, Analysistbl
+from analyses.models import Irradiationtbl, AnalysisTbl
 from events.models import EventsTbl
 from django.conf import settings
 
@@ -69,7 +69,7 @@ def get_pizza_tracker(sids):
                                            'leveltbl__irradiationpositiontbl__identifier')
 
         if irradiations:
-            ans = Analysistbl.objects.filter(irradiation_positionid__sampleid=s).order_by('timestamp').first()
+            ans = AnalysisTbl.objects.filter(irradiation_positionid__sampleid=s).order_by('timestamp').first()
 
         es = list(es)
         istring = ','.join(

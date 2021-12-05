@@ -62,7 +62,7 @@ class Irradiationpositiontbl(models.Model):
         db_table = 'IrradiationPositionTbl'
 
 
-class Analysistbl(models.Model):
+class AnalysisTbl(models.Model):
     timestamp = models.DateTimeField(blank=True, null=True)
     uuid = models.CharField(max_length=40, blank=True, null=True)
     analysis_type = models.CharField(max_length=45, blank=True, null=True)
@@ -105,9 +105,18 @@ class Analysistbl(models.Model):
         i = alphas(i) if i is not None else ''
         return f'{self.irradiation_positionid.identifier}-{self.aliquot:02n}{i}'
 
-
     class Meta:
         managed = False
         db_table = 'AnalysisTbl'
 
+
 # Create your models here.
+class RepositoryAssociationTbl(models.Model):
+    idrepositoryassociationTbl = models.IntegerField(primary_key=True)
+    repository = models.CharField(max_length=140)
+    analysisID = models.ForeignKey(AnalysisTbl,
+                                   models.DO_NOTHING, related_name="repository",
+                                   db_column='analysisID',)
+    class Meta:
+        managed = False
+        db_table = 'RepositoryAssociationTbl'

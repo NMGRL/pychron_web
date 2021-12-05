@@ -16,7 +16,7 @@
 
 import django_tables2 as tables
 
-from analyses.models import Analysistbl
+from analyses.models import AnalysisTbl
 from samples.models import ProjectTbl
 
 
@@ -34,7 +34,7 @@ class AnalysisTable(tables.Table):
     duration = tables.Column(accessor='duration')
 
     class Meta:
-        model = Analysistbl
+        model = AnalysisTbl
         template_name = "django_tables2/bootstrap.html"
         fields = ['timestamp', 'runid', 'measurement','extraction', 'duration', 'extract_value', 'cleanup']
 

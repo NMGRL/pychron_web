@@ -1,6 +1,6 @@
 from django.contrib import admin
 
 # Register your models here.
-from analyses.models import Analysistbl
+from analyses.models import AnalysisTbl
 
-admin.site.register(Analysistbl)
+admin.site.register(AnalysisTbl)

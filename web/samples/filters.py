@@ -16,7 +16,7 @@
 import django_filters
 from django_filters import FilterSet, ChoiceFilter
 
-from analyses.models import Irradiationpositiontbl, Analysistbl
+from analyses.models import Irradiationpositiontbl, AnalysisTbl
 from samples.models import SampleTbl, ProjectTbl
 
 
@@ -44,12 +44,12 @@ class SampleFilter(FilterSet):
             r = qs.filter(id__in=sampleid_ids).all()
         elif value == 'Analyzed':
             ips = Irradiationpositiontbl.objects.filter(sampleid__isnull=False)
-            sids = Analysistbl.objects.filter(irradiation_positionid__in=ips).values_list(
+            sids = AnalysisTbl.objects.filter(irradiation_positionid__in=ips).values_list(
                 'irradiation_positionid__sampleid_id', flat=True)
             r = qs.filter(id__in=sids).all()
         elif value == 'Not Analyzed':
             ips = Irradiationpositiontbl.objects.filter(sampleid__isnull=False)
-            sids = Analysistbl.objects.filter(irradiation_positionid__in=ips).values_list(
+            sids = AnalysisTbl.objects.filter(irradiation_positionid__in=ips).values_list(
                 'irradiation_positionid__sampleid_id', flat=True)
             r = qs.exclude(id__in=sids)
         return r

@@ -157,6 +157,7 @@ LOGIN_REDIRECT_URL = 'signup'
 LOGIN_URL = 'accounts/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+PYCHRON_DATA_ORGANIZATION = 'NMGRLData'
 LEAFLET_CONFIG = {
     # 'SPATIAL_EXTENT': (5.0, 44.0, 7.5, 46),
     'DEFAULT_CENTER': (35, -106.0),

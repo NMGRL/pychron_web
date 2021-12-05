@@ -65,7 +65,7 @@ def closure():
         # c = ''
         # if ipt:
         #     c = 'loaded_for_irradiation'
-        #     a = Analysistbl.objects.filter(irradiation_positionid=ipt.id).first()
+        #     a = AnalysisTbl.objects.filter(irradiation_positionid=ipt.id).first()
         #     if a:
         #         c = 'analyzed'
         # return c
