@@ -81,6 +81,7 @@ COPY . $APP_HOME
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
 RUN chown -R app:app $APP_HOME/staticfiles
+RUN chown -R app:app $APP_HOME/repositories
 # copy entrypoint.prod.sh
 RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
 RUN chmod +x  $APP_HOME/entrypoint.prod.sh
