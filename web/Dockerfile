@@ -82,8 +82,8 @@ COPY . $APP_HOME
 RUN chown -R app:app $APP_HOME
 RUN chown -R app:app $APP_HOME/staticfiles
 
-RUN mkdir $APP_HOME/repositories
-RUN chown -R app:app $APP_HOME/repositories
+#RUN #mkdir $APP_HOME/repositories
+#RUN chown -R app:app $APP_HOME/repositories
 # copy entrypoint.prod.sh
 RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
 RUN chmod +x  $APP_HOME/entrypoint.prod.sh
