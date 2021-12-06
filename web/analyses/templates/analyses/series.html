@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <meta http-equiv="refresh" content="60">
+    <link href="https://cdn.pydata.org/bokeh/release/bokeh-2.4.2.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.4.2.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-2.4.2.min.js"></script>
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.4.2.min.js"></script>
+    {% for group in analyses_groups %}
+        {{ group.s | safe }}
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+    <div>
+    <h3 align="center"><div id="time">-</div></h3>
+    </div>
+    {%  for group in analyses_groups %}
+        {{ group.div | safe }}
+    {% endfor %}
+{#    <div class="row">#}
+{#        <div class="col-md-4">#}
+{#            <div class="panel panel-primary">#}
+{#                <table class="table table-condensed">#}
+{#                    {% for row in a.table %}#}
+{#                        <tr>#}
+{#                            {% for k in row %}#}
+{#                                <td>{{ k }} </td>#}
+{#                            {% endfor %}#}
+{#                        </tr>#}
+{#                    {% endfor %}#}
+{#                </table>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="col-md-8">#}
+{#            <div class="panel panel-primary">#}
+{#                {% for s,d in a.figures %}#}
+{#                {{ d | safe }}#}
+{#            {% endfor %}#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#    {% endfor %}#}
+
+
+
+{#    <div class="row">#}
+{#        <div class="col-sm-4">#}
+{##}
+{#        </div>#}
+{##}
+{#        <div class="col-sm-8">#}
+{#        {% for a in analyses %}#}
+{#            <h3>{{ a.runid }}</h3>#}
+{#            {% for s,d in a.figures %}#}
+{#                {{ d | safe }}#}
+{#            {% endfor %}#}
+{#        {% endfor %}#}
+{#        </div>#}
+{##}
+{#    </div>#}
+
+    <script>
+    document.getElementById("time").textContent = "" + new Date().toLocaleString();
+    </script>
+{% endblock %}

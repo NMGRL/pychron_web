@@ -122,8 +122,41 @@ from analyses.models import AnalysisTbl
 from analyses.models import RepositoryAssociationTbl
 
 
+def make_series(atype):
+    ans = AnalysisTbl.objects.filter(analysis_type=atype).order_by('-id')[:20]
+    repo_associations = RepositoryAssociationTbl.objects.filter(analysisID__in=[a.id for a in ans])
+    repos = {r.repository for r in repo_associations}
+
+    # repos = ['Irradiation-NM-321', ]
+    for r in repos:
+        clone_repo(r)
+
+    x, y = [], []
+
+    for assoc in repo_associations:
+        ans = assoc.analysisID
+        x.append(ans.timestamp)
+
+        path = get_analysis_path(assoc.repository, ans.uuid, modifier='intercepts')
+        with open(path, 'r') as rfile:
+            jobj = json.load(rfile)
+            value = jobj['Ar40']['value']
+            y.append(value)
+    print(x, y)
+
+
 @login_required
-def recent_regressions(request):
+def series(request):
+    context = {}
+    gs = []
+    gs.append(make_series('blank_air'))
+    context['analysis_groups'] = gs
+    template = loader.get_template('analyses/series.html')
+    return HttpResponse(template.render(context, request))
+
+
+@login_required
+def recent_analyses(request):
     # get the last n analyses
     # group by repository identifier
     # clone each identifier
@@ -172,12 +205,30 @@ def plot_assoc(context, assoc):
     plot_analysis(context, repo, uuid)
 
 
-def plot_analysis(context, repo, uuid):
+def get_analysis_path(repo, uuid, modifier=None):
     root, tail = uuid[:2], uuid[2:]
-    path = os.path.join('/home/app', repo, root, f'{tail}.json')
+    path = os.path.join('/home/app', repo, root)
+    if modifier:
+        path = os.path.join(path, modifier)
+        if modifier == '.data':
+            modifier = 'dat'
+        else:
+            modifier = modifier[:4]
+
+        tail = f'{tail}.{modifier}'
+    path = os.path.join(path, f'{tail}.json')
+
+    # path = os.path.join('/home/app', repo, root, '.data', f'{tail}.dat.json')
+
+    return path
+
+
+def plot_analysis(context, repo, uuid):
+    path = get_analysis_path(repo, uuid)
     with open(path, 'r') as rfile:
         jobj = json.load(rfile)
         print(jobj.keys())
+
     runid = f'{jobj["identifier"]}-{jobj["aliquot"]}{jobj["increment"] or ""}'
     rows = [('Irradiation', f'{jobj["irradiation"]} {jobj["irradiation_level"]}{jobj["irradiation_position"]}'),
             ('RunID', runid)]
@@ -192,7 +243,8 @@ def plot_analysis(context, repo, uuid):
                                               'extraction'
                                               )])
     # context['table'] = rows
-    path = os.path.join('/home/app', repo, root, '.data', f'{tail}.dat.json')
+    path = get_analysis_path(repo, uuid, '.data')
+
     with open(path, 'r') as rfile:
         dataobj = json.load(rfile)
         # x = [1,2,3,4]

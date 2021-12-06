@@ -92,8 +92,12 @@
           </li>
             <li {% if request.resolver_match.view_name == 'events:index' %}class="active"{% endif %}><a
                 href={% url "events:index" %}>Events<span class="sr-only">(current)</span></a></li>
-            <li {% if request.resolver_match.view_name == 'analyses:recent' %}class="active"{% endif %}><a
-                href={% url "analyses:recent" %}>Analyses<span class="sr-only">(current)</span></a></li>
+            <li {% if request.resolver_match.view_name == 'analyses:recent' %}class="active"{% endif %}>
+                <ul class="dropdown-menu">
+                  <li><a href={% url "analyses:recent" %}>Recent</a></li>
+                  <li><a href={% url "analyses:series" %}>Series</a></li>
+                </ul>
+{#                <a href={% url "analyses:recent" %}>Analyses<span class="sr-only">(current)</span></a></li>#}
       </ul>
 
       <ul class="nav navbar-nav navbar-right">

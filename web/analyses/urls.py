@@ -20,7 +20,8 @@ from . import views
 
 app_name = 'analyses'
 urlpatterns = [
-    path('recent', views.recent_regressions, name='recent'),
+    path('recent', views.recent_analyses, name='recent'),
+    path('series', views.series, name='series'),
     # path('chart', views.line_chart, name='line_chart'),
     # path('chartJSON', views.LineChartJSONView.as_view(), name='line_chart_json'),
 
