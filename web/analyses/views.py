@@ -122,7 +122,7 @@ from analyses.models import AnalysisTbl
 from analyses.models import RepositoryAssociationTbl
 
 
-def make_series(atype):
+def make_series(atype, iso):
     ans = AnalysisTbl.objects.filter(analysis_type=atype).order_by('-id')[:20]
     repo_associations = RepositoryAssociationTbl.objects.filter(analysisID__in=[a.id for a in ans])
     repos = {r.repository for r in repo_associations}
@@ -140,11 +140,10 @@ def make_series(atype):
         path = get_analysis_path(assoc.repository, ans.uuid, modifier='intercepts')
         with open(path, 'r') as rfile:
             jobj = json.load(rfile)
-            value = jobj['Ar40']['value']
+            value = jobj[iso]['value']
             y.append(value)
-    print(x, y)
 
-    plot = figure(y_axis_label=f'Ar40 {atype}',
+    plot = figure(y_axis_label=f'{iso} {atype}',
                   x_axis_type='datetime',
                   height=150)
     plot.scatter(x, y)
@@ -155,8 +154,10 @@ def make_series(atype):
 @login_required
 def series(request):
     context = {}
-    gs = [make_series(a) for a in ('air', 'blank_unknown', 'blank_air')]
-    context['analysis_groups'] = gs
+    ar40 = [make_series(a, 'Ar40') for a in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail', 'blank_air')]
+    ar36 = [make_series(a, 'Ar36') for a in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail', 'blank_air')]
+    context['ar40'] = ar40
+    context['ar36'] = ar36
     template = loader.get_template('analyses/series.html')
     return HttpResponse(template.render(context, request))
 
