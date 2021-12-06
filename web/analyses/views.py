@@ -312,5 +312,5 @@ def clone_repo(name):
         print('repo already exists. pulling')
         repo = Repo(repo_path)
         o = repo.remotes.origin
-        o.fetch()
-        o.pull()
+        o.fetch(depth=10)
+        repo.git.merge('FETCH_HEAD')
