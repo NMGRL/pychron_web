@@ -79,6 +79,7 @@ class AnalysisTbl(models.Model):
                                   null=True)  # Field name made lowercase.
     postmeasname = models.CharField(db_column='postMeasName', max_length=45, blank=True,
                                     null=True)  # Field name made lowercase.
+    mass_spectrometer = models.CharField(max_length=45, blank=True, null=True)
     # mass_spectrometer = models.ForeignKey('Massspectrometertbl', models.DO_NOTHING, db_column='mass_spectrometer',
     #                                       blank=True, null=True)
     # extract_device = models.ForeignKey('Extractdevicetbl', models.DO_NOTHING, db_column='extract_device', blank=True,
