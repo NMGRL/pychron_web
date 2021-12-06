@@ -182,10 +182,15 @@ def plot_analysis(context, repo, uuid):
     rows = [('Irradiation', f'{jobj["irradiation"]} {jobj["irradiation_level"]}{jobj["irradiation_position"]}'),
             ('RunID', runid)]
 
-    rows.extend([(k, jobj[k]) for k in ('project',
-                                        'sample',
-                                        'timestamp',
-                                        )])
+    rows.extend([(k, jobj[k] or '') for k in ('project',
+                                              'sample',
+                                              'timestamp',
+                                              'comment',
+                                              'note',
+                                              'experiment_queue_name',
+                                              'measurement',
+                                              'extraction'
+                                              )])
     # context['table'] = rows
     path = os.path.join('/home/app', repo, root, '.data', f'{tail}.dat.json')
     with open(path, 'r') as rfile:

@@ -19,19 +19,14 @@
 {% endblock %}
 
 {% block content %}
+    <div>
+    <h3 align="center"><div id="time">-</div></h3>
+    </div>
     {%  for a in analyses %}
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-primary">
                 <table class="table table-condensed">
-                     <tr>
-                         <td>
-                             Last Refresh
-                         </td>
-                         <td>
-                             <div id = "time" > - </div>
-                         </td>
-                     </tr>
                     {% for row in a.table %}
                         <tr>
                             {% for k in row %}
