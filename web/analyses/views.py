@@ -131,7 +131,7 @@ def recent_regressions(request):
     # plot each isotope
 
     context = {}
-    analyses = reversed(AnalysisTbl.objects.order_by('-id')[:2])
+    analyses = AnalysisTbl.objects.order_by('-id')[:2]
     # repos = {ai.repository for ai in analyses}
     repo_associations = RepositoryAssociationTbl.objects.filter(analysisID__in=[a.id for a in analyses])
     repos = {r.repository for r in repo_associations}
@@ -140,7 +140,7 @@ def recent_regressions(request):
     for r in repos:
         clone_repo(r)
 
-    for assoc in repo_associations:
+    for assoc in sorted(repo_associations, key=lambda a: a.analysisID.timestamp, reverse=True):
         plot_assoc(context, assoc)
     # for repo, uuid in (('Irradiation-NM-321', '0a0ff3c4-ef60-4f26-8241-298c57558916'),):
     #     plot_analyses(context, repo, uuid)
