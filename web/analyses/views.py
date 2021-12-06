@@ -169,7 +169,7 @@ def plot_assoc(context, assoc):
 
 def plot_analysis(context, repo, uuid):
     root, tail = uuid[:2], uuid[2:]
-    path = os.path.join('/home/app/web/', repo, root, f'{tail}.json')
+    path = os.path.join('/home/app', repo, root, f'{tail}.json')
     with open(path, 'r') as rfile:
         jobj = json.load(rfile)
         print(jobj.keys())
@@ -182,7 +182,7 @@ def plot_analysis(context, repo, uuid):
                                         )])
     context['table'] = rows
     print(context['table'])
-    path = os.path.join('/home/app/web/', repo, root, '.data', f'{tail}.dat.json')
+    path = os.path.join('/home/app', repo, root, '.data', f'{tail}.dat.json')
     with open(path, 'r') as rfile:
         dataobj = json.load(rfile)
         # x = [1,2,3,4]
@@ -205,9 +205,9 @@ def clone_repo(name):
     organization = settings.PYCHRON_DATA_ORGANIZATION
     url = f'https://github.com/{organization}/{name}'
     print(f'clone repo {name} url={url}')
-    if not os.path.isdir(f'/home/app/web/{name}'):
+    if not os.path.isdir(f'/home/app/{name}'):
         try:
-            Repo.clone_from(url, f'/home/app/web/{name}', depth=10)
+            Repo.clone_from(url, f'/home/app/{name}', depth=10)
             print(f'repo {name} cloned')
         except GitCommandError as e:
             print(e)
