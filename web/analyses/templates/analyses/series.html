@@ -12,6 +12,9 @@
     {% for group in ar36 %}
         {{ group.script | safe }}
     {% endfor %}
+    {% for ratio in ratios %}
+        {{ ratio.script | safe }}
+    {% endfor %}
 {% endblock %}
 
 {% block content %}
@@ -19,15 +22,20 @@
     <h3 align="center"><div id="time">-</div></h3>
     </div>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             {%  for group in ar40 %}
                 {{ group.div | safe }}
             {% endfor %}
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             {%  for group in ar36 %}
                 {{ group.div | safe }}
             {% endfor %}
+        </div>
+        <div class="col-sm-4">
+                {%  for ratio in ratios %}
+                    {{ ratio.div | safe }}
+                {% endfor %}
         </div>
     </div>
 

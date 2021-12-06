@@ -120,10 +120,12 @@ from git.exc import GitCommandError
 from analyses.models import AnalysisTbl
 
 from analyses.models import RepositoryAssociationTbl
+from numpy import array
 
 
-def make_series(atype, iso):
-    ans = AnalysisTbl.objects.filter(analysis_type=atype).order_by('-id')[:20]
+def make_series(repos_associations, atype):
+    ans = AnalysisTbl.objects.filter(analysis_type=atype,
+                                     mass_spectrometer='jan').order_by('-id')[:20]
     repo_associations = RepositoryAssociationTbl.objects.filter(analysisID__in=[a.id for a in ans])
     repos = {r.repository for r in repo_associations}
 
@@ -132,32 +134,51 @@ def make_series(atype, iso):
         clone_repo(r)
 
     x, y = [], []
-
+    ys = {}
     for assoc in repo_associations:
         ans = assoc.analysisID
         x.append(ans.timestamp)
 
         path = get_analysis_path(assoc.repository, ans.uuid, modifier='intercepts')
-        with open(path, 'r') as rfile:
-            jobj = json.load(rfile)
-            value = jobj[iso]['value']
-            y.append(value)
+        for iso in ('Ar40', 'Ar36'):
+            with open(path, 'r') as rfile:
+                jobj = json.load(rfile)
+                value = jobj[iso]['value']
+                arr = ys.get(iso, [])
+                arr.append(value)
+                ys[iso] = arr
+
+    ret = []
+    for iso in ('Ar40', 'Ar36'):
+        plot = figure(y_axis_label=f'{iso} {atype}',
+                      x_axis_type='datetime',
+                      height=150)
+        plot.scatter(x, ys[iso])
+        script, div = components(plot)
+        ret.append({'script': script, 'div': div})
 
     plot = figure(y_axis_label=f'{iso} {atype}',
                   x_axis_type='datetime',
                   height=150)
-    plot.scatter(x, y)
+
+    plot.scatter(x, array(ys['Ar40']) / array(ys['Ar36']))
     script, div = components(plot)
-    return {'script': script, 'div': div}
+
+    ret.append({'script': script, 'div': div})
+    return ret
 
 
 @login_required
 def series(request):
     context = {}
-    ar40 = [make_series(a, 'Ar40') for a in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail', 'blank_air')]
-    ar36 = [make_series(a, 'Ar36') for a in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail', 'blank_air')]
+    # assoc, ans =
+    # ar40 = [make_series(a, 'Ar40') for a in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail', 'blank_air')]
+    # ar36 = [make_series(a, 'Ar36') for a in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail', 'blank_air')]
+    ar40, ar36, ratios = zip(*[make_series(atype) for atype in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail',
+                                                                'blank_air')])
     context['ar40'] = ar40
     context['ar36'] = ar36
+    context['ratios'] = ratios
     template = loader.get_template('analyses/series.html')
     return HttpResponse(template.render(context, request))
 
