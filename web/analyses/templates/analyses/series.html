@@ -7,7 +7,7 @@
     <script src="https://cdn.pydata.org/bokeh/release/bokeh-2.4.2.min.js"></script>
     <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.4.2.min.js"></script>
     {% for group in analysis_groups %}
-        {{ group.s | safe }}
+        {{ group.script | safe }}
     {% endfor %}
 {% endblock %}
 
