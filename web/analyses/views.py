@@ -205,14 +205,15 @@ def clone_repo(name):
     organization = settings.PYCHRON_DATA_ORGANIZATION
     url = f'https://github.com/{organization}/{name}'
     print(f'clone repo {name} url={url}')
-    if not os.path.isdir(f'/home/app/{name}'):
+    repo_path = f'/home/app/{name}'
+    if not os.path.isdir(repo_path):
         try:
-            Repo.clone_from(url, f'/home/app/{name}', depth=10)
+            Repo.clone_from(url, repo_path, depth=10)
             print(f'repo {name} cloned')
         except GitCommandError as e:
             print(e)
     else:
         print('repo already exists. pulling')
-        repo = Repo(name)
+        repo = Repo(repo_path)
         o = repo.remotes.origin
         o.pull()
