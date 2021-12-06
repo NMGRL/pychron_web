@@ -123,7 +123,7 @@ from analyses.models import RepositoryAssociationTbl
 from numpy import array
 
 
-def make_series(repos_associations, atype):
+def make_series(atype):
     ans = AnalysisTbl.objects.filter(analysis_type=atype,
                                      mass_spectrometer='jan').order_by('-id')[:20]
     repo_associations = RepositoryAssociationTbl.objects.filter(analysisID__in=[a.id for a in ans])
