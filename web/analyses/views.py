@@ -131,7 +131,7 @@ def recent_regressions(request):
     # plot each isotope
 
     context = {}
-    analyses = AnalysisTbl.objects.order_by('-id')[:2]
+    analyses = reversed(AnalysisTbl.objects.order_by('-id')[:2])
     # repos = {ai.repository for ai in analyses}
     repo_associations = RepositoryAssociationTbl.objects.filter(analysisID__in=[a.id for a in analyses])
     repos = {r.repository for r in repo_associations}
