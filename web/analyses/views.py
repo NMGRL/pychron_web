@@ -145,6 +145,7 @@ def make_series(atype):
     print(x, y)
 
     plot = figure(y_axis_label=f'Ar40 {atype}',
+                  x_axis_type='datetime',
                   height=150)
     plot.scatter(x, y)
     script, div = components(plot)
