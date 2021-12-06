@@ -161,10 +161,15 @@ def unpack(blob, fmt, step=8):
         )
     )
 
+
 def plot_assoc(context, assoc):
     repo = assoc.repository
     ans = assoc.analysisID
-    plot_analysis(context, repo, ans.uuid)
+    uuid = ans.uuid
+    if settings.ANALYSES_DEBUG:
+        uuid = '0a0ff3c4-ef60-4f26-8241-298c57558916'
+        repo = 'Irradiation-NM-321'
+    plot_analysis(context, repo, uuid)
 
 
 def plot_analysis(context, repo, uuid):
@@ -173,15 +178,15 @@ def plot_analysis(context, repo, uuid):
     with open(path, 'r') as rfile:
         jobj = json.load(rfile)
         print(jobj.keys())
+    runid = f'{jobj["identifier"]}-{jobj["aliquot"]}{jobj["increment"] or ""}'
     rows = [('Irradiation', f'{jobj["irradiation"]} {jobj["irradiation_level"]}{jobj["irradiation_position"]}'),
-            ('RunID', f'{jobj["identifier"]}-{jobj["aliquot"]}{jobj["increment"] or ""}')]
+            ('RunID', runid)]
 
     rows.extend([(k, jobj[k]) for k in ('project',
                                         'sample',
                                         'timestamp',
                                         )])
-    context['table'] = rows
-    print(context['table'])
+    # context['table'] = rows
     path = os.path.join('/home/app', repo, root, '.data', f'{tail}.dat.json')
     with open(path, 'r') as rfile:
         dataobj = json.load(rfile)
@@ -193,15 +198,19 @@ def plot_analysis(context, repo, uuid):
         for si in signals:
             x, y = unpack(si['blob'], fmt)
 
-            plot = figure(y_axis_label=si['isotope'], height=100)
+            plot = figure(y_axis_label=si['isotope'],
+                          height=150)
             plot.scatter(x, y)
             script, div = components(plot)
             figures.append((script, div))
 
-        context['figures'] = figures
+        analyses = context.get('analyses', [])
+        analyses.append({'runid': runid, 'figures': figures, 'table': rows})
+        context['analyses'] = analyses
 
 
 def clone_repo(name):
+    name = 'Irradiation-NM-321'
     organization = settings.PYCHRON_DATA_ORGANIZATION
     url = f'https://github.com/{organization}/{name}'
     print(f'clone repo {name} url={url}')
