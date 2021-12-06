@@ -18,7 +18,6 @@
 {% endblock %}
 
 {% block content %}
-    <div id = "time" > - </div>
     <div class="row">
         <div class="col-sm-4">
             <table class="table table-condensed">
@@ -26,7 +25,8 @@
                      <td>
                          Last Refresh
                      </td>
-                     <td id="time">
+                     <td>
+                         <div id = "time" > - </div>
                      </td>
                  </tr>
                 {% for row in table %}
