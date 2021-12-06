@@ -157,7 +157,7 @@ def make_series(atype):
         script, div = components(plot)
         ret.append({'script': script, 'div': div})
 
-    plot = figure(y_axis_label=f'{iso} {atype}',
+    plot = figure(y_axis_label=f'Ar40/Ar36 {atype}',
                   x_axis_type='datetime',
                   height=150)
 
