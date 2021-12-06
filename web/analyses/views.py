@@ -154,8 +154,7 @@ def make_series(atype):
 @login_required
 def series(request):
     context = {}
-    gs = []
-    gs.append(make_series('blank_air'))
+    gs = [make_series(a) for a in ('air', 'blank_unknown', 'blank_air')]
     context['analysis_groups'] = gs
     template = loader.get_template('analyses/series.html')
     return HttpResponse(template.render(context, request))
