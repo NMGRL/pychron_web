@@ -96,7 +96,7 @@
           <li class="dropdown{% if request.resolver_match.view_name == 'analyses:recent' %}
               active {% endif %}">
               <a href="" class="dropdown-toggle" data-toggle="dropdown"
-                 role="button" aria-haspopup="true" aria-expanded="false">Samples</a>
+                 role="button" aria-haspopup="true" aria-expanded="false">Analyses</a>
               <ul class="dropdown-menu">
                   <li><a href={% url "analyses:recent" %}>Recent</a></li>
                   <li><a href={% url "analyses:series" %}>Series</a></li>
