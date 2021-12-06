@@ -210,7 +210,9 @@ def plot_analysis(context, repo, uuid):
 
 
 def clone_repo(name):
-    name = 'Irradiation-NM-321'
+    if settings.ANALYSES_DEBUG:
+        name = 'Irradiation-NM-321'
+
     organization = settings.PYCHRON_DATA_ORGANIZATION
     url = f'https://github.com/{organization}/{name}'
     print(f'clone repo {name} url={url}')
