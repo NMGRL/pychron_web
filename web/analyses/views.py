@@ -144,6 +144,12 @@ def make_series(atype):
             y.append(value)
     print(x, y)
 
+    plot = figure(y_axis_label=f'Ar40 {atype}',
+                  height=150)
+    plot.scatter(x, y)
+    script, div = components(plot)
+    return {'script': script, 'div': div}
+
 
 @login_required
 def series(request):
