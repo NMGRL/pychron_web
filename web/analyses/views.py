@@ -17,7 +17,7 @@ from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.views.generic import TemplateView
-from tasks import make_all_series, make_recent_analyses
+from .tasks import make_all_series, make_recent_analyses
 
 
 class TaskView(View):
