@@ -14,21 +14,12 @@
 # limitations under the License.
 # ===============================================================================
 
-from django.urls import path
+import os
+from celery import Celery
 
-from . import views
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pychronweb.settings')
 
-app_name = 'analyses'
-urlpatterns = [
-    path('recent', views.recent_analyses, name='recent'),
-    path('series', views.series, name='series'),
-    path('task/<str:task_id>/', views.TaskView.as_view(), name='task')
-    # path('chart', views.line_chart, name='line_chart'),
-    # path('chartJSON', views.LineChartJSONView.as_view(), name='line_chart_json'),
-
-    # path('submit_project', views.submit_project, name='submit_project'),
-    # path('entry', views.entry, name='entry'),
-    # path('<int:pk>/', views.ProjectDetailView.as_view(), name='detail')
-
-]
+celery_app = Celery('pychronweb')
+celery_app.config_from_object('django.conf:settings', namespace='CELERY')
+celery_app.autodiscover_tasks()
 # ============= EOF =============================================

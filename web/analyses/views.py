@@ -3,16 +3,19 @@ import json
 import os.path
 import struct
 
+import bokeh.embed
 from bokeh.embed import components
 from bokeh.plotting import figure
+from celery import shared_task, current_app
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 # from django.views.generic import DetailView
 #
 # from projects.filters import ProjectFilter
 # from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
+from django.views import View
 from django.views.generic import TemplateView
 from git import Repo
 from git.exc import GitCommandError
@@ -123,6 +126,18 @@ from analyses.models import RepositoryAssociationTbl
 from numpy import array
 
 
+class TaskView(View):
+    def get(self, request, task_id):
+        task = current_app.AsyncResult(task_id)
+        response_data = {'task_status': task.status, 'task_id': task.id}
+
+        if task.status == 'SUCCESS':
+            r = task.get()
+            print('asdf', r)
+            response_data['results'] = r
+        return JsonResponse(response_data)
+
+
 def make_series(atype):
     ans = AnalysisTbl.objects.filter(analysis_type=atype,
                                      mass_spectrometer='jan').order_by('-id')[:20]
@@ -139,7 +154,13 @@ def make_series(atype):
         ans = assoc.analysisID
         x.append(ans.timestamp)
 
-        path = get_analysis_path(assoc.repository, ans.uuid, modifier='intercepts')
+        ans = assoc.analysisID
+        uuid = ans.uuid
+        if settings.ANALYSES_DEBUG:
+            uuid = '0a0ff3c4-ef60-4f26-8241-298c57558916'
+            repo = 'Irradiation-NM-321'
+
+        path = get_analysis_path(repo, uuid, modifier='intercepts')
         for iso in ('Ar40', 'Ar36'):
             with open(path, 'r') as rfile:
                 jobj = json.load(rfile)
@@ -148,37 +169,51 @@ def make_series(atype):
                 arr.append(value)
                 ys[iso] = arr
 
-    ret = []
+    ret = {}
     for iso in ('Ar40', 'Ar36'):
         plot = figure(y_axis_label=f'{iso} {atype}',
                       x_axis_type='datetime',
                       height=150)
         plot.scatter(x, ys[iso])
-        script, div = components(plot)
-        ret.append({'script': script, 'div': div})
+        ret[iso] = json.dumps(bokeh.embed.json_item(plot, iso))
+        # script, div = components(plot)
+        # ret.append({'script': script, 'div': div})
 
     plot = figure(y_axis_label=f'Ar40/Ar36 {atype}',
                   x_axis_type='datetime',
                   height=150)
 
     plot.scatter(x, array(ys['Ar40']) / array(ys['Ar36']))
-    script, div = components(plot)
 
-    ret.append({'script': script, 'div': div})
+    # script, div = components(plot)
+    #
+    # ret.append({'script': script, 'div': div})
+    # return ret
     return ret
+
+
+@shared_task
+def make_all_series():
+
+    # ar40, ar36, ratios = zip(*[make_series(atype) for atype in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail',
+    #                                                             'blank_air')])
+    #
+    return json.dumps({'cocktails': make_series('cocktail'),
+                       'airs': make_series('air')})
 
 
 @login_required
 def series(request):
     context = {}
-    # assoc, ans =
-    # ar40 = [make_series(a, 'Ar40') for a in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail', 'blank_air')]
-    # ar36 = [make_series(a, 'Ar36') for a in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail', 'blank_air')]
-    ar40, ar36, ratios = zip(*[make_series(atype) for atype in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail',
-                                                                'blank_air')])
-    context['ar40'] = ar40
-    context['ar36'] = ar36
-    context['ratios'] = ratios
+
+    task = make_all_series.delay()
+    context['task_id'] = task.id
+    context['task_status'] = task.status
+    # ar40, ar36, ratios = zip(*[make_series(atype) for atype in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail',
+    #                                                             'blank_air')])
+    # context['ar40'] = ar40
+    # context['ar36'] = ar36
+    # context['ratios'] = ratios
     template = loader.get_template('analyses/series.html')
     return HttpResponse(template.render(context, request))
 

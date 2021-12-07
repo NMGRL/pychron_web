@@ -32,6 +32,8 @@ COPY ./requirements.txt .
 #RUN #pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 RUN pip wheel --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
+RUN pip wheel --no-deps --wheel-dir /usr/src/app/wheels redis
+
 #RUN pip install --upgrade pip
 #RUN pip install flake8==3.9
 COPY . .
