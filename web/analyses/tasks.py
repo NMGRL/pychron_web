@@ -26,7 +26,7 @@ from celery import shared_task
 from django.conf import settings
 from numpy import array
 
-from web.analyses.models import AnalysisTbl, RepositoryAssociationTbl
+from .models import AnalysisTbl, RepositoryAssociationTbl
 
 
 @shared_task
