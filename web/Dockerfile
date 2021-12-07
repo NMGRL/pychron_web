@@ -81,8 +81,8 @@ COPY . $APP_HOME
 #RUN mkdir $APP_HOME/staticfiles
 
 # chown all the files to the app user
-RUN chown -R app:app $APP_HOME
-RUN chown -R app:app $APP_HOME/staticfiles
+#RUN chown -R app:app $APP_HOME
+#RUN chown -R app:app $APP_HOME/staticfiles
 
 #RUN #mkdir $APP_HOME/repositories
 #RUN chown -R app:app $APP_HOME/repositories
@@ -91,7 +91,7 @@ RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
 RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
 
-USER app
+#USER app
 #CMD python manage.py collectstatic --no-input --clear
 
 # run entrypoint.prod.sh
