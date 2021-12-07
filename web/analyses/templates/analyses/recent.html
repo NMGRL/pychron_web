@@ -11,41 +11,71 @@
     <link href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.4.2.min.css" rel="stylesheet" type="text/css">
     <script src="https://cdn.pydata.org/bokeh/release/bokeh-2.4.2.min.js"></script>
     <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.4.2.min.js"></script>
-    {% for a in analyses %}
-        {% for s,d in a.figures %}
-            {{ s | safe }}
-        {% endfor %}
-    {% endfor %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+{#    {% for a in analyses %}#}
+{#        {% for s,d in a.figures %}#}
+{#            {{ s | safe }}#}
+{#        {% endfor %}#}
+{#    {% endfor %}#}
 {% endblock %}
 
 {% block content %}
     <div>
     <h3 align="center"><div id="time">-</div></h3>
     </div>
-    {%  for a in analyses %}
+    <p class="subtitle has-text-centered" id="progress-title"></p>
     <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-primary">
-                <table class="table table-condensed">
-                    {% for row in a.table %}
-                        <tr>
-                            {% for k in row %}
-                                <td>{{ k }} </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>
+        <div class="panel panel-primary">
+            <div class="col-sm-4">
+                <div id="table0"></div>
             </div>
-        </div>
-        <div class="col-md-8">
-            <div class="panel panel-primary">
-                {% for s,d in a.figures %}
-                {{ d | safe }}
+            <div class="col-md-8">
+            {% for isotag in isotags %}
+                <div class="panel panel-primary">
+                    <div id={{ isotag }}0></div>
+                </div>
             {% endfor %}
             </div>
         </div>
     </div>
-    {% endfor %}
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="col-sm-4">
+                <div id="table1"></div>
+            </div>
+            <div class="col-md-8">
+            {% for isotag in isotags %}
+                <div class="panel panel-primary">
+                    <div id={{ isotag }}1></div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+{#    {%  for a in analyses %}#}
+{#    <div class="row">#}
+{#        <div class="col-md-4">#}
+{#            <div class="panel panel-primary">#}
+{#                <table class="table table-condensed">#}
+{#                    {% for row in a.table %}#}
+{#                        <tr>#}
+{#                            {% for k in row %}#}
+{#                                <td>{{ k }} </td>#}
+{#                            {% endfor %}#}
+{#                        </tr>#}
+{#                    {% endfor %}#}
+{#                </table>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="col-md-8">#}
+{#            <div class="panel panel-primary">#}
+{#                {% for s,d in a.figures %}#}
+{#                {{ d | safe }}#}
+{#            {% endfor %}#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#    {% endfor %}#}
 
 
 
@@ -68,4 +98,104 @@
     <script>
     document.getElementById("time").textContent = "" + new Date().toLocaleString();
     </script>
+
+    {% if task_id %}
+        <script>
+            var taskUrl = "{% url 'analyses:task' task_id=task_id %}";
+            var dots = 1;
+            var progressTitle = document.getElementById('progress-title');
+            updateProgressTitle();
+            var timer = setInterval(function() {
+            updateProgressTitle();
+            axios.get(taskUrl)
+              .then(function(response){
+                var taskStatus = response.data.task_status
+                if (taskStatus === 'SUCCESS') {
+                    clearTimer('');
+                    {#console.log(response.data)#}
+                    {#console.log(response.data.results)#}
+                    results = JSON.parse(response.data.results)
+                    {#JSON.parse(JSON.parse(response.data.results).cocktails.Ar40)#}
+                    let figures = results.analyses[0].figures
+                    window.Bokeh.embed.embed_item(figures[1], 'Ar400')
+                    window.Bokeh.embed.embed_item(figures[2], 'Ar390')
+                    window.Bokeh.embed.embed_item(figures[3], 'Ar380')
+                    window.Bokeh.embed.embed_item(figures[4], 'Ar370')
+                    window.Bokeh.embed.embed_item(figures[5], 'Ar360')
+
+                    let table = results.analyses[0].table
+                    let tbody=document.createElement('tbody')
+                    for (row in table)
+                    {
+                        console.log(row, table[row])
+                        tr = document.createElement('tr')
+                        for (col in table[row]){
+                            td = document.createElement('td')
+                            td.innerHTML=table[row][col]
+                            tr.appendChild(td)
+                        }
+                        tbody.appendChild(tr)
+                    }
+
+                    htable = document.createElement('table')
+                    htable.setAttribute('class', 'table')
+                    htable.appendChild(tbody)
+
+                    document.getElementById('table0').appendChild(htable)
+
+                    figures = results.analyses[1].figures
+                    window.Bokeh.embed.embed_item(figures[1], 'Ar401')
+                    window.Bokeh.embed.embed_item(figures[2], 'Ar391')
+                    window.Bokeh.embed.embed_item(figures[3], 'Ar381')
+                    window.Bokeh.embed.embed_item(figures[4], 'Ar371')
+                    window.Bokeh.embed.embed_item(figures[5], 'Ar361')
+
+                    table = results.analyses[0].table
+                    tbody=document.createElement('tbody')
+                    for (row in table)
+                    {
+                        console.log(row, table[row])
+                        tr = document.createElement('tr')
+                        for (col in table[row]){
+                            td = document.createElement('td')
+                            td.innerHTML=table[row][col]
+                            tr.appendChild(td)
+                        }
+                        tbody.appendChild(tr)
+                    }
+
+                    htable = document.createElement('table')
+                    htable.setAttribute('class', 'table')
+                    htable.appendChild(tbody)
+
+                    document.getElementById('table1').appendChild(htable)
+
+                } else if (taskStatus === 'FAILURE') {
+                  clearTimer('An error occurred');
+                }
+              })
+              .catch(function(err){
+                console.log('err', err);
+                clearTimer('An error occurred');
+              });
+            }, 800);
+
+            function updateProgressTitle() {
+                dots++;
+                if (dots > 3) {
+                  dots = 1;
+                }
+
+                progressTitle.innerHTML = 'Processing Analyses...';
+                for (var i = 0; i < dots; i++) {
+                  progressTitle.innerHTML += '.';
+                }
+              }
+
+              function clearTimer(message) {
+                clearInterval(timer);
+                progressTitle.innerHTML = message;
+            }
+        </script>
+    {% endif %}
 {% endblock %}

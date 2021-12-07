@@ -194,7 +194,6 @@ def make_series(atype):
 
 @shared_task
 def make_all_series():
-
     # ar40, ar36, ratios = zip(*[make_series(atype) for atype in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail',
     #                                                             'blank_air')])
     #
@@ -218,14 +217,8 @@ def series(request):
     return HttpResponse(template.render(context, request))
 
 
-@login_required
-def recent_analyses(request):
-    # get the last n analyses
-    # group by repository identifier
-    # clone each identifier
-    # extract regressions
-    # plot each isotope
-
+@shared_task
+def make_recent_analyses():
     context = {}
     analyses = AnalysisTbl.objects.order_by('-id')[:2]
     # repos = {ai.repository for ai in analyses}
@@ -238,6 +231,23 @@ def recent_analyses(request):
 
     for assoc in sorted(repo_associations, key=lambda a: a.analysisID.timestamp, reverse=True):
         plot_assoc(context, assoc)
+
+    return json.dumps(context)
+
+
+@login_required
+def recent_analyses(request):
+    # get the last n analyses
+    # group by repository identifier
+    # clone each identifier
+    # extract regressions
+    # plot each isotope
+
+    context = {}
+    task = make_recent_analyses.delay()
+    context['task_id'] = task.id
+    context['task_status'] = task.status
+    context['isotags'] = ['Ar40', 'Ar39', 'Ar38', 'Ar37', 'Ar36']
     # for repo, uuid in (('Irradiation-NM-321', '0a0ff3c4-ef60-4f26-8241-298c57558916'),):
     #     plot_analyses(context, repo, uuid)
     # for a in analyses:
@@ -321,8 +331,9 @@ def plot_analysis(context, repo, uuid):
             plot = figure(y_axis_label=si['isotope'],
                           height=150)
             plot.scatter(x, y)
-            script, div = components(plot)
-            figures.append((script, div))
+            figures.append(bokeh.embed.json_item(plot, si['isotope']))
+            # script, div = components(plot)
+            # figures.append((script, div))
 
         analyses = context.get('analyses', [])
         analyses.append({'runid': runid, 'figures': figures, 'table': rows})
