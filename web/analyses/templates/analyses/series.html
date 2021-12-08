@@ -18,78 +18,35 @@
     <div class="row">
         <div class="col-sm-6">
             <div class="panel">
+                <h4> Cocktails</h4>
                 <div id="cocktailsAr40"></div>
                 <div id="cocktailsAr36"></div>
             </div>
         </div>
         <div class="col-sm-6">
             <div class="panel">
+                <h4> Airs</h4>
                 <div id="airsAr40"></div>
                 <div id="airsAr36"></div>
             </div>
         </div>
     </div>
-
-
-{#    <div class="row">#}
-{#        <div class="col-sm-4">#}
-{#            {%  for group in ar40 %}#}
-{#                {{ group.div | safe }}#}
-{#            {% endfor %}#}
-{#        </div>#}
-{#        <div class="col-sm-4">#}
-{#            {%  for group in ar36 %}#}
-{#                {{ group.div | safe }}#}
-{#            {% endfor %}#}
-{#        </div>#}
-{#        <div class="col-sm-4">#}
-{#                {%  for ratio in ratios %}#}
-{#                    {{ ratio.div | safe }}#}
-{#                {% endfor %}#}
-{#        </div>#}
-{#    </div>#}
-
-{#    <div class="row">#}
-{#        <div class="col-md-4">#}
-{#            <div class="panel panel-primary">#}
-{#                <table class="table table-condensed">#}
-{#                    {% for row in a.table %}#}
-{#                        <tr>#}
-{#                            {% for k in row %}#}
-{#                                <td>{{ k }} </td>#}
-{#                            {% endfor %}#}
-{#                        </tr>#}
-{#                    {% endfor %}#}
-{#                </table>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="col-md-8">#}
-{#            <div class="panel panel-primary">#}
-{#                {% for s,d in a.figures %}#}
-{#                {{ d | safe }}#}
-{#            {% endfor %}#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#    {% endfor %}#}
-
-
-
-{#    <div class="row">#}
-{#        <div class="col-sm-4">#}
-{##}
-{#        </div>#}
-{##}
-{#        <div class="col-sm-8">#}
-{#        {% for a in analyses %}#}
-{#            <h3>{{ a.runid }}</h3>#}
-{#            {% for s,d in a.figures %}#}
-{#                {{ d | safe }}#}
-{#            {% endfor %}#}
-{#        {% endfor %}#}
-{#        </div>#}
-{##}
-{#    </div>#}
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Blank Cocktails</h4>
+            <div class="panel">
+                <div id="blank_cocktailsAr40"></div>
+                <div id="blank_cocktailsAr36"></div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <h4>Blank Airs</h4>
+            <div class="panel">
+                <div id="blank_airsAr40"></div>
+                <div id="blank_airsAr36"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
     document.getElementById("time").textContent = "" + new Date().toLocaleString();
@@ -108,19 +65,16 @@
         var taskStatus = response.data.task_status
         if (taskStatus === 'SUCCESS') {
           clearTimer('');
-          {#var url = window.location.protocol + '//' + window.location.host + response.data.results.archive_path;#}
-          {#var a = document.createElement("a");#}
-          {#a.target = '_BLANK';#}
-          {#document.body.appendChild(a);#}
-          {#a.style = "display: none";#}
-          {#a.href = url;#}
-          {#a.download = 'results.zip';#}
-          {#a.click();#}
-          {#document.body.removeChild(a);#}
-            window.Bokeh.embed.embed_item(JSON.parse(JSON.parse(response.data.results).cocktails.Ar40), 'cocktailsAr40')
-            window.Bokeh.embed.embed_item(JSON.parse(JSON.parse(response.data.results).cocktails.Ar36), 'cocktailsAr36')
-            window.Bokeh.embed.embed_item(JSON.parse(JSON.parse(response.data.results).airs.Ar40), 'airsAr40')
-            window.Bokeh.embed.embed_item(JSON.parse(JSON.parse(response.data.results).airs.Ar36), 'airsAr36')
+            let results = JSON.parse(response.data.results)
+
+            window.Bokeh.embed.embed_item(results.cocktails.Ar40, 'cocktailsAr40')
+            window.Bokeh.embed.embed_item(results.cocktails.Ar36, 'cocktailsAr36')
+            window.Bokeh.embed.embed_item(results.airs.Ar40, 'airsAr40')
+            window.Bokeh.embed.embed_item(results.airs.Ar36, 'airsAr36')
+            window.Bokeh.embed.embed_item(results.blank_cocktails.Ar40, 'blank_cocktailsAr40')
+            window.Bokeh.embed.embed_item(results.blank_cocktails.Ar36, 'blank_cocktailsAr36')
+            window.Bokeh.embed.embed_item(results.blank_airs.Ar40, 'blank_airsAr40')
+            window.Bokeh.embed.embed_item(results.blank_airs.Ar36, 'blank_airsAr36')
 
         } else if (taskStatus === 'FAILURE') {
           clearTimer('An error occurred');

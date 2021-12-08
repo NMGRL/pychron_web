@@ -14,6 +14,7 @@
 # limitations under the License.
 # ===============================================================================
 import base64
+import datetime
 import json
 import os
 import struct
@@ -31,11 +32,10 @@ from .models import AnalysisTbl, RepositoryAssociationTbl
 
 @shared_task
 def make_all_series():
-    # ar40, ar36, ratios = zip(*[make_series(atype) for atype in ('cocktail', 'air', 'blank_unknown', 'blank_cocktail',
-    #                                                             'blank_air')])
-    #
     return json.dumps({'cocktails': make_series('cocktail'),
-                       'airs': make_series('air')})
+                       'airs': make_series('air'),
+                       'blank_cocktails': make_series('blank_cocktail'),
+                       'blank_airs': make_series('blank_air')})
 
 
 @shared_task
@@ -62,7 +62,6 @@ def make_series(atype):
     repo_associations = RepositoryAssociationTbl.objects.filter(analysisID__in=[a.id for a in ans])
     repos = {r.repository for r in repo_associations}
 
-    # repos = ['Irradiation-NM-321', ]
     for r in repos:
         clone_repo(r)
 
@@ -90,11 +89,11 @@ def make_series(atype):
 
     ret = {}
     for iso in ('Ar40', 'Ar36'):
-        plot = figure(y_axis_label=f'{iso} {atype}',
+        plot = figure(y_axis_label=iso,
                       x_axis_type='datetime',
                       height=150)
         plot.scatter(x, ys[iso])
-        ret[iso] = json.dumps(bokeh.embed.json_item(plot, iso))
+        ret[iso] = bokeh.embed.json_item(plot, iso)
         # script, div = components(plot)
         # ret.append({'script': script, 'div': div})
 
@@ -103,7 +102,7 @@ def make_series(atype):
                   height=150)
 
     plot.scatter(x, array(ys['Ar40']) / array(ys['Ar36']))
-
+    ret['ar4036'] = bokeh.embed.json_item(plot, 'ar4036')
     # script, div = components(plot)
     #
     # ret.append({'script': script, 'div': div})
@@ -155,11 +154,19 @@ def plot_analysis(context, repo, uuid):
     path = get_analysis_path(repo, uuid)
     with open(path, 'r') as rfile:
         jobj = json.load(rfile)
-        print(jobj.keys())
+
+    ts = jobj['timestamp']
+    for fmt in ('%Y-%m-%d %H:%M:%S',"%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f"):
+        try:
+            rundt = datetime.datetime.strptime(ts, fmt)
+            break
+        except ValueError:
+            continue
 
     runid = f'{jobj["identifier"]}-{jobj["aliquot"]}{jobj["increment"] or ""}'
     rows = [('Irradiation', f'{jobj["irradiation"]} {jobj["irradiation_level"]}{jobj["irradiation_position"]}'),
-            ('RunID', runid)]
+            ('RunID', runid),
+            ('Run Delta', str(datetime.datetime.now()-rundt))]
 
     rows.extend([(k, jobj[k] or '') for k in ('project',
                                               'sample',
