@@ -120,15 +120,12 @@ PROJECTIONS = {}
 
 def set_sample_from_form(s, form):
     s.name = form.cleaned_data['name']
-    material = form.cleaned_data['material']
+    s.materialid = form.cleaned_data['material']
+    s.projectid = form.cleaned_data['project']
 
-    s.materialid = material
-    project = form.cleaned_data['project']
+    for attr in ('unit', 'location', 'lithology'):
+        setattr(s, attr, form.cleaned_data[attr])
 
-    s.projectid = project
-    # for v in ('unit', 'lat', 'lon'):
-    #     setattr(s, v, form.cleaned_data[v])
-    s.unit = form.cleaned_data['unit']
     northing = form.cleaned_data['northing']
     easting = form.cleaned_data['easting']
     zone = form.cleaned_data['zone']

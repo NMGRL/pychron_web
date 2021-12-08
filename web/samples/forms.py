@@ -59,6 +59,8 @@ class SampleForm(forms.ModelForm):
                                       )
     # material = forms.ChoiceField(label='Material', choices=matchoices)
     unit = forms.CharField(label='Unit', required=False)
+    location = forms.CharField(label='Location', required=False)
+    lithology = forms.CharField(label='Lithology', required=False)
 
     northing = forms.FloatField(label='Northing', required=False)
     easting = forms.FloatField(label='Easting', required=False)
@@ -79,7 +81,8 @@ class SampleForm(forms.ModelForm):
     class Meta:
         model = SampleTbl
         fields = ('project', 'material',
-                  'name', 'unit', 'lat', 'lon', 'easting',
+                  'name', 'unit', 'location', 'lithology',
+                  'lat', 'lon', 'easting',
                   'northing', 'zone', 'datum', 'pointloc')
 
 
@@ -116,7 +119,10 @@ class SampleForm(forms.ModelForm):
                 css_class='row'),
             Div(Div('name', css_class='col-md-6'),
                 css_class='row'),
-            Div(Div('unit', css_class='col-md-6'), css_class='row'),
+            Div(Div('unit', css_class='col-md-4'),
+                Div('location', css_class='col-md-4'),
+                Div('lithology', css_class='col-md-4'),
+                css_class='row'),
             Div(Div('lat', css_class='col-md-5'),
                 Div('lon', css_class='col-md-5'),
                 css_class='row'),

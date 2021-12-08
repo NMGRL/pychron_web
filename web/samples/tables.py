@@ -88,7 +88,7 @@ class SampleTable(tables.Table):
         model = SampleTbl
         template_name = "django_tables2/bootstrap.html"
         fields = ['id', 'name', 'lat', 'lon',
-                  'unit']
+                  'unit', 'location', 'lithology']
 
         attrs = {'class': 'table table-condensed'}
         row_attrs = {'class': render_row}
