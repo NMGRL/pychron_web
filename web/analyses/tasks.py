@@ -212,7 +212,7 @@ def clone_repo(name):
     repo_path = f'/home/app/{name}'
     if not os.path.isdir(repo_path):
         try:
-            Repo.clone_from(url, repo_path, depth=100)
+            Repo.clone_from(url, repo_path)
             print(f'repo {name} cloned')
         except GitCommandError as e:
             print(e)
@@ -220,7 +220,7 @@ def clone_repo(name):
         print('repo already exists. pulling')
         repo = Repo(repo_path)
         o = repo.remotes.origin
-        o.fetch(depth=100)
+        o.fetch()
         repo.git.merge('FETCH_HEAD')
 
 # ============= EOF =============================================
