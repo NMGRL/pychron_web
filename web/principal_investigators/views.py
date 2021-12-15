@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
+from django.urls import reverse
 from django.views.generic import DetailView
 from django_tables2 import MultiTableMixin, RequestConfig
 
@@ -87,7 +88,7 @@ def submit_principal_investigator(request):
             ctx['form'] = form
             return render(request, 'principal_investigators/entry.html', ctx)
 
-    return HttpResponseRedirect('/principal_investigators/entry')
+    return HttpResponseRedirect(reverse('principal_investigators:entry'))
 
 
 class PrincipalInvestigatorDetailView(DetailView):
