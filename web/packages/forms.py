@@ -13,16 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-# from crispy_forms.helper import FormHelper
-# from crispy_forms.layout import Submit, Layout, Fieldset, Div
-# from dal import autocomplete
-# from django import forms
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Layout, Fieldset, Div
+from dal import autocomplete
+from django import forms
+
+
 # from leaflet.forms.fields import PointField
 # from leaflet.forms.widgets import LeafletWidget
 #
 # from samples.models import Materialtbl, ProjectTbl, SampleTbl, PrincipalInvestigatorTbl
 #
-#
+
+class PackagesForm(forms.Form):
+    name = forms.CharField(label='Name', help_text='Enter the name for a new Package or select and existing Package')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-exampleForm'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'submit_package'
+
+        self.helper.add_input(Submit('submit', 'Submit'))
+
 # # class PIProjectForm(forms.Form):
 # #     principal_investigator = forms.CharField(label='Principal Investigator')
 # #     project = forms.CharField(label='Project')

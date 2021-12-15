@@ -69,6 +69,7 @@ from packages.models import PackagesTbl, PackageAssociationTbl
 
 class PackageAssociationTable(tables.Table):
     sample = tables.Column(accessor='sample__name',
+                           verbose_name='Sample',
                            linkify=lambda record: reverse('samples:detail', args=[record.sample.id]))
     material = tables.Column(accessor='sample__materialid__name', verbose_name='Material',
                              linkify=lambda record: reverse('materials:detail', args=[record.sample.materialid.id]))
@@ -83,7 +84,7 @@ class PackageAssociationTable(tables.Table):
 
     class Meta:
         model = PackageAssociationTbl
-        fields = ['id', 'sample', 'material', 'project', 'pi', 'prepped', 'loaded']
+        fields = ['sample', 'material', 'project', 'pi', 'prepped', 'loaded']
 
 
 class PackageTable(tables.Table):
@@ -95,7 +96,7 @@ class PackageTable(tables.Table):
 
     class Meta:
         model = PackagesTbl
-        fields = ['id', 'name', 'nsamples', 'nprepped', 'nloaded']
+        fields = ['name', 'nsamples', 'nprepped', 'nloaded']
 
 # class SampleTable(tables.Table):
 #     material = tables.Column(accessor='materialid__name',

@@ -27,6 +27,8 @@ from util import get_center
 from packages.models import PackagesTbl, PackageAssociationTbl
 from packages.tables import PackageTable, PackageAssociationTable
 
+from packages.forms import PackagesForm
+
 
 def is_manager(user):
     return any(g.name == 'manager' for g in user.groups.all())
@@ -63,9 +65,12 @@ def index(request):
     #            }
     # RequestConfig(request).configure(table)
     # RequestConfig(request).configure(tracker)
+
+    form = PackagesForm()
     qs = PackagesTbl.objects.order_by('id').all()
     table = PackageTable(qs)
-    context = {'table': table}
+    context = {'table': table,
+               'form': form}
     template = loader.get_template('packages/index.html')
     return HttpResponse(template.render(context, request))
 
@@ -159,33 +164,16 @@ def submit_package(request):
     # context = {'samples': SampleTbl.objects.order_by('-id')[:10]}
     if request.method == 'POST':
 
-        # form = SampleForm(request.POST)
-        #
-        # if form.is_valid():
-        #     s = SampleTbl()
-        #     set_sample_from_form(s, form)
-        #
-        #     ctx = {}
-        #     for k in form.remembered_fields:
-        #         kk = k
-        #         if k == 'project':
-        #             kk = 'projectid_id'
-        #         elif k == 'material':
-        #             kk = 'materialid_id'
-        #         try:
-        #             ctx[k] = getattr(s, kk)
-        #         except AttributeError:
-        #             ctx[k] = form.cleaned_data[k]
-        #
-        #     request.session['sample'] = ctx
-        #     ss = Samplesubmittbl()
-        #     ss.user = request.user
-        #     ss.sample = s
-        #     ss.save()
+        form = PackagesForm(request.POST)
 
-            return HttpResponseRedirect(reverse('packages:entry'))
+        if form.is_valid():
+            s = PackagesTbl()
+            s.name = form.cleaned_data['name']
+            s.save()
 
-    # return HttpResponse('Failed {}'.format(form.errors))
+            return HttpResponseRedirect(reverse('packages:index'))
+
+    return HttpResponse('Failed {}'.format(form.errors))
 
 
 @login_required
