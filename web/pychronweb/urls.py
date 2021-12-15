@@ -29,6 +29,7 @@ urlpatterns = [
     path('events/', include('events.urls')),
     path('analyses/', include('analyses.urls')),
     path('principal_investigators/', include('principal_investigators.urls')),
+    path('packages/', include('packages.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
 
     url(r"^", include("users.urls")),

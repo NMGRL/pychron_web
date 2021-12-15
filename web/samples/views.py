@@ -19,7 +19,8 @@ from django.utils import timezone
 from django.views.generic import DetailView, CreateView
 from django_tables2 import RequestConfig
 
-from analyses.models import AnalysisTbl, Irradiationtbl
+from analyses.models import AnalysisTbl
+from irradiations.models import Irradiationtbl
 from analyses.tables import AnalysisTable
 from events.forms import EventsForm
 from events.models import EventsTbl, EventValuesTbl

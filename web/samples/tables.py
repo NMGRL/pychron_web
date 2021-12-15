@@ -19,9 +19,10 @@ from django.urls import reverse
 from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 
-from analyses.models import Irradiationpositiontbl, AnalysisTbl
+from analyses.models import AnalysisTbl
 from events.models import EventsTbl
 from samples.models import SampleTbl
+from irradiations.models import Irradiationpositiontbl
 
 
 class ActionColumn(tables.Column):

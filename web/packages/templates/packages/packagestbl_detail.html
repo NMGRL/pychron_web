@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load leaflet_tags %}
+{% load static %}
+{% load django_tables2 %}
+{% load bootstrap3 %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+    <div>
+        {% render_table table %}
+    </div>
+{% endblock %}

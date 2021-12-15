@@ -20,7 +20,8 @@ from operator import itemgetter
 
 import pytz
 
-from analyses.models import Irradiationtbl, AnalysisTbl
+from analyses.models import AnalysisTbl
+from irradiations.models import Irradiationtbl
 from events.models import EventsTbl
 from django.conf import settings
 

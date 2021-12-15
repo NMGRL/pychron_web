@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'principal_investigators.apps.PrincipalInvestigatorsConfig',
     'analyses.apps.AnalysisConfig',
     'events.apps.EventsConfig',
+    'packages.apps.PackagesConfig',
+    'irradiations.apps.IrradiationsConfig',
     'users',
 
     'crispy_forms',

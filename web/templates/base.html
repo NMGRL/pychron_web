@@ -102,6 +102,9 @@
                   <li><a href={% url "analyses:series" %}>Series</a></li>
               </ul>
           </li>
+         <li {% if request.resolver_match.view_name == 'packages:index' %}class="active"{% endif %}>
+             <a href={% url "packages:index" %}>Packages</a>
+         </li>
 
 {#                <a href={% url "analyses:recent" %}>Analyses<span class="sr-only">(current)</span></a></li>#}
       </ul>

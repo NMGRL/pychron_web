@@ -16,7 +16,8 @@
 import django_filters
 from django_filters import FilterSet, ChoiceFilter
 
-from analyses.models import Irradiationpositiontbl, AnalysisTbl
+from analyses.models import AnalysisTbl
+from irradiations.models import Irradiationpositiontbl
 from samples.models import SampleTbl, ProjectTbl
 
 

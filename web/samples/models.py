@@ -3,6 +3,9 @@ from django.db import models
 
 
 # Create your models here.
+
+
+
 class PrincipalInvestigatorTbl(models.Model):
     name = models.CharField(max_length=140, blank=True, null=True)
     email = models.CharField(max_length=140, blank=True, null=True)
@@ -131,3 +134,5 @@ class Userpiassociationtbl(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING, db_column='userID', blank=True, null=True)
     principal_investigatorid = models.ForeignKey(PrincipalInvestigatorTbl, models.DO_NOTHING,
                                                  db_column='principal_investigatorID')
+
+
