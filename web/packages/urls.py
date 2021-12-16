@@ -22,6 +22,8 @@ app_name = 'packages'
 urlpatterns = [
     path('', views.index, name='index'),
     path('submit_package', views.submit_package, name='submit_package'),
+    re_path(r'(?P<package_id>\d+)/submit_package_association', views.submit_package_association,
+            name='submit_package_association'),
     # re_path(r'edit_package/(?P<package_id>\d+)/$', views.edit_package, name='edit_package'),
     re_path(r'(?P<package_id>\d+)/edit_package$', views.edit_package, name='edit_package'),
     path('entry', views.entry, name='entry'),

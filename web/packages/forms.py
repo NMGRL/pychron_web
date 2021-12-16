@@ -18,12 +18,42 @@ from crispy_forms.layout import Submit, Layout, Fieldset, Div
 from dal import autocomplete
 from django import forms
 
-
 # from leaflet.forms.fields import PointField
 # from leaflet.forms.widgets import LeafletWidget
-#
-# from samples.models import Materialtbl, ProjectTbl, SampleTbl, PrincipalInvestigatorTbl
-#
+from django.forms import HiddenInput
+
+from packages.models import PackageAssociationTbl
+from samples.models import Materialtbl, ProjectTbl, SampleTbl, PrincipalInvestigatorTbl
+
+
+class PackageAssocationForm(forms.ModelForm):
+    project = forms.ModelChoiceField(label='Project',
+                                     queryset=ProjectTbl.objects,
+                                     widget=autocomplete.ModelSelect2(
+                                         url='project-autocomplete'))
+
+    sample = forms.ModelChoiceField(label='Sample',
+                                    queryset=SampleTbl.objects,
+                                    widget=autocomplete.ModelSelect2(
+                                        url='sample-autocomplete',
+                                        forward=['project']),
+                                    )
+
+    class Meta:
+        model = PackageAssociationTbl
+        fields = ('project', 'sample',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-exampleForm'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'submit_package_association'
+
+        self.helper.add_input(Submit('submit', 'Submit'))
+
 
 class PackagesForm(forms.Form):
     name = forms.CharField(label='Name', help_text='Enter the name for a new Package or select and existing Package')

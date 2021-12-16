@@ -361,3 +361,25 @@ class ProjectAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__istartswith=self.q)
 
         return qs
+
+
+class SampleAutocomplete(autocomplete.Select2QuerySetView):
+    def get_result_label(self, item):
+        return item.display_name
+
+    def get_selected_result_label(self, item):
+        return item.display_name
+
+    def get_queryset(self):
+
+
+        qs = SampleTbl.objects.order_by('id').all()
+        p = self.forwarded.get('project')
+        if p:
+            print('projectida', p)
+            qs = qs.filter(projectid__id=p)
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+
+        return qs

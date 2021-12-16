@@ -27,7 +27,7 @@ from util import get_center
 from packages.models import PackagesTbl, PackageAssociationTbl
 from packages.tables import PackageTable, PackageAssociationTable
 
-from packages.forms import PackagesForm
+from packages.forms import PackagesForm, PackageAssocationForm
 
 
 def is_manager(user):
@@ -157,6 +157,21 @@ def entry(request):
 #
 #     s.save()
 
+@login_required
+def submit_package_association(request, package_id):
+    if request.method == 'POST':
+        form = PackageAssocationForm(request.POST)
+        if form.is_valid():
+            t = PackageAssociationTbl()
+
+            package = PackagesTbl.objects.filter(id=package_id).first()
+            t.package = package
+
+            t.sample = form.cleaned_data['sample']
+            t.save()
+            return HttpResponseRedirect(reverse('packages:detail', args=[package_id]))
+    return HttpResponse('Failed {}'.format(form.errors))
+
 
 @login_required
 def submit_package(request):
@@ -284,6 +299,9 @@ class PackageDetailView(DetailView):
         qs = PackageAssociationTbl.objects.filter(package__id=self.object.id)
         table = PackageAssociationTable(qs)
         context['table'] = table
+
+        form = PackageAssocationForm()
+        context['form'] = form
         return context
 
 #
