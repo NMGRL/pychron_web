@@ -21,6 +21,19 @@ from events.models import EventsTbl, EventTypeTbl
 from events.tables import EventsTable, TrackerTable
 from samples.models import SampleTbl
 
+@login_required
+def prepped_event(request, sample_id):
+    e = EventsTbl()
+    s = SampleTbl.objects.filter(id=sample_id).first()
+    e.sample = s
+    et = EventTypeTbl.objects.filter(name='prepped').first()
+    e.event_type = et
+    e.event_at = datetime.datetime.now()
+    e.user = request.user
+    e.save()
+
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
 
 @login_required
 def received_event(request, sample_id):

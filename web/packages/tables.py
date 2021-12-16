@@ -65,6 +65,7 @@ import django_tables2 as tables
 from django.urls import reverse
 from packages.models import PackagesTbl, PackageAssociationTbl
 
+from samples.tables import ActionColumn
 
 
 class PackageAssociationTable(tables.Table):
@@ -80,11 +81,12 @@ class PackageAssociationTable(tables.Table):
                        linkify=lambda record: reverse('principal_investigators:detail',
                                                       args=[record.sample.projectid.principal_investigatorid.id]))
     loaded = tables.Column(accessor='sample_loaded', verbose_name='Loaded')
-    prepped = tables.Column(accessor='sample_prepped', verbose_name='Prepped')
+    received = ActionColumn('received', 'arrow-down-double-3.png', accessor='id', verbose_name='Received')
+    prepped = ActionColumn('prepped', 'beaker.png', accessor='id', verbose_name='Prepped')
 
     class Meta:
         model = PackageAssociationTbl
-        fields = ['sample', 'material', 'project', 'pi', 'prepped', 'loaded']
+        fields = ['sample', 'material', 'project', 'pi', 'received', 'prepped', 'loaded']
 
 
 class PackageTable(tables.Table):

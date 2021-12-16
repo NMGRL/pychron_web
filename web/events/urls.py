@@ -23,6 +23,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     #path('submit_sample', views.submit_sample, name='submit_sample'),
     re_path(r'received/(?P<sample_id>\d+)/$', views.received_event, name='received_event'),
+    re_path(r'prepped/(?P<sample_id>\d+)/$', views.prepped_event, name='prepped_event'),
     #path('entry', views.entry, name='entry'),
     #path('<int:pk>/', views.SampleDetailView.as_view(), name='detail')
 ]

@@ -36,8 +36,10 @@ class ActionColumn(tables.Column):
 
     def render(self, value):
         evts = EventsTbl.objects.filter(sample__id=value).all()
-        if any(e.event_type.name == self.event_tag for e in evts.all()):
-            return mark_safe('')
+        e = [e for e in evts.all() if e.event_type.name == self.event_tag]
+        if e:
+            et = e[0].event_at.strftime('%x %X')
+            return mark_safe(f'{et} ({e[0].user})')
         else:
             from django.templatetags.static import static
             src = static(f'samples/img/{escape(self.image)}')
