@@ -10,8 +10,17 @@
 {% endblock %}
 
 {% block content %}
-    {% crispy form %}
+    {% crispy package_association_form %}
     <div>
         {% render_table table %}
+    </div>
+
+    <p>
+
+    <p> <ul>
+        <li><span class="loaded_for_irradiation">Orange:</span> Loaded for Irradiation</li>
+        <li><span class="analyzed">Green:</span>  Analyzed</li>
+        </ul>
+        </p>
     </div>
 {% endblock %}

@@ -28,6 +28,7 @@ from samples.models import Materialtbl, ProjectTbl, SampleTbl, PrincipalInvestig
 
 class PackageAssocationForm(forms.ModelForm):
     project = forms.ModelChoiceField(label='Project',
+                                     required=False,
                                      queryset=ProjectTbl.objects,
                                      widget=autocomplete.ModelSelect2(
                                          url='project-autocomplete'))

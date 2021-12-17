@@ -16,7 +16,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import DetailView, CreateView
+from django.views.generic import DetailView, CreateView, UpdateView
 from django_tables2 import RequestConfig
 
 
@@ -241,67 +241,17 @@ class PackageDetailView(DetailView):
 
     def get_context_data(self, **kw):
         context = super(PackageDetailView, self).get_context_data(**kw)
-        # samples = False
-        # if is_manager(self.request.user):
-        #     samples = True
-        # else:
-        #     if not self.request.user.is_anonymous:
-        #         pis = Userpiassociationtbl.objects.filter(user=self.request.user.id).values('principal_investigatorid')
-        #         samples = SampleTbl.objects.filter(samplesubmittbl__user_id=self.request.user.id)
-        #         samples = samples or SampleTbl.objects.filter(projectid__principal_investigatorid__in=pis)
-        #         samples = samples.filter(id=self.object.id).first()
-        #
-        # if samples:
-        #     project = self.object.projectid
-        #     lat = self.object.lat
-        #     lon = self.object.lon
-        #     form = SampleForm(initial={
-        #         'principal_investigator': project.principal_investigatorid.id,
-        #         'project': project,
-        #         'material': self.object.materialid,
-        #         'name': self.object.name,
-        #         'lat': lat,
-        #         'lon': lon,
-        #         'unit': self.object.unit},
-        #         form_action='edit_sample')
-        #
-        #     context['form'] = form
-        #
-        #     # events
-        #     event_form = EventsForm()
-        #     context['event_form'] = event_form
-        #     e = EventsTbl.objects.filter(sample_id=self.object.id)
-        #     t = SimpleEventsTable(e)
-        #     context['events'] = t
-        #
-        #     # find near by samples
-        #     if lat and lon:
-        #         ns = SampleTbl.objects.filter(lat__gte=lat - 1,
-        #                                       lat__lte=lat + 1,
-        #                                       lon__gte=lon - 1,
-        #                                       lon__lte=lon + 1,
-        #                                       )
-        #         ns = ns.filter(~Q(id=self.object.id)).all()
-        #         context['nearby_samples'] = ns
-        #
-        #     data = AnalysisTbl.objects.filter(irradiation_positionid__sampleid_id=self.object.id)
-        #     atable = AnalysisTable(data.order_by('-timestamp'))
-        #     atable.paginate(page=self.request.GET.get("page", 1), per_page=10)
-        #     context['analyses'] = atable
-        #     context['nanalyses'] = data.count()
-        #
-        #     s = data.order_by('timestamp').first()
-        #     if s:
-        #         context['analyses_start'] = s.dtimestamp
-        #     e = data.order_by('-timestamp').first()
-        #     if e:
-        #         context['analyses_end'] = e.dtimestamp
+
         qs = PackageAssociationTbl.objects.filter(package__id=self.object.id)
+        qs = qs.order_by('-sample__projectid_id')
+
         table = PackageAssociationTable(qs)
+        RequestConfig(self.request).configure(table)
         context['table'] = table
 
         form = PackageAssocationForm()
-        context['form'] = form
+        context['package_association_form'] = form
+
         return context
 
 #

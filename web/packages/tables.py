@@ -15,7 +15,10 @@
 # ===============================================================================
 #
 import django_tables2 as tables
+from django.urls import reverse
+from packages.models import PackagesTbl, PackageAssociationTbl
 
+from samples.tables import ActionColumn
 # from django.urls import reverse
 # from django.utils.html import escape, format_html
 # from django.utils.safestring import mark_safe
@@ -46,15 +49,19 @@ import django_tables2 as tables
 #                              f'style="width:16px;height:16px;"></a>')
 #
 #
-# def render_row(record):
-#     ipt = Irradiationpositiontbl.objects.filter(sampleid=record.id).first()
-#     c = ''
-#     if ipt:
-#         c = 'loaded_for_irradiation'
-#         a = AnalysisTbl.objects.filter(irradiation_positionid=ipt.id).first()
-#         if a:
-#             c = 'analyzed'
-#     return c
+from analyses.models import AnalysisTbl
+from irradiations.models import Irradiationpositiontbl
+
+
+def render_row(record):
+    ipt = Irradiationpositiontbl.objects.filter(sampleid=record.sample.id).first()
+    c = ''
+    if ipt:
+        c = 'loaded_for_irradiation'
+        a = AnalysisTbl.objects.filter(irradiation_positionid=ipt.id).first()
+        if a:
+            c = 'analyzed'
+    return c
 #
 #
 # class SamplesColumn(tables.Column):
@@ -62,10 +69,7 @@ import django_tables2 as tables
 #         return reverse('samples:detail', args=[record.id])
 #
 #
-from django.urls import reverse
-from packages.models import PackagesTbl, PackageAssociationTbl
 
-from samples.tables import ActionColumn
 
 
 class PackageAssociationTable(tables.Table):
@@ -78,6 +82,7 @@ class PackageAssociationTable(tables.Table):
                             linkify=lambda record: reverse('projects:detail', args=[record.sample.projectid.id]))
     pi = tables.Column(accessor='sample__projectid__principal_investigatorid__full_name',
                        verbose_name='PrincipalInvestigator',
+                       order_by='sample__projectid__principal_investigatorid__last_name',
                        linkify=lambda record: reverse('principal_investigators:detail',
                                                       args=[record.sample.projectid.principal_investigatorid.id]))
     approximate_age = tables.Column(accessor='sample__approximate_age',
@@ -92,6 +97,8 @@ class PackageAssociationTable(tables.Table):
     class Meta:
         model = PackageAssociationTbl
         fields = ['sample', 'material', 'project', 'pi', 'approximate_age', 'received', 'prepped', 'loaded', 'note']
+        attrs = {'class': 'table table-condensed'}
+        row_attrs = {'class': render_row}
 
 
 class PackageTable(tables.Table):
