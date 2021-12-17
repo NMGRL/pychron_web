@@ -59,6 +59,7 @@ class SampleForm(forms.ModelForm):
                                       )
     # material = forms.ChoiceField(label='Material', choices=matchoices)
     unit = forms.CharField(label='Unit', required=False)
+    approximate_age = forms.FloatField(label='Approximate Age', required=False)
     location = forms.CharField(label='Location', required=False)
     lithology = forms.CharField(label='Lithology', required=False)
 
@@ -76,12 +77,16 @@ class SampleForm(forms.ModelForm):
                              required=False)
 
     # grainsize = forms.CharField(label='Grainsize', required=False)
-    remembered_fields = ('project', 'material', 'lat', 'lon', 'unit', 'easting', 'northing', 'datum', 'zone')
+    remembered_fields = ('project', 'material', 'lat', 'lon', 'unit',
+                        'approximate_age',
+                         'easting', 'northing', 'datum', 'zone')
 
     class Meta:
         model = SampleTbl
         fields = ('project', 'material',
-                  'name', 'unit', 'location', 'lithology',
+                  'name', 'unit',
+                  'approximate_age',
+                  'location', 'lithology',
                   'lat', 'lon', 'easting',
                   'northing', 'zone', 'datum', 'pointloc')
 
@@ -122,6 +127,8 @@ class SampleForm(forms.ModelForm):
             Div(Div('unit', css_class='col-md-4'),
                 Div('location', css_class='col-md-4'),
                 Div('lithology', css_class='col-md-4'),
+                css_class='row'),
+            Div(Div('approximate_age', css_class='col-md-4'),
                 css_class='row'),
             Div(Div('lat', css_class='col-md-5'),
                 Div('lon', css_class='col-md-5'),

@@ -124,7 +124,7 @@ def set_sample_from_form(s, form):
     s.materialid = form.cleaned_data['material']
     s.projectid = form.cleaned_data['project']
 
-    for attr in ('unit', 'location', 'lithology'):
+    for attr in ('unit', 'location', 'lithology', 'approximate_age'):
         setattr(s, attr, form.cleaned_data[attr])
 
     northing = form.cleaned_data['northing']

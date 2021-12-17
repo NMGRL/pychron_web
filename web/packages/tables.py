@@ -80,18 +80,23 @@ class PackageAssociationTable(tables.Table):
                        verbose_name='PrincipalInvestigator',
                        linkify=lambda record: reverse('principal_investigators:detail',
                                                       args=[record.sample.projectid.principal_investigatorid.id]))
+    approximate_age = tables.Column(accessor='sample__approximate_age',
+                                    verbose_name='Approximate Age')
+    note = tables.Column(accessor='sample__note',
+                         verbose_name='Note')
+
     loaded = tables.Column(accessor='sample_loaded', verbose_name='Loaded')
     received = ActionColumn('received', 'arrow-down-double-3.png', accessor='id', verbose_name='Received')
     prepped = ActionColumn('prepped', 'beaker.png', accessor='id', verbose_name='Prepped')
 
     class Meta:
         model = PackageAssociationTbl
-        fields = ['sample', 'material', 'project', 'pi', 'received', 'prepped', 'loaded']
+        fields = ['sample', 'material', 'project', 'pi', 'approximate_age', 'received', 'prepped', 'loaded', 'note']
 
 
 class PackageTable(tables.Table):
     name = tables.Column(accessor='name',
-                         linkify= lambda record: reverse('packages:detail', args=[record.id]))
+                         linkify=lambda record: reverse('packages:detail', args=[record.id]))
     nsamples = tables.Column(accessor='nsamples', verbose_name='N. Samples')
     nprepped = tables.Column(accessor='nprepped', verbose_name='N. Prepped')
     nloaded = tables.Column(accessor='nloaded', verbose_name='N. Loaded')
