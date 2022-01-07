@@ -15,6 +15,7 @@
 # ===============================================================================
 import os
 
+import yaml
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
@@ -22,12 +23,18 @@ from django.template import loader
 
 def index(request):
     template = loader.get_template('index.html')
-    p= os.path.join(settings.BASE_DIR, 'plugins', 'home.html')
-    body=''
+    p = os.path.join(settings.BASE_DIR, 'plugins', 'home.html')
+    body = ''
     if os.path.isfile(p):
         with open(p, 'r') as rfile:
             body = rfile.read()
 
-    context = {'labspecific_content': body}
+    p = os.path.join(settings.BASE_DIR, 'plugins', 'context.yaml')
+    if os.path.isfile(p):
+        with open(p, 'r') as rfile:
+            context = yaml.load(rfile)
+    else:
+        context = {}
+    context['labspecific_content'] = body
     return HttpResponse(template.render(context, request))
 # ============= EOF =============================================
