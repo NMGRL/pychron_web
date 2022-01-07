@@ -160,7 +160,16 @@ LOGIN_URL = 'accounts/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 PYCHRON_DATA_ORGANIZATION = 'NMGRLData'
-ANALYSES_DEBUG = False
+ANALYSES_DEBUG = True
+
+APP_TITLE = os.environ.get('APP_TITLE', 'SampleTracker')
+
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
 LEAFLET_CONFIG = {
     # 'SPATIAL_EXTENT': (5.0, 44.0, 7.5, 46),
     'DEFAULT_CENTER': (35, -106.0),
