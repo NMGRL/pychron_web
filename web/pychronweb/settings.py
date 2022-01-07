@@ -162,8 +162,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 PYCHRON_DATA_ORGANIZATION = 'NMGRLData'
 ANALYSES_DEBUG = True
 
-APP_TITLE = os.environ.get('APP_TITLE', 'SampleTracker')
-
 CELERY_BROKER_URL = 'redis://redis:6379'
 CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']

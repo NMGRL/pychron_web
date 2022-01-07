@@ -28,7 +28,6 @@ def index(request):
         with open(p, 'r') as rfile:
             body = rfile.read()
 
-    context = {'labspecific_content': body,
-               'app_title': settings.APP_TITLE}
+    context = {'labspecific_content': body}
     return HttpResponse(template.render(context, request))
 # ============= EOF =============================================

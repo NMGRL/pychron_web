@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% block title %}<title>SampleTracker</title>{% endblock %}
+    {% block title %}<title>ProbeTracker</title>{% endblock %}
 {#    <script#}
 {#  src="https://code.jquery.com/jquery-3.4.0.min.js"#}
 {#  integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="#}
@@ -37,7 +37,7 @@
 {#        <span class="icon-bar"></span>#}
 {#        <span class="icon-bar"></span>#}
 {#      </button>#}
-      <a class="navbar-brand" href={% url "home" %}>SampleTracker</a>
+      <a class="navbar-brand" href={% url "home" %}>ProbeTracker</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -93,18 +93,18 @@
             <li {% if request.resolver_match.view_name == 'events:index' %}class="active"{% endif %}><a
                 href={% url "events:index" %}>Events<span class="sr-only">(current)</span></a></li>
 
-          <li class="dropdown{% if request.resolver_match.view_name == 'analyses:recent' %}
-              active {% endif %}">
-              <a href="" class="dropdown-toggle" data-toggle="dropdown"
-                 role="button" aria-haspopup="true" aria-expanded="false">Analyses</a>
-              <ul class="dropdown-menu">
-                  <li><a href={% url "analyses:recent" %}>Recent</a></li>
-                  <li><a href={% url "analyses:series" %}>Series</a></li>
-              </ul>
-          </li>
-         <li {% if request.resolver_match.view_name == 'packages:index' %}class="active"{% endif %}>
-             <a href={% url "packages:index" %}>Packages</a>
-         </li>
+{#          <li class="dropdown{% if request.resolver_match.view_name == 'analyses:recent' %}#}
+{#              active {% endif %}">#}
+{#              <a href="" class="dropdown-toggle" data-toggle="dropdown"#}
+{#                 role="button" aria-haspopup="true" aria-expanded="false">Analyses</a>#}
+{#              <ul class="dropdown-menu">#}
+{#                  <li><a href={% url "analyses:recent" %}>Recent</a></li>#}
+{#                  <li><a href={% url "analyses:series" %}>Series</a></li>#}
+{#              </ul>#}
+{#          </li>#}
+{#         <li {% if request.resolver_match.view_name == 'packages:index' %}class="active"{% endif %}>#}
+{#             <a href={% url "packages:index" %}>Packages</a>#}
+{#         </li>#}
 
 {#                <a href={% url "analyses:recent" %}>Analyses<span class="sr-only">(current)</span></a></li>#}
       </ul>
