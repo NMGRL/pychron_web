@@ -51,7 +51,7 @@ def submit_material(request):
     if request.method == 'POST':
         form = MaterialForm(request.POST)
         if form.is_valid():
-            s = Materialtbl
+            s = Materialtbl()
             s.name = form.cleaned_data['name']
             s.grainsize = form.cleaned_data['grainsize']
 
