@@ -29,7 +29,7 @@ class MaterialForm(forms.Form):
         self.helper.form_id = 'id-exampleForm'
         self.helper.form_class = 'blueForms'
         self.helper.form_method = 'post'
-        self.helper.form_action = 'submit_sample'
+        self.helper.form_action = 'submit_material'
 
         self.helper.add_input(Submit('submit', 'Submit'))
 
