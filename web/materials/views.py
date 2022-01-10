@@ -49,7 +49,7 @@ def submit_material(request):
     # # template = loader.get_template('samples/add_sample.html')
     # # context = {'samples': SampleTbl.objects.order_by('-id')[:10]}
     if request.method == 'POST':
-        form = ProjectForm(request.POST)
+        form = MaterialForm(request.POST)
         if form.is_valid():
             s = Materialtbl
             s.name = form.cleaned_data['name']
