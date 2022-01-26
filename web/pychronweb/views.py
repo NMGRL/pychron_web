@@ -20,6 +20,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 
 
+def stats(request):
+    template = loader.get_template('stats.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
 def index(request):
     template = loader.get_template('index.html')
     p = os.path.join(settings.BASE_DIR, 'plugins', 'home.html')
