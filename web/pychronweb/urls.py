@@ -23,7 +23,7 @@ from samples.views import ProjectAutocomplete, MaterialAutocomplete, PrincipalIn
 
 urlpatterns = [
     path('', views.index, name='home'),
-    path('stats', views.stats, name='stats'),
+    path('stats/', include('stats.urls')),
     path('admin/', admin.site.urls),
     path('samples/', include('samples.urls')),
     path('projects/', include('projects.urls')),

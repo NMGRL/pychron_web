@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load django_tables2 %}
+{% load bootstrap3 %}
+{% load static %}
+
+{% block content %}
+    <div>
+        {% render_table yeartable %}
+    </div>
+{% endblock %}

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'packages.apps.PackagesConfig',
     'irradiations.apps.IrradiationsConfig',
     'users',
+    'stats',
 
     'crispy_forms',
     'django_tables2',
