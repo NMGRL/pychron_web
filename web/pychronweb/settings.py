@@ -25,7 +25,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'Foobar')
 DEBUG = bool(int(os.environ.get("DEBUG", default=0)))
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(' ')
-
+DOMAIN='geoinfo.nmt.edu'
+PREFIX='/labs/argon/sampletracker'
+#PREFIX=''
+FORCE_SCRIPT_NAME=PREFIX
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap3"
 CRISPY_TEMPLATE_PACK = "bootstrap3"
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
@@ -149,21 +152,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = PREFIX+'/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 LOGIN_REDIRECT_URL = 'signup'
-LOGIN_URL = 'accounts/login'
+LOGIN_URL = PREFIX+'/accounts/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 PYCHRON_DATA_ORGANIZATION = 'NMGRLData'
-ANALYSES_DEBUG = True
-
 APP_TITLE = os.environ.get('APP_TITLE', 'SampleTracker')
+ANALYSES_DEBUG = False
 
 CELERY_BROKER_URL = 'redis://redis:6379'
 CELERY_RESULT_BACKEND = 'redis://redis:6379'
