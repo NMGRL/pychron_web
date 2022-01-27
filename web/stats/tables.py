@@ -25,6 +25,8 @@ class YearStatsTable(tables.Table):
     # identifier = tables.Column(accessor='irradiation_positionid__identifier')
     year = tables.Column(accessor='year', verbose_name='Year')
     total = tables.Column(accessor='total', verbose_name='Total Analyses')
+    total_irradiations = tables.Column(accessor='irradiations', verbose_name='Total Irradiations')
+    total_irradiated_positions = tables.Column(accessor='positions', verbose_name='Total Irradiated Positions')
     # analysis_type = tables.Column(accessor='analysis_type')
     # measurement = tables.Column(accessor='measurementname', verbose_name='Measurement')
     # extraction = tables.Column(accessor='extractionname', verbose_name='Extraction')

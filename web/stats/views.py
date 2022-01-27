@@ -51,13 +51,29 @@ def index(request):
     # ans = AnalysisTbl.objects.annotate(year=ExtractYear('timestamp')).annotate(total=Count('year')).aggregate(
     #     'year').order_by(
     #     'year').values()[:10]
-        # 'total')[:10]
+    # 'total')[:10]
 
     ans = AnalysisTbl.objects.all().values(year=ExtractYear('timestamp')).annotate(total=Count('year')).order_by(
         'year')
 
-    context['yeartable'] = YearStatsTable(ans)
+    irs = Irradiationtbl.objects.all().values(year=ExtractYear('create_date')).annotate(total=Count(
+        'year')).order_by('year')
+
+    ss = AnalysisTbl.objects.all().values(year=ExtractYear('timestamp')).annotate(total=Count(
+        'irradiation_positionid_id', distinct=True))
+
+    data = []
+    for a in ans:
+        record = {'year': a['year'], 'total': a['total']}
+        for i in irs:
+            if i['year'] == a['year']:
+                record['irradiations'] = i['total']
+                break
+        for si in ss:
+            if si['year'] == a['year']:
+                record['positions'] = si['total']
+                break
+        data.append(record)
+
+    context['yeartable'] = YearStatsTable(data)
     return HttpResponse(template.render(context, request))
-
-
-
