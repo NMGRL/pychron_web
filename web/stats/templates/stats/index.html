@@ -4,8 +4,20 @@
 {% load static %}
 
 {% block content %}
-    <div>
-        {% render_table yeartable %}
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel">
+                <h2>Analyses By Month</h2>
+                {% render_table monthtable %}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel">
+                <h2>Year Stats</h2>
+                {% render_table yeartable %}
+            </div>
+        </div>
     </div>
+
 
 {% endblock %}

@@ -8,7 +8,7 @@ from crispy_forms.layout import Submit
 from dal import autocomplete
 from django import forms
 from django.db.models import Q, Count
-from django.db.models.functions import ExtractYear
+from django.db.models.functions import ExtractYear, ExtractMonth
 from django.shortcuts import render
 from django.contrib.gis.geos.point import Point
 
@@ -36,7 +36,7 @@ from samples.models import ProjectTbl, PrincipalInvestigatorTbl
 
 from django.contrib.auth.decorators import login_required
 
-from stats.tables import YearStatsTable
+from stats.tables import YearStatsTable, MonthStatsTable
 from util import get_center
 from analyses.models import AnalysisTbl
 
@@ -62,6 +62,14 @@ def index(request):
     ss = AnalysisTbl.objects.all().values(year=ExtractYear('timestamp')).annotate(total=Count(
         'irradiation_positionid_id', distinct=True))
 
+    ms = AnalysisTbl.objects.all().values(month=ExtractMonth('timestamp')).\
+        annotate(total=Count('month')).order_by('-total')
+
+    maxn = max([mi['total'] for mi in ms])
+    for mi in ms:
+        mi['percent_less'] = (maxn-mi['total'])/maxn*100
+
+    print(ms)
     data = []
     for a in ans:
         record = {'year': a['year'], 'total': a['total']}
@@ -76,4 +84,5 @@ def index(request):
         data.append(record)
 
     context['yeartable'] = YearStatsTable(data)
+    context['monthtable'] = MonthStatsTable(ms)
     return HttpResponse(template.render(context, request))
