@@ -8,7 +8,7 @@ from crispy_forms.layout import Submit
 from dal import autocomplete
 from django import forms
 from django.db.models import Q, Count
-from django.db.models.functions import ExtractYear, ExtractMonth
+from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay, ExtractWeekDay
 from django.shortcuts import render
 from django.contrib.gis.geos.point import Point
 
@@ -36,9 +36,14 @@ from samples.models import ProjectTbl, PrincipalInvestigatorTbl
 
 from django.contrib.auth.decorators import login_required
 
-from stats.tables import YearStatsTable, MonthStatsTable
+from stats.tables import YearStatsTable, MonthStatsTable, DayOfWeekTable
 from util import get_center
 from analyses.models import AnalysisTbl
+
+def analyses_by_day(request):
+    ds = AnalysisTbl.objects.all().values(weekday=ExtractWeekDay('timestamp')).\
+        annotate(total=Count('weekday')).order_by('-total')
+    return ds
 
 
 def index(request):
@@ -69,7 +74,9 @@ def index(request):
     for mi in ms:
         mi['percent_less'] = (maxn-mi['total'])/maxn*100
 
-    print(ms)
+    ds = analyses_by_day(request)
+    context['daystable'] = DayOfWeekTable(ds)
+
     data = []
     for a in ans:
         record = {'year': a['year'], 'total': a['total']}

@@ -21,6 +21,19 @@ from analyses.models import AnalysisTbl
 from samples.models import ProjectTbl
 
 
+class DayOfWeekTable(tables.Table):
+    weekday = tables.Column()
+    total = tables.Column(accessor='total', verbose_name='Total Analyses')
+    percent_less = tables.Column(accessor='total', verbose_name='%Delta')
+
+    def render_percent_less(self, value):
+        maxn = max([mi['total'] for mi in self.data])
+        return '{:0.2f}'.format((maxn - value) / maxn * 100)
+
+    def render_weekday(self, value):
+        return calendar.day_name[value-1]
+
+
 class MonthStatsTable(tables.Table):
     # year = tables.Column(accessor='year', attrs={'td': {'width': '50px'}})
     month = tables.Column()
@@ -64,7 +77,7 @@ class YearStatsTable(tables.Table):
         idx = self.data.data.index(record)
         c = 0
         if idx:
-            p = self.data[idx-1]['total']
-            c = (value - p)/p*100
+            p = self.data[idx - 1]['total']
+            c = (value - p) / p * 100
         return '{:0.2f}'.format(c)
 # ============= EOF =============================================
