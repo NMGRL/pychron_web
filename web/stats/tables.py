@@ -24,7 +24,7 @@ from samples.models import ProjectTbl
 class DayOfWeekTable(tables.Table):
     weekday = tables.Column()
     total = tables.Column(accessor='total', verbose_name='Total Analyses')
-    percent_less = tables.Column(accessor='total', verbose_name='%Delta')
+    percent_less = tables.Column(accessor='total', verbose_name='%Delta from Max')
 
     def render_percent_less(self, value):
         maxn = max([mi['total'] for mi in self.data])
@@ -38,7 +38,7 @@ class MonthStatsTable(tables.Table):
     # year = tables.Column(accessor='year', attrs={'td': {'width': '50px'}})
     month = tables.Column()
     total = tables.Column(accessor='total', verbose_name='Total Analyses')
-    percent_less = tables.Column(accessor='total', verbose_name='%Delta')
+    percent_less = tables.Column(accessor='total', verbose_name='%Delta from Max')
 
     def render_percent_less(self, value):
         maxn = max([mi['total'] for mi in self.data])
@@ -57,7 +57,7 @@ class YearStatsTable(tables.Table):
     total_irradiated_positions = tables.Column(accessor='positions',
                                                verbose_name='Total Irradiated Positions Analyzed')
 
-    change = tables.Column(accessor='total', verbose_name='%Delta')
+    change = tables.Column(accessor='total', verbose_name='%Delta from Prev.')
 
     # analysis_type = tables.Column(accessor='analysis_type')
     # measurement = tables.Column(accessor='measurementname', verbose_name='Measurement')
