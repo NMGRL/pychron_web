@@ -4,6 +4,29 @@
 {% load static %}
 
 {% block content %}
+
+    <table class="table">
+        <tr>
+            <th>Last N. Days</th>
+            <th>Analyses/Day</th>
+            <th>Trend</th>
+            <th>Counts</th>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>{{ weekrate|floatformat:2 }}</td>
+            <td>{{ weekrate_change|floatformat:2 }}</td>
+            <td>{{ weekcount }}, {{ pweekcount }}</td>
+        </tr>
+        <tr>
+            <td>30</td>
+            <td>{{ monthrate|floatformat:2 }}</td>
+            <td>{{ monthrate_change|floatformat:2 }}</td>
+            <td>{{ monthcount }}, {{ pmonthcount }}</td>
+        </tr>
+    </table>
+
+
     <div class="row">
         <div class="col-sm-6">
             <div class="panel">

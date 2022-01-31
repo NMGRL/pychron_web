@@ -1,4 +1,6 @@
 import re
+from datetime import timedelta
+from datetime import datetime
 from itertools import groupby
 from operator import attrgetter, itemgetter, or_
 
@@ -57,6 +59,32 @@ def index(request):
     #     'year').order_by(
     #     'year').values()[:10]
     # 'total')[:10]
+    now = datetime.now()
+    seven = timedelta(days=7)
+    thirty = timedelta(days=30)
+
+    weekpost = now-seven
+    weekcount = AnalysisTbl.objects.filter(timestamp__gte=weekpost).count()
+    weekrate = weekcount/ 7.
+
+    pweekpost = now - seven - timedelta(days=14)
+    pweekcount = AnalysisTbl.objects.filter(timestamp__gte=pweekpost).count()
+    pweekrate = pweekcount/7.
+
+    monthpost = now - thirty
+    monthcount = AnalysisTbl.objects.filter(timestamp__gte=monthpost).count()
+    monthrate = monthcount/ 30.
+
+    pmonthpost = now - thirty - timedelta(days=60)
+    pmonthcount = AnalysisTbl.objects.filter(timestamp__gte=pmonthpost).count()
+    pmonthrate = pmonthcount/30.
+
+    monthrate_change = 0
+    if monthrate:
+        monthrate_change = (monthrate-pmonthrate)/pmonthrate*100
+    weekrate_change = 0
+    if pweekrate:
+        weekrate_change = (weekrate-pweekrate)/pweekrate * 100
 
     ans = AnalysisTbl.objects.all().values(year=ExtractYear('timestamp')).annotate(total=Count('year')).order_by(
         'year')
@@ -92,4 +120,17 @@ def index(request):
 
     context['yeartable'] = YearStatsTable(data)
     context['monthtable'] = MonthStatsTable(ms)
+    context['monthrate'] = monthrate
+    context['weekrate'] = weekrate
+    context['monthrate_change'] = monthrate_change
+    context['weekrate_change'] = weekrate_change
+    context['weekcount'] = weekcount
+    context['monthcount'] = monthcount
+    context['pweekcount'] = pweekcount
+    context['pmonthcount'] = pmonthcount
+    # context['weekpost'] = weekpost
+    # context['pweekpost'] = pweekpost
+    # context['monthpost'] = monthpost
+    # context['pmonthpost'] = pmonthpost
+    # context['now'] = now
     return HttpResponse(template.render(context, request))
