@@ -98,6 +98,7 @@ def entry(request):
                 v = ProjectTbl.objects.filter(id=v).first()
             elif k == 'material':
                 v = Materialtbl.objects.filter(id=v).first()
+                v = v.name
 
             form.fields[k].initial = v
 
@@ -121,7 +122,24 @@ PROJECTIONS = {}
 
 def set_sample_from_form(s, form):
     s.name = form.cleaned_data['name']
-    s.materialid = form.cleaned_data['material']
+    # s.materialid = form.cleaned_data['material']
+
+    material = form.cleaned_data['material']
+    grainsize = form.cleaned_data['grainsize']
+    matname = form.fields['material'].choices[int(material)][1]
+    if grainsize:
+        mat = Materialtbl.objects.filter(id=material, grainsize=grainsize).first()
+        if mat is None:
+            mat = Materialtbl(name=matname, grainsize=grainsize)
+            mat.save()
+    else:
+        mat = Materialtbl.objects.filter(id=material, grainsize__isnull=True).first()
+        if mat is None:
+            mat = Materialtbl(name=matname)
+            mat.save()
+
+    s.materialid = mat
+
     s.projectid = form.cleaned_data['project']
 
     for attr in ('unit', 'location', 'lithology', 'approximate_age'):
@@ -324,20 +342,21 @@ class PrincipalInvestigatorAutocomplete(autocomplete.Select2QuerySetView):
         return qs.all()
 
 
-class MaterialAutocomplete(autocomplete.Select2QuerySetView):
-
-    def get_result_label(self, item):
-        return item.full_name
-
-    def get_selected_result_label(self, item):
-        return self.get_result_label(item)
-
-    def get_queryset(self):
-        qs = Materialtbl.objects.order_by('name').all()
-
-        if self.q:
-            qs = qs.filter(name__istartswith=self.q)
-        return qs
+# class MaterialAutocomplete(autocomplete.Select2QuerySetView):
+#
+#     def get_result_label(self, item):
+#         return item.name
+#
+#     def get_selected_result_label(self, item):
+#         return self.get_result_label(item)
+#
+#     def get_queryset(self):
+#         qs = Materialtbl.objects.order_by('name').all().values('name').distinct()
+#
+#         if self.q:
+#             qs = qs.filter(name__istartswith=self.q)
+#         print('asdf', qs)
+#         return qs
 
 
 class ProjectAutocomplete(autocomplete.Select2QuerySetView):

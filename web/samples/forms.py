@@ -52,9 +52,9 @@ class SampleForm(forms.ModelForm):
                                      widget=autocomplete.ModelSelect2(
                                          url='project-autocomplete'))
 
-    material = forms.ModelChoiceField(label='Material',
-                                      queryset=Materialtbl.objects,
-                                      widget=autocomplete.ModelSelect2(url='material-autocomplete'),
+    material = forms.ChoiceField(label='Material',
+                                      # queryset=Materialtbl.objects.distinct('name'),
+                                      # widget=autocomplete.ModelSelect2(url='material-autocomplete'),
                                       # to_field_name='name'
                                       )
     # material = forms.ChoiceField(label='Material', choices=matchoices)
@@ -76,14 +76,14 @@ class SampleForm(forms.ModelForm):
                              choices=[(i, i) for i in range(1, 61)],
                              required=False)
 
-    # grainsize = forms.CharField(label='Grainsize', required=False)
+    grainsize = forms.CharField(label='Grainsize', required=False)
     remembered_fields = ('project', 'material', 'lat', 'lon', 'unit',
-                        'approximate_age',
+                         'approximate_age',
                          'easting', 'northing', 'datum', 'zone')
 
     class Meta:
         model = SampleTbl
-        fields = ('project', 'material',
+        fields = ('project', 'material','grainsize',
                   'name', 'unit',
                   'approximate_age',
                   'location', 'lithology',
@@ -95,9 +95,9 @@ class SampleForm(forms.ModelForm):
     def project_label(obj):
         return obj.piname
 
-    @staticmethod
-    def material_label(obj):
-        return obj.full_name
+    # @staticmethod
+    # def material_label(obj):
+    #     return obj.full_name
 
     def __init__(self, *args, **kwargs):
         form_action = None
@@ -107,7 +107,9 @@ class SampleForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['project'].label_from_instance = self.project_label
-        self.fields['material'].label_from_instance = self.material_label
+
+        qs = Materialtbl.objects.order_by('name').all().values('name').distinct()
+        self.fields['material'].choices = [(i, qi['name']) for i, qi in enumerate(qs)]
 
         self.helper = FormHelper()
         self.helper.form_id = 'id-exampleForm'
@@ -120,7 +122,8 @@ class SampleForm(forms.ModelForm):
         col1 = Div(
             Div(Div('project', css_class='col-md-3'),
                 css_class='row'),
-            Div(Div('material', css_class='col-md-3'),
+            Div(Div('material', css_class='col-md-6'),
+                Div('grainsize', css_class='col-md-6'),
                 css_class='row'),
             Div(Div('name', css_class='col-md-6'),
                 css_class='row'),
