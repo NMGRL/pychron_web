@@ -48,20 +48,22 @@
     </div>
 
 {#    Events#}
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-primary">
-                <div class="panel-heading"><h1 class="panel-title">Events</h1></div>
-                 {% render_table events %}
+    {% if events %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading"><h1 class="panel-title">Events</h1></div>
+                     {% render_table events|safe %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading"><h1 class="panel-title">Add Events</h1></div>
+                    {% crispy event_form %}
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="panel panel-primary">
-                <div class="panel-heading"><h1 class="panel-title">Add Events</h1></div>
-                {% crispy event_form %}
-            </div>
-        </div>
-    </div>
+    {% endif %}
 
 {#    Edit sample#}
     <div class="row">

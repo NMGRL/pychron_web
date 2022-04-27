@@ -45,6 +45,7 @@ def is_manager(user):
 @login_required
 def index(request):
     samples = get_sample_queryset(request)
+    print('asasfasf')
     sample_filter = SampleFilter(request.GET, queryset=samples)
     table = SampleTable(sample_filter.qs)
     page = request.GET.get('page', 1)
@@ -316,7 +317,6 @@ class SampleDetailView(DetailView):
             e = data.order_by('-timestamp').first()
             if e:
                 context['analyses_end'] = e.dtimestamp
-
         return context
 
 
