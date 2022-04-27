@@ -134,7 +134,7 @@ def set_sample_from_form(s, form):
             mat = Materialtbl(name=matname, grainsize=grainsize)
             mat.save()
     else:
-        mat = Materialtbl.objects.filter(id=material, grainsize__isnull=True).first()
+        mat = Materialtbl.objects.filter(name=matname, grainsize__isnull=True).first()
         if mat is None:
             mat = Materialtbl(name=matname)
             mat.save()
@@ -338,7 +338,7 @@ class PrincipalInvestigatorAutocomplete(autocomplete.Select2QuerySetView):
             else:
                 ln, fi = self.q, self.q
                 qs = qs.filter(Q(last_name__icontains=ln) | Q(first_initial__icontains=fi))
-
+        print(qs.all())
         return qs.all()
 
 
