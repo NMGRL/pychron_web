@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
@@ -34,8 +34,11 @@ def get_project_queryset(request):
     if is_manager:
         projects = ProjectTbl.objects.all()
     else:
-        projects = ProjectTbl.objects.filter(sampletbl__samplesubmittbl__user_id=request.user.id)
+        pis = Userpiassociationtbl.objects.filter(user=request.user.id).values('principal_investigatorid')
+        projects = ProjectTbl.objects.filter(
+            Q(principal_investigatorid__in=pis) | Q(sampletbl__samplesubmittbl__user_id=request.user.id))
 
+    projects = projects.distinct()
     projects = projects.order_by('-id')
     return projects
 
@@ -83,7 +86,7 @@ def submit_project(request):
 
             if name == '?':
                 nir = ProjectTbl.objects.order_by('-id').first()
-                name = f'{dbpi.last_name}{nir.id+1:05n}'
+                name = f'{dbpi.last_name}{nir.id + 1:05n}'
 
             dbprj = ProjectTbl.objects.filter(name__exact=name,
                                               principal_investigatorid=dbpi).first()

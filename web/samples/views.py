@@ -81,9 +81,10 @@ def get_sample_queryset(request):
     if is_manager(request.user):
         samples = SampleTbl.objects.all()
     else:
-        samples = SampleTbl.objects.filter(samplesubmittbl__user_id=request.user.id)
         pis = Userpiassociationtbl.objects.filter(user=request.user.id).values('principal_investigatorid')
-        samples = samples or SampleTbl.objects.filter(projectid__principal_investigatorid__in=pis)
+        samples = SampleTbl.objects.filter(samplesubmittbl__user_id=request.user.id,
+                                           projectid__principal_investigatorid__in=pis)
+        # samples = samples or SampleTbl.objects.filter(projectid__principal_investigatorid__in=pis)
     samples = samples.order_by('-id')
     return samples
 

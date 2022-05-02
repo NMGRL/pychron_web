@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
@@ -14,7 +15,7 @@ from projects.filters import ProjectFilter
 from projects.forms import ProjectForm
 from django.contrib.auth.decorators import login_required
 
-from samples.models import ProjectTbl, PrincipalInvestigatorTbl, Materialtbl
+from samples.models import ProjectTbl, PrincipalInvestigatorTbl, Materialtbl, Userpiassociationtbl
 from projects.tables import ProjectTable
 from samples.models import SampleTbl
 from samples.tables import SampleTable
@@ -26,8 +27,11 @@ def get_principal_investigator_queryset(request):
     if is_manager:
         pis = PrincipalInvestigatorTbl.objects.all()
     else:
-        pis = PrincipalInvestigatorTbl.objects.filter(projecttbl__sampletbl__samplesubmittbl__user_id=request.user.id)
-
+        apis = Userpiassociationtbl.objects.filter(user=request.user.id).values('principal_investigatorid').all()
+        pis = PrincipalInvestigatorTbl.objects.filter(Q(projecttbl__sampletbl__samplesubmittbl__user_id=request.user.id)|
+                                                      Q(id__in=apis),
+                                                      )
+    pis = pis.distinct()
     pis = pis.order_by('-id')
     return pis
 
