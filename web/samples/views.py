@@ -319,7 +319,7 @@ class SampleDetailView(DetailView):
             e = data.order_by('-timestamp').first()
             if e:
                 context['analyses_end'] = e.dtimestamp
-)
+
         return context
 
 
