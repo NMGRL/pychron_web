@@ -47,13 +47,13 @@
             </div>
     </div>
 
-{#    Events#}
-    {% if events %}
+    Events
+    {% if eventstable %}
         <div class="row">
             <div class="col-md-6">
                 <div class="panel panel-primary">
                     <div class="panel-heading"><h1 class="panel-title">Events</h1></div>
-                     {% render_table events|safe %}
+                     {% render_table eventstable %}
                 </div>
             </div>
             <div class="col-md-6">
@@ -65,7 +65,7 @@
         </div>
     {% endif %}
 
-{#    Edit sample#}
+    Edit sample
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -103,10 +103,10 @@
     </div>
 
     <div class="row">
-        {% if analyses %}
+        {% if analysistable %}
             <div class="col-md-12">
                 <div class="pychron-inner-container">
-                    {% render_table analyses %}
+                    {% render_table analysistable %}
                 </div>
             </div>
         {%  endif %}

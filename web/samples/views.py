@@ -263,6 +263,7 @@ class SampleDetailView(DetailView):
 
     def get_context_data(self, **kw):
         context = super(SampleDetailView, self).get_context_data(**kw)
+
         samples = False
         if is_manager(self.request.user):
             samples = True
@@ -292,9 +293,9 @@ class SampleDetailView(DetailView):
             # events
             event_form = EventsForm()
             context['event_form'] = event_form
-            e = EventsTbl.objects.filter(sample_id=self.object.id)
+            e = EventsTbl.objects.filter(sample_id=self.object.id).all()
             t = SimpleEventsTable(e)
-            context['events'] = t
+            context['eventstable'] = t
 
             # find near by samples
             if lat and lon:
@@ -306,10 +307,10 @@ class SampleDetailView(DetailView):
                 ns = ns.filter(~Q(id=self.object.id)).all()
                 context['nearby_samples'] = ns
 
-            data = AnalysisTbl.objects.filter(irradiation_positionid__sampleid_id=self.object.id)
-            atable = AnalysisTable(data.order_by('-timestamp'))
+            data = AnalysisTbl.objects.filter(irradiation_positionid__sampleid_id=self.object.id).order_by('-timestamp')
+            atable = AnalysisTable(data)
             atable.paginate(page=self.request.GET.get("page", 1), per_page=10)
-            context['analyses'] = atable
+            context['analysistable'] = atable
             context['nanalyses'] = data.count()
 
             s = data.order_by('timestamp').first()
@@ -318,6 +319,7 @@ class SampleDetailView(DetailView):
             e = data.order_by('-timestamp').first()
             if e:
                 context['analyses_end'] = e.dtimestamp
+)
         return context
 
 

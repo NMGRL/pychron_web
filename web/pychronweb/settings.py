@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'Foobar')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get("DEBUG", default=0)))
+DEBUG = bool(int(os.environ.get("DEBUG", default=1)))
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(' ')
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 [::1]').split(' ')
 DOMAIN='geoinfo.nmt.edu'
 PREFIX='/labs/argon/sampletracker'
-#PREFIX=''
+PREFIX=''
 FORCE_SCRIPT_NAME=PREFIX
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap3"
 CRISPY_TEMPLATE_PACK = "bootstrap3"
@@ -111,10 +111,10 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': engine,
-        'NAME': os.environ.get('DATABASE_NAME'),
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': os.environ.get('DATABASE_HOST'),
+        'NAME': os.environ.get('DATABASE_NAME', 'pychrondvc_import'),
+        'USER': os.environ.get('DATABASE_USER', 'pychronweb'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'geochr0n!!'),
+        'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
     }
 }
 

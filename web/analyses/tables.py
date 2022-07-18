@@ -36,7 +36,7 @@ class AnalysisTable(tables.Table):
     class Meta:
         model = AnalysisTbl
         template_name = "django_tables2/bootstrap.html"
-        fields = ['timestamp', 'runid', 'measurement','extraction', 'duration', 'extract_value', 'cleanup']
+        fields = ['timestamp', 'runid', 'measurement', 'extraction', 'duration', 'extract_value', 'cleanup']
 
 
 # ============= EOF =============================================
