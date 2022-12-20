@@ -126,11 +126,11 @@ def set_sample_from_form(s, form):
     s.name = form.cleaned_data['name']
     # s.materialid = form.cleaned_data['material']
 
-    material = form.cleaned_data['material']
+    material = int(form.cleaned_data['material'])
     grainsize = form.cleaned_data['grainsize']
-    matname = form.fields['material'].choices[int(material)][1]
+    matname = form.fields['material'].choices[material][1]
     if grainsize:
-        mat = Materialtbl.objects.filter(id=material, grainsize=grainsize).first()
+        mat = Materialtbl.objects.filter(name=matname, grainsize=grainsize).first()
         if mat is None:
             mat = Materialtbl(name=matname, grainsize=grainsize)
             mat.save()
