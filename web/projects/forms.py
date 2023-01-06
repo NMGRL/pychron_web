@@ -17,9 +17,15 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from dal import autocomplete
 from django import forms
+from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 
 from samples.models import PrincipalInvestigatorTbl, ProjectTbl
+
+
+def validate_projectname(value):
+    if value and ',' in value:
+        raise ValidationError('commas (,) are not allowed in project names')
 
 
 class ProjectForm(forms.ModelForm):
@@ -28,6 +34,7 @@ class ProjectForm(forms.ModelForm):
                                                     widget=autocomplete.ModelSelect2(
                                                         url=reverse_lazy('principalinvestigator-autocomplete')))
     name = forms.CharField(label='Project',
+                           validators=[validate_projectname],
                            help_text='Use ? if you want SampleTracker to automatically generate a Project name based '
                                      'on the Principal Investigator')
 
